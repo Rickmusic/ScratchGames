@@ -1,0 +1,23 @@
+{
+  "name": "seng-513_g03_term_project",
+  "version": "0.0.1",
+  "description": "SENG 513 Term Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": ".git/"
+  },
+  "author": "Kayleigh",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "connect-mssql": "^1.5.0",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "passport": "^0.4.0",
+    "socket.io": "^2.0.4"
+  }
+}
