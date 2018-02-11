@@ -2,6 +2,7 @@ let express = require('express');
 let app = express();
 let port = process.env.PORT || 3000;
 
+let flash = require('express-flash');
 let session = require("express-session");
 let bodyParser = require("body-parser");
 
@@ -43,12 +44,14 @@ passport.use(new LocalStrategy(
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({ secret: "keyboard cats", resave: false, saveUninitialized: false }));
 //app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'ejs');
+app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.get ('/', function (req, res) {
-    if (req.user) {
+    if (req.isAuthenticated()) {
         res.sendFile(path.join(__dirname, 'public', 'home.html'));
     } else {
         res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -56,11 +59,11 @@ app.get ('/', function (req, res) {
 });
 
 app.get ('/login', function (req, res) {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    res.render(path.join(__dirname, 'public', 'login.ejs'), { messages: req.flash('error') });
 });
 
 app.get ('/profile', function (req, res) {
-    if (req.user) {
+    if (req.isAuthenticated()) {
         res.sendFile(path.join(__dirname, 'public', 'profile.html'));
     } else {
         res.redirect('/');
@@ -69,7 +72,8 @@ app.get ('/profile', function (req, res) {
 
 app.post ('/login', passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect: '/login'})
+    failureRedirect: '/login',
+    failureFlash: true})
 );
 
 app.get('/logout', function (req, res){
@@ -90,10 +94,6 @@ app.get ('/info', function (req, res) {
         displayname: req.user.displayName,
         emails: req.user.emails
     });
-});
-
-app.get('/profile', require('connect-ensure-login').ensureLoggedIn(), function(req, res){
-    res.render('profile', { user: req.user });
 });
 
 app.listen(port, function () {

@@ -1,8 +1,8 @@
 {
   "name": "seng-513_g03_term_project",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "SENG 513 Term Project",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,13 +14,11 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "connect-ensure-login": "^0.1.1",
-    "connect-mssql": "^1.5.0",
     "ejs": "^2.5.7",
     "express": "^4.16.2",
+    "express-flash": "0.0.2",
     "express-session": "^1.15.6",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0",
-    "socket.io": "^2.0.4"
+    "passport-local": "^1.0.0"
   }
 }
