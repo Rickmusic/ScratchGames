@@ -2,22 +2,10 @@
 <html>
     <head>
         <title>Home Page</title>
+		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="/home.js"></script>
     </head>
     <body>
-        <p>Hello, <span id="displayname"></span>. View your <a href="/profile">profile</a>.</p>
-        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-        <script>
-$(function () {
-    $.ajax({
-        url: "/user",
-        success: function (result) {
-            $('#displayname').text(result.displayname);
-        },
-        error: function (obj, status, textStatus) {
-            $('body').append($('p').text('Ajax Failed'));
-        }
-    });
-});
-        </script>
+        <p>Hello, <span id="displayname"></span>. View your <a href="/profile.html">profile</a>.</p>
     </body>
 </html>

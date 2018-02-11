@@ -5,33 +5,46 @@ let router = express.Router();
 
 let path = require('path');
 
-let passport = require('../auth');
+let passport = require('../passport');
 
 router.get ('/', function (req, res) {
     if (req.isAuthenticated()) {
-        res.sendFile(path.join(__dirname, '../..', 'public/home.html'));
+        res.redirect('/home.html');
     } else {
-        res.sendFile(path.join(__dirname, '../..', 'public/index.html'));
+        res.redirect('/login.html');
     }
 });
 
 router.get ('/login', function (req, res) {
-    res.render('login.ejs', { messages: req.flash('error') });
+    res.redirect('/login.html');
 });
 
 router.get ('/profile', function (req, res) {
     if (req.isAuthenticated()) {
-        res.sendFile(path.join(__dirname, '../..', 'public/profile.html'));
+        res.redirect('/profile.html');
     } else {
         res.redirect('/');
     }
 });
 
-router.post ('/login', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true})
-);
+router.post ('/login', function(req, res, next) {
+	passport.authenticate('local', function(err, user, info) {
+		if (err) { return next(err); }
+		if (!user) { 
+			return res.send({
+				success: false,
+				message: info.message ? info.message : 'Authentication Failed'
+			}); 
+		}
+		req.logIn(user, function(err) {
+			if (err) { return next(err); }
+			return res.send({
+				success: true,
+				redirect: '/node/'
+			});
+		});
+	})(req, res, next);
+});
 
 router.get('/logout', function (req, res){
     req.logout();

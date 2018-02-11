@@ -6,8 +6,8 @@ let session = require("express-session");
 let bodyParser = require("body-parser");
 let path = require('path');
 
-let passport = require('./app/auth/');
-let routes = require('./app/routes/');
+let passport = require('./app/passport');
+let router = require('./app/router');
 
 let port = process.env.PORT || 3000;
 
@@ -25,7 +25,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-app.use ('/', routes);
+app.use ('/', router);
 
 app.listen(port, function () {
     console.log('Server listening at port %d', port);

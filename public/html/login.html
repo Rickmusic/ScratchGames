@@ -2,9 +2,11 @@
 <html>
     <head>
         <title>Login</title>
+		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="/login.js"></script>
     </head>
     <body>
-        <form action="/node/login" method="post">
+        <form id="login" action="">
             <div>
             <label>Username:</label>
             <input type="text" name="username"/><br/>
@@ -17,5 +19,6 @@
             <input type="submit" value="Submit"/>
             </div>
         </form>
+		<p id="message"></p>
     </body>
 </html>

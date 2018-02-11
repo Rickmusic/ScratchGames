@@ -2,31 +2,11 @@
 <html>
     <head>
         <title>Profile</title>
+		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="/profile.js"></script>
     </head>
     <body>
         <p id="profile"></p>
-        <a href="/logout">Log out</a>
-        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-        <script>
-$(function () {
-    $.ajax({
-        url: "/info",
-        success: function (result) {
-            $('#profile').append('ID: ' + result.userid + '<br/>');
-            $('#profile').append('Username: ' + result.username + '<br/>');
-            $('#profile').append('Name: ' + result.displayname);
-            if (result.emails.length !== 0) {
-                $('#profile').append('<br/>Emails:');
-                for (let email of result.emails) {
-                    $('#profile').append(' ' + email.value);
-                }
-            }   
-        },
-        error: function (obj, status, textStatus) {
-            $('body').append($('p').text('Ajax Failed'));
-        }
-    });
-});
-        </script>
+        <a href="/node/logout">Log out</a>
     </body>
 </html>
