@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Home Page</title>
+    </head>
+    <body>
+        <p>Hello, <span id="displayname"></span>. View your <a href="/profile">profile</a>.</p>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script>
+$(function () {
+    $.ajax({
+        url: "/user",
+        success: function (result) {
+            $('#displayname').text(result.displayname);
+        },
+        error: function (obj, status, textStatus) {
+            $('body').append($('p').text('Ajax Failed'));
+        }
+    });
+});
+        </script>
+    </body>
+</html>
