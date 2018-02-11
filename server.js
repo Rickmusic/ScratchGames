@@ -8,7 +8,7 @@ let bodyParser = require("body-parser");
 
 let passport = require('passport');
 let LocalStrategy = require('passport-local').Strategy;
-let db = require('./db');
+let db = require('./app/db');
 
 let path = require('path');
 
@@ -52,19 +52,19 @@ app.use(passport.session());
 
 app.get ('/', function (req, res) {
     if (req.isAuthenticated()) {
-        res.sendFile(path.join(__dirname, 'public', 'home.html'));
+        res.sendFile(path.join(__dirname, 'public/home.html'));
     } else {
-        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+        res.sendFile(path.join(__dirname, 'public/index.html'));
     }
 });
 
 app.get ('/login', function (req, res) {
-    res.render(path.join(__dirname, 'public', 'login.ejs'), { messages: req.flash('error') });
+    res.render(path.join(__dirname, 'public/login.ejs'), { messages: req.flash('error') });
 });
 
 app.get ('/profile', function (req, res) {
     if (req.isAuthenticated()) {
-        res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+        res.sendFile(path.join(__dirname, 'public/profile.html'));
     } else {
         res.redirect('/');
     }

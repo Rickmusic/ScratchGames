@@ -2,7 +2,7 @@
   "name": "seng-513_g03_term_project",
   "version": "0.0.2",
   "description": "SENG 513 Term Project",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
