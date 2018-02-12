@@ -7,6 +7,7 @@ let path = require('path');
 
 let passport = require('../passport');
 
+// Redirects if not logged in
 let isAuthenticated = function(req, res, next) {
     if (req.isAuthenticated()) {
         next();
@@ -14,6 +15,15 @@ let isAuthenticated = function(req, res, next) {
     else {
         //res.redirect('/login?redirect=' + req.originalUrl);
         res.sendStatus(401);
+    }
+};
+
+let isAuthenticatedDNE = function(req, res, next) {
+    if (req.isAuthenticated()) {
+        next();
+    }
+    else {
+        res.sendStatus(404);
     }
 };
 
@@ -27,9 +37,10 @@ let isAuthenticated = function(req, res, next) {
 
 router.get ('/login', function (req, res) {
     if (req.query.redirect) {
-        req.session.loginredirect = req.query.redirect;
+        req.session.return_to = req.query.redirect;
     }
-    res.redirect('/login.html?redirect=' + req.query.redirect);
+    res.sendFile(path.join('html', 'login.html'), { root: path.join(__dirname, '../../public') }); 
+	//res.redirect('/login.html?redirect=' + req.query.redirect);
 });
 
 router.get ('/profile', isAuthenticated, function (req, res) {
@@ -47,11 +58,13 @@ router.post ('/login', function(req, res, next) {
         }
         req.logIn(user, function(err) {
             if (err) { return next(err); }
+			let redirect = req.session.return_to ? 
+				req.session.return_to : 
+				'/home.html'
+			delete req.session.return_to;
             return res.send({
                 success: true,
-                redirect: req.session.loginredirect ? 
-                    req.session.loginredirect : 
-                    '/home.html'
+                redirect: redirect,
             });
         });
     })(req, res, next);
@@ -62,13 +75,13 @@ router.get('/logout', function (req, res){
     res.redirect('/');
 });
 
-router.get ('/user', function (req, res) {
+router.get ('/user', isAuthenticatedDNE, function (req, res) {
     res.send({
        displayname: req.user.displayName
     });  
 });
 
-router.get ('/info', function (req, res) {
+router.get ('/info', isAuthenticatedDNE, function (req, res) {
     res.send({
         username: req.user.username,
         userid: req.user.id,
