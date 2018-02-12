@@ -2,7 +2,7 @@ $(function () {
 	$('form').submit (function () {
 		console.log("Form Submitted");
 		$.ajax({
-			url: "/node/login",
+			url: "/login",
 			method: "POST",
 			data: $("#login").serialize(),
 			success: function (result) {

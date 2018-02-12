@@ -1,6 +1,6 @@
 $(function () {
     $.ajax({
-        url: "/node/user",
+        url: "/user",
         success: function (result) {
             $('#displayname').text(result.displayname);
         },

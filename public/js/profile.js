@@ -1,6 +1,6 @@
 $(function () {
     $.ajax({
-        url: "/node/info",
+        url: "/info",
         success: function (result) {
             $('#profile').append('ID: ' + result.userid + '<br/>');
             $('#profile').append('Username: ' + result.username + '<br/>');

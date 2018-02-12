@@ -7,43 +7,54 @@ let path = require('path');
 
 let passport = require('../passport');
 
-router.get ('/', function (req, res) {
+let isAuthenticated = function(req, res, next) {
+    if (req.isAuthenticated()) {
+        next();
+    }
+    else {
+        //res.redirect('/login?redirect=' + req.originalUrl);
+        res.sendStatus(401);
+    }
+};
+
+/*router.get ('/', function (req, res) {
     if (req.isAuthenticated()) {
         res.redirect('/home.html');
     } else {
         res.redirect('/login.html');
     }
-});
+});*/
 
 router.get ('/login', function (req, res) {
-    res.redirect('/login.html');
+    if (req.query.redirect) {
+        req.session.loginredirect = req.query.redirect;
+    }
+    res.redirect('/login.html?redirect=' + req.query.redirect);
 });
 
-router.get ('/profile', function (req, res) {
-    if (req.isAuthenticated()) {
-        res.redirect('/profile.html');
-    } else {
-        res.redirect('/');
-    }
+router.get ('/profile', isAuthenticated, function (req, res) {
+    res.redirect('/profile.html');
 });
 
 router.post ('/login', function(req, res, next) {
-	passport.authenticate('local', function(err, user, info) {
-		if (err) { return next(err); }
-		if (!user) { 
-			return res.send({
-				success: false,
-				message: info.message ? info.message : 'Authentication Failed'
-			}); 
-		}
-		req.logIn(user, function(err) {
-			if (err) { return next(err); }
-			return res.send({
-				success: true,
-				redirect: '/node/'
-			});
-		});
-	})(req, res, next);
+    passport.authenticate('local', function(err, user, info) {
+        if (err) { return next(err); }
+        if (!user) { 
+            return res.send({
+                success: false,
+                message: info.message ? info.message : 'Authentication Failed'
+            }); 
+        }
+        req.logIn(user, function(err) {
+            if (err) { return next(err); }
+            return res.send({
+                success: true,
+                redirect: req.session.loginredirect ? 
+                    req.session.loginredirect : 
+                    '/home.html'
+            });
+        });
+    })(req, res, next);
 });
 
 router.get('/logout', function (req, res){
