@@ -1,6 +1,6 @@
 {
   "name": "seng-513_g03_term_project",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "SENG 513 Term Project",
   "main": "server.js",
   "scripts": {
