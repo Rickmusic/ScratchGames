@@ -2,7 +2,7 @@
 
 Install and run instructions:
 
-Open command line in directory. 
+Open command line in directory. \n
 run: npm install 
 changed directories to nginx-1.12.2
 run: start nginx.exe
