@@ -1,0 +1,78 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+body{
+    height: 100%;
+    background:black;
+
+}
+.background{
+    background: url("ScratchBack.jpg"), center;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+.top{
+    width: 100%;
+    text-align: center;
+}
+.middle{
+    margin: 0 auto;
+    padding: 0.5em;
+    width: 30em;
+    background-color: rgba(214,107,19,0.40);
+    text-align: center;
+    border-radius: 4em;
+}
+nav{
+    width: 100%;
+    text-align: left;
+    background-color: black;
+    color: white;
+    font-size: 1.5em;
+}
+.nav{
+    width:10%;
+    text-align: center;
+}
+.nav>a{
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+.nav>a:hover{
+    background-color: grey;
+}
+input[type=text]{
+    font-size: 1.5em;
+}
+input[type=password]{
+    font-size: 1.5em;
+}
+
+input[type=submit] {
+    font-size: 1.5em;
+    background-color: #658b21;
+    cursor: pointer;
+    color: whitesmoke;
+    border: none;
+    width: 100px;
+    height: 2em;
+}
+h1{
+    color: orange;
+    font-size: 3em;
+    font-family: "Georgia";
+}
+a{
+    text-decoration: none;
+    font-size: 1.2em;
+
+}
+#create{
+    color: blue;
+    cursor: pointer;
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Scratch Games</title>
+        <link rel = "stylesheet" type = "text/css" href = "css/Main.css" />
+        <script src="UI.js"></script>
+    </head>
+    <body>
+        <div class="background">
+            <nav>
+                <div class="nav"><a href="index.html">Home</a></div>
+            </nav>
+
+            <div class="top">
+                <h1>Scratch Games</h1>
+            </div>
+
+            <div id="middle" class="middle">
+                <img id ="logo" src="css/Logo4.png">
+                <br>
+                <form action="/login" method="post">
+                    <input id="uname" type="text" name="username" autofocus placeholder="Username"/><br/>
+                    <br>
+                    <input type="password" name="password" placeholder="Password"/>
+                    <% if (messages.length) { %><p style="color: white;">*<%= messages[0] %><p><% } else{%><p>&nbsp</p><%}%>
+                    <input type="submit" value="Submit"/>
+                </form>
+                <div id="create" onclick="createUI()">
+                    <p>Create an Account</p>
+                </div>
+            </div>
+            <div class="bottom"></div>
+        </div>
+    </body>
+</html>
