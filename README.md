@@ -9,5 +9,3 @@ run: start nginx.exe
 change directories back into project root. cd ..
 run: node server.js
 Open browser to localhost/80
-
-
