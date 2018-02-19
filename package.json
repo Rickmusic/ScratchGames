@@ -4,7 +4,8 @@
   "description": "SENG 513 Term Project",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,12 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "eslint": "^4.18.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-react": "^7.6.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.1.1",
     "prettier": "1.10.2"
   }
 }
