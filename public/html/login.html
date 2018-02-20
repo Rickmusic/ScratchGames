@@ -5,6 +5,8 @@
         <title>Scratch Games</title>
         <link rel = "stylesheet" type = "text/css" href = "css/Main.css" />
         <script src="UI.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="/login.js"></script>
     </head>
     <body>
         <div class="background">
@@ -19,7 +21,7 @@
             <div id="middle" class="middle">
                 <img id ="logo" src="css/Logo4.png">
                 <br>
-                <form action="/login" method="post">
+                <form id="login" action="/login" method="post">
                     <input id="uname" type="text" name="username" autofocus placeholder="Username"/><br/>
                     <br>
                     <input type="password" name="password" placeholder="Password"/>
