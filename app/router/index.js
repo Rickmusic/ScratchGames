@@ -47,7 +47,15 @@ router.get('/profile', isAuthenticated, function(req, res) {
   res.redirect('/profile.html');
 });
 
-router.post('/login', function(req, res, next) {
+router.post(
+  '/login',
+  passport.authenticate('local', {
+    successRedirect: '/home.html',
+    failureRedirect: '/login',
+  })
+);
+
+router.post('/login/ajax', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
     if (err) {
       return next(err);
