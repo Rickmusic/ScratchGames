@@ -20,7 +20,7 @@
     "quotes": ["error", "single"],
     "semi": ["warn", "always"],
     "no-else-return": "warn",
-    "consistent-return": "error",
+    "consistent-return": "warn",
     "no-console": "off"
   }
 }
