@@ -1,7 +1,7 @@
 {
-  "name": "seng-513_g03_term_project",
+  "name": "scratch_games",
   "version": "0.0.3",
-  "description": "SENG 513 Term Project",
+  "description": "ScratchGames",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": ".git/"
+    "url": "https://github.com/Rickmusic/ScratchGames/"
   },
   "author": "Kayleigh",
   "license": "ISC",
