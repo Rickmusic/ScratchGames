@@ -61,7 +61,6 @@ typings/
 .next
 
 
-
 # Nginx
 nginx/*
 !nginx/conf/
@@ -69,6 +68,9 @@ nginx/*
 nginx/conf/*
 !nginx/conf/nginx.conf
 
+
+# Intellij IDE
+.idea/*
 
 
 _vimrc_local.vim
