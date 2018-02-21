@@ -61,6 +61,10 @@ typings/
 .next
 
 
+# Local App Config
+app/config/config.json
+
+
 # Nginx
 nginx/*
 !nginx/conf/
@@ -72,5 +76,6 @@ nginx/conf/*
 # Intellij IDE
 .idea/*
 
-
-_vimrc_local.vim
+*.swp
+.vimrc
+TODO
