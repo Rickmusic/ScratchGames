@@ -1,11 +1,10 @@
 # ScratchGames
 
-Install and run instructions:
+To Install:
+* run: `npm install`
+* See [Nginx Notes](nginx/README.md) for installing Nginx
 
-> * Open command line in directory.
-> * run: `npm install` 
-> * change directories to nginx-1.12.2
-> * run: `start nginx.exe`
-> * change directories back into project root (`cd ..`)
-> * run: `node server.js`
-> * Open browser to localhost/80
+To Run:
+* run: `node server.js`
+* Make sure Nginx is running (see [Nginx Notes](nginx/README.md))
+* Open browser to localhost/80
