@@ -8,6 +8,7 @@ To Install:
 
 To Run:
 - On windows machines, from the command line in the `/nginx` directory run: `start nginx.exe`
+  - Nginx will run until you quit it. Using `start` will create a new terminal just for `nginx.exe` so you can continue to use the current one.
 - To reload the Nginx config run: `nginx.exe -s reload`
 - To quit Nginx run: `nginx.exe -s quit`
 
