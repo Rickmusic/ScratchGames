@@ -6,5 +6,5 @@ To Install:
 
 To Run:
 * run: `node server.js`
-* Make sure Nginx is running (see [Nginx Notes](nginx/README.md))
+* Make sure Nginx is running (see [Nginx Notes](nginx/))
 * Open browser to localhost/80
