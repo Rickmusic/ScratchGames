@@ -7,6 +7,7 @@ let bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser');
 let path = require('path');
 
+let config = require('./app/config');
 let passport = require('./app/passport');
 let router = require('./app/router');
 
@@ -20,10 +21,10 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser('keyboard cats'));
+app.use(cookieParser(config.sessionSecret));
 app.use(
   session({
-    secret: 'keyboard cats',
+    secret: config.sessionSecret,
     resave: false, // don't automatically write to session store
     saveUninitialized: false, // don't save new sessions
     cookie: {

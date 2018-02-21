@@ -1,0 +1,20 @@
+{
+  "db": {
+    "username": "<DBUsername>",
+    "password": "<DBPassword>",
+    "host": "<DBHost>",
+    "port": "<DBPort>",
+    "name": "<DBName>"
+  },
+  "sessionSecret": "<RandomString>",
+  "facebook": {
+    "clientID": "<AppID>",
+    "clientSecret": "<AppSecret>",
+    "callbackURL": "/auth/facebook/callback"
+  },
+  "google": {
+    "clientID": "<AppID>",
+    "clientSecret": "<AppSecret>",
+    "callbackURL": "/auth/google/callback"
+  }
+}
