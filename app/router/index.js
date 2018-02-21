@@ -7,6 +7,8 @@ let path = require('path');
 
 let passport = require('../passport');
 
+let rootdir = { root: path.join(__dirname, '../../') };
+
 // Redirects if not logged in
 let isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) {
@@ -37,20 +39,22 @@ router.get('/login', function(req, res) {
   if (req.query.redirect) {
     req.session.return_to = req.query.redirect;
   }
-  res.sendFile(path.join('html', 'login.html'), {
-    root: path.join(__dirname, '../../public'),
-  });
+  res.sendFile(path.join('public/html/login.html'), rootdir);
   //res.redirect('/login.html?redirect=' + req.query.redirect);
 });
 
+router.get('/home', isAuthenticated, function(req, res) {
+  res.sendFile(path.join('public/html/home.html'), rootdir);
+});
+
 router.get('/profile', isAuthenticated, function(req, res) {
-  res.redirect('/profile.html');
+  res.sendFile(path.join('public/html/profile.html'), rootdir);
 });
 
 router.post(
   '/login',
   passport.authenticate('local', {
-    successRedirect: '/home.html',
+    successRedirect: '/home',
     failureRedirect: '/login',
   })
 );
@@ -70,9 +74,7 @@ router.post('/login/ajax', function(req, res, next) {
       if (err) {
         return next(err);
       }
-      let redirect = req.session.return_to
-        ? req.session.return_to
-        : '/home.html';
+      let redirect = req.session.return_to ? req.session.return_to : '/home';
       delete req.session.return_to;
       return res.send({
         success: true,
