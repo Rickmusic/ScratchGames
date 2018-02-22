@@ -33,7 +33,7 @@ let init = (sequelize, DataTypes) => {
   User.prototype.validatePassword = function(password, callback) {
     let user = this;
     if (callback) {
-      this.validatepassword(password)
+      this.validatePassword(password)
         .then(ismatch => {
           callback(null, ismatch);
         })
