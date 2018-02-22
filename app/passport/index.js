@@ -7,9 +7,9 @@ let GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 let config = require('../config');
 let db = require('../db');
-let Auth = db.schemas.auth;
-let User = db.schemas.user;
-let UserAuth = db.assoc.userauth;
+let Auth = db.models.auth;
+let User = db.models.user;
+let UserAuth = db.associations.userauth;
 
 let serializeUser = function(user, done) {
   done(null, user.id);

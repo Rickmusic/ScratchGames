@@ -38,8 +38,8 @@ sequelize
     logger.error('Database Connection Failed: ', err);
   });
 
-let Auth = sequelize.import('auth', require('./schemas/auth'));
-let User = sequelize.import('user', require('./schemas/user'));
+let Auth = sequelize.import('auth', require('./models/auth'));
+let User = sequelize.import('user', require('./models/user'));
 
 let UserAuth = User.hasOne(Auth);
 
@@ -116,11 +116,11 @@ function tablesReady() {
 
 module.exports = {
   sequelize,
-  schemas: {
+  models: {
     auth: Auth,
     user: User,
   },
-  assoc: {
+  associations: {
     userauth: UserAuth,
   },
 };
