@@ -9,7 +9,6 @@ let passport = require('../passport');
 
 let rootdir = { root: path.join(__dirname, '../../') };
 
-
 router.get('/login', function(req, res) {
   if (req.query.redirect) {
     req.session.return_to = req.query.redirect;
@@ -50,6 +49,31 @@ router.post('/login/ajax', function(req, res, next) {
     });
   })(req, res, next);
 });
+
+router.get('/auth/facebook', passport.authenticate('facebook'));
+
+router.get(
+  '/auth/facebook/callback',
+  passport.authenticate('facebook', {
+    successRedirect: '/home',
+    failureRedirect: '/login',
+  })
+);
+
+router.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: ['https://www.googleapis.com/auth/plus.login'],
+  })
+);
+
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/home');
+  }
+);
 
 router.get('/logout', function(req, res) {
   req.logout();

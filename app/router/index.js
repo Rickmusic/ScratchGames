@@ -14,10 +14,17 @@ let isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
-    //res.redirect('/login?redirect=' + req.originalUrl);
-    res.sendStatus(401);
+    res.redirect('/login?redirect=' + req.originalUrl);
   }
 };
+
+/*let isAuthenticatedAPI = function(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.sendStatus(401);
+  }
+};*/
 
 let isAuthenticatedDNE = function(req, res, next) {
   if (req.isAuthenticated()) {
@@ -58,7 +65,6 @@ router.get('/info', isAuthenticatedDNE, function(req, res) {
     emails: req.user.emails,
   });
 });
-
 
 router.use('/', auth);
 
