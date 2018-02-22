@@ -6,23 +6,40 @@ let FacebookStrategy = require('passport-facebook').Strategy;
 let GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 let config = require('../config');
-let User = require('../db').schemas.user;
+let db = require('../db');
+let Auth = db.schemas.auth;
+let User = db.schemas.user;
+let UserAuth = db.assoc.userauth;
+
+let serializeUser = function(user, done) {
+  done(null, user.id);
+};
+
+let deserializeUser = function(id, done) {
+  User.findById(id)
+    .then(user => {
+      done(null, user);
+    })
+    .catch(err => {
+      return done(err);
+    });
+};
 
 let local = new LocalStrategy(function(username, password, done) {
   process.nextTick(function() {
-    User.findOne({
+    Auth.findOne({
       where: {
         username: username.toLowerCase(),
       },
     })
-      .then(user => {
-        if (!user) {
+      .then(auth => {
+        if (!auth) {
           return done(null, false, {
             message: 'Incorrect username or password.',
           });
         }
 
-        user
+        auth
           .validatePassword(password)
           .then(isMatch => {
             if (!isMatch) {
@@ -30,7 +47,7 @@ let local = new LocalStrategy(function(username, password, done) {
                 message: 'Incorrect username or password.',
               });
             }
-            return done(null, user);
+            return deserializeUser(auth.userId, done);
           })
           .catch(err => {
             return done(err);
@@ -44,7 +61,7 @@ let local = new LocalStrategy(function(username, password, done) {
 
 let localsignup = new LocalStrategy(function(username, password, done) {
   process.nextTick(function() {
-    User.findOne({
+    Auth.findOne({
       where: {
         username: username.toLowerCase(),
       },
@@ -56,12 +73,23 @@ let localsignup = new LocalStrategy(function(username, password, done) {
           });
         }
 
-        User.create({
-          username: username,
-        }).then(user => {
-          user.updatePassword(password);
-          return done(null, user);
-        });
+        User.create(
+          {
+            auth: {
+              username: username,
+            },
+          },
+          {
+            include: [UserAuth],
+          }
+        )
+          .then(user => {
+            user.updatePassword(password);
+            return done(null, user);
+          })
+          .catch(err => {
+            done(err);
+          });
       })
       .catch(err => {
         return done(err);
@@ -77,20 +105,34 @@ let facebook = new FacebookStrategy(
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function() {
-      User.findOrCreate({
+      Auth.findOne({
         where: {
           facebookId: profile.id,
         },
-        defaults: {
-          state: 'active',
-          displayName: profile.displayName,
-        },
       })
-        .spread((user, created) => {
-          if (created) {
-            console.log('Created user: ' + user);
+        .then(auth => {
+          if (auth) {
+            return deserializeUser(auth.userId, done);
           }
-          done(null, user);
+
+          User.create(
+            {
+              displayName: profile.displayName,
+              auth: {
+                facebookId: profile.id,
+                state: 'active',
+              },
+            },
+            {
+              include: [UserAuth],
+            }
+          )
+            .then(user => {
+              return done(null, user);
+            })
+            .catch(err => {
+              return done(err);
+            });
         })
         .catch(err => {
           return done(err);
@@ -107,20 +149,34 @@ let google = new GoogleStrategy(
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function() {
-      User.findOrCreate({
+      Auth.findOne({
         where: {
           googleId: profile.id,
         },
-        defaults: {
-          state: 'active',
-          displayName: profile.displayName,
-        },
       })
-        .spread((user, created) => {
-          if (created) {
-            console.log('Created user: ' + user);
+        .then(auth => {
+          if (auth) {
+            return deserializeUser(auth.userId, done);
           }
-          done(null, user);
+
+          User.create(
+            {
+              displayName: profile.displayName,
+              auth: {
+                googleId: profile.id,
+                state: 'active',
+              },
+            },
+            {
+              include: [UserAuth],
+            }
+          )
+            .then(user => {
+              return done(null, user);
+            })
+            .catch(err => {
+              return done(err);
+            });
         })
         .catch(err => {
           return done(err);
@@ -130,19 +186,8 @@ let google = new GoogleStrategy(
 );
 
 let init = function() {
-  passport.serializeUser(function(user, done) {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser(function(id, done) {
-    User.findById(id)
-      .then(user => {
-        done(null, user);
-      })
-      .catch(err => {
-        return done(err);
-      });
-  });
+  passport.serializeUser(serializeUser);
+  passport.deserializeUser(deserializeUser);
 
   passport.use(local);
   passport.use('local-signup', localsignup);

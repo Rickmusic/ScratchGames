@@ -1,22 +1,13 @@
 'use strict';
 
-let bcrypt = require('bcrypt-nodejs');
-
 let init = (sequelize, DataTypes) => {
   let User = sequelize.define(
     'user',
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
-      },
-      username: {
-        type: DataTypes.STRING,
-        unique: true,
-      },
-      password: {
-        type: DataTypes.STRING,
+        defaultValue: DataTypes.UUIDV4,
       },
       firstName: {
         type: DataTypes.STRING,
@@ -26,18 +17,6 @@ let init = (sequelize, DataTypes) => {
       },
       displayName: {
         type: DataTypes.STRING,
-      },
-      googleId: {
-        type: DataTypes.STRING,
-      },
-      facebookId: {
-        type: DataTypes.STRING,
-      },
-      state: {
-        type: DataTypes.ENUM,
-        values: ['active', 'pending', 'deleted'],
-        allowNull: false,
-        defaultValue: 'pending',
       },
     },
     {
@@ -52,10 +31,11 @@ let init = (sequelize, DataTypes) => {
   );
 
   User.prototype.validatePassword = function(password, callback) {
+    let user = this;
     if (callback) {
-      this.validatePassword(password)
-        .then(isMatch => {
-          callback(null, isMatch);
+      this.validatepassword(password)
+        .then(ismatch => {
+          callback(null, ismatch);
         })
         .catch(err => {
           callback(err);
@@ -64,10 +44,21 @@ let init = (sequelize, DataTypes) => {
     }
 
     return new Promise((fulfill, reject) => {
-      bcrypt.compare(password, this.password, function(err, isMatch) {
-        if (err) return reject(err);
-        return fulfill(isMatch);
-      });
+      user
+        .getAuth()
+        .then(auth => {
+          auth
+            .validatePassword(password)
+            .then(ismatch => {
+              fulfill(ismatch);
+            })
+            .catch(err => {
+              reject(err);
+            });
+        })
+        .catch(err => {
+          reject(err);
+        });
     });
   };
 
@@ -76,7 +67,7 @@ let init = (sequelize, DataTypes) => {
     if (callback) {
       this.updatePassword(password)
         .then(() => {
-          callback();
+          callback(null);
         })
         .catch(err => {
           callback(err);
@@ -85,49 +76,23 @@ let init = (sequelize, DataTypes) => {
     }
 
     return new Promise((fulfill, reject) => {
-      bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password, salt, null, function(err, hash) {
-          if (err) return reject(err);
-          user
-            .update({ password: hash })
+      user
+        .getAuth()
+        .then(auth => {
+          auth
+            .updatePassword(password)
             .then(() => {
               fulfill();
             })
             .catch(err => {
               reject(err);
             });
+        })
+        .catch(err => {
+          reject(err);
         });
-      });
     });
   };
-
-  User.sync({ force: true }) // Create table if it doesn't exist
-    .then(() => {
-      User.create({ username: 'jack', displayName: 'Jack' })
-        .then(user => {
-          user
-            .updatePassword('secret')
-            .then(() => {
-              console.log('Jack Updated');
-            })
-            .catch(err => {
-              console.log('Jack Error ' + err);
-            });
-        })
-        .catch(err => {
-          console.log('MySQL Error (@User create jack):' + err);
-        });
-      User.create({ username: 'jill', displayName: 'Jill' })
-        .then(user => {
-          user.updatePassword('birthday');
-        })
-        .catch(err => {
-          console.log('MySQL Error (@User create jill):' + err);
-        });
-    })
-    .catch(err => {
-      console.log('MySQL Error (@User.sync): ' + err);
-    });
 
   return User;
 };
