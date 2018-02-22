@@ -8,6 +8,8 @@ let cookieParser = require('cookie-parser');
 let path = require('path');
 
 let config = require('./app/config');
+let morgan = require('./app/log/morgan');
+let winston = require('./app/log/winston'); // All other files can just require('winston') once configured
 let passport = require('./app/passport');
 let router = require('./app/router');
 
@@ -40,8 +42,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+app.use(morgan.file);
+app.use(morgan.console); // Display 400 and 500 response codes to console
+
 app.use('/', router);
 
 app.listen(port, function() {
-  console.log('Server listening at port %d', port);
+  winston.info('Server listening at port %d', port);
 });
