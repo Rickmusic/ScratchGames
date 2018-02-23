@@ -1,6 +1,6 @@
 'use strict';
 
-let bcrypt = require('bcrypt-nodejs');
+let bcrypt = require('../../bcrypt');
 
 let init = (sequelize, DataTypes) => {
   let Auth = sequelize.define(
@@ -10,9 +10,7 @@ let init = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true,
       },
-      password: {
-        type: DataTypes.STRING,
-      },
+      password: { type: DataTypes.STRING },
       googleId: {
         type: DataTypes.STRING,
         unique: true,
@@ -38,20 +36,16 @@ let init = (sequelize, DataTypes) => {
   Auth.prototype.validatePassword = function(password, callback) {
     if (callback) {
       this.validatePassword(password)
-        .then(isMatch => {
-          callback(null, isMatch);
-        })
-        .catch(err => {
-          callback(err);
-        });
+        .then(isMatch => callback(null, isMatch))
+        .catch(err => callback(err));
       return;
     }
 
     return new Promise((fulfill, reject) => {
-      bcrypt.compare(password, this.password, function(err, isMatch) {
-        if (err) return reject(err);
-        return fulfill(isMatch);
-      });
+      bcrypt
+        .compare(password, this.password, callback)
+        .then(isMatch => fulfill(isMatch))
+        .catch(err => reject(err));
     });
   };
 
@@ -59,29 +53,21 @@ let init = (sequelize, DataTypes) => {
     let auth = this;
     if (callback) {
       this.updatePassword(password)
-        .then(() => {
-          callback();
-        })
-        .catch(err => {
-          callback(err);
-        });
+        .then(() => callback(null))
+        .catch(err => callback(err));
       return;
     }
 
     return new Promise((fulfill, reject) => {
-      bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash(password, salt, null, function(err, hash) {
-          if (err) return reject(err);
+      bcrypt
+        .hash(password)
+        .then(hash => {
           auth
             .update({ password: hash })
-            .then(() => {
-              fulfill();
-            })
-            .catch(err => {
-              reject(err);
-            });
-        });
-      });
+            .then(() => fulfill())
+            .catch(err => reject(err));
+        })
+        .catch(err => reject(err));
     });
   };
 

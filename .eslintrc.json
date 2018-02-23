@@ -17,10 +17,19 @@
   "rules": {
     "indent": ["warn", 2],
     "linebreak-style": ["warn", "unix"],
-    "quotes": ["error", "single"],
+    "quotes": ["warn", "single"],
     "semi": ["warn", "always"],
     "no-else-return": "warn",
     "consistent-return": "warn",
-    "no-console": "off"
+    "no-console": "off",
+    "no-extra-parens": "warn",
+    "curly": ["warn", "multi-or-nest"],
+    "arrow-body-style": ["warn", "as-needed"],
+    "no-var": "warn",
+    "arrow-spacing": "warn",
+    "function-paren-newline": ["warn", "multiline"],
+    "implicit-arrow-linebreak": ["warn", "beside"],
+    "brace-style": ["warn", "stroustrup", { "allowSingleLine": true }],
+    "object-curly-newline": ["warn", { "multiline": true }]
   }
 }

@@ -9,15 +9,9 @@ let init = (sequelize, DataTypes) => {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
       },
-      firstName: {
-        type: DataTypes.STRING,
-      },
-      lastName: {
-        type: DataTypes.STRING,
-      },
-      displayName: {
-        type: DataTypes.STRING,
-      },
+      firstName: { type: DataTypes.STRING },
+      lastName: { type: DataTypes.STRING },
+      displayName: { type: DataTypes.STRING },
     },
     {
       getterMethods: {
@@ -34,12 +28,8 @@ let init = (sequelize, DataTypes) => {
     let user = this;
     if (callback) {
       this.validatePassword(password)
-        .then(ismatch => {
-          callback(null, ismatch);
-        })
-        .catch(err => {
-          callback(err);
-        });
+        .then(isMatch => callback(null, isMatch))
+        .catch(err => callback(err));
       return;
     }
 
@@ -49,16 +39,10 @@ let init = (sequelize, DataTypes) => {
         .then(auth => {
           auth
             .validatePassword(password)
-            .then(ismatch => {
-              fulfill(ismatch);
-            })
-            .catch(err => {
-              reject(err);
-            });
+            .then(isMatch => fulfill(isMatch))
+            .catch(err => reject(err));
         })
-        .catch(err => {
-          reject(err);
-        });
+        .catch(err => reject(err));
     });
   };
 
@@ -66,12 +50,8 @@ let init = (sequelize, DataTypes) => {
     let user = this;
     if (callback) {
       this.updatePassword(password)
-        .then(() => {
-          callback(null);
-        })
-        .catch(err => {
-          callback(err);
-        });
+        .then(() => callback(null))
+        .catch(err => callback(err));
       return;
     }
 
@@ -81,16 +61,10 @@ let init = (sequelize, DataTypes) => {
         .then(auth => {
           auth
             .updatePassword(password)
-            .then(() => {
-              fulfill();
-            })
-            .catch(err => {
-              reject(err);
-            });
+            .then(() => fulfill())
+            .catch(err => reject(err));
         })
-        .catch(err => {
-          reject(err);
-        });
+        .catch(err => reject(err));
     });
   };
 

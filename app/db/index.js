@@ -19,24 +19,16 @@ let sequelize = new Sequelize({
     acquire: 30000,
     idle: 10000,
   },
-  logging: msg => {
-    logger.verbose(msg);
-  },
+  logging: msg => logger.verbose(msg),
 });
 
 sequelize
-  .authenticate({
-    logging: msg => {
-      logger.verbose(msg);
-    },
-  })
+  .authenticate()
   .then(() => {
     logger.info('Database Connection Established');
     initTables();
   })
-  .catch(err => {
-    logger.error('Database Connection Failed: ', err);
-  });
+  .catch(err => logger.error('Database Connection Failed: ', err));
 
 let Auth = sequelize.import('auth', require('./models/auth'));
 let User = sequelize.import('user', require('./models/user'));
@@ -54,21 +46,13 @@ function initTables() {
                 .then(() => {
                   tablesReady();
                 })
-                .catch(err => {
-                  logger.error('At Sync Auth: ' + err);
-                });
+                .catch(err => logger.error('At Sync Auth: ' + err));
             })
-            .catch(err => {
-              logger.error('At Sync User: ' + err);
-            });
+            .catch(err => logger.error('At Sync User: ' + err));
         })
-        .catch(err => {
-          logger.error('At Drop User: ' + err);
-        });
+        .catch(err => logger.error('At Drop User: ' + err));
     })
-    .catch(err => {
-      logger.error('At Drop Auth: ' + err);
-    });
+    .catch(err => logger.error('At Drop Auth: ' + err));
 }
 
 function tablesReady() {
@@ -76,42 +60,30 @@ function tablesReady() {
   User.create(
     {
       displayName: 'Jack',
-      auth: {
-        username: 'jack',
-      },
+      auth: { username: 'jack' },
     },
-    {
-      include: [UserAuth],
-    }
+    { include: [UserAuth] }
   )
     .then(user => {
-      user.updatePassword('secret').catch(err => {
-        logger.error('At Set Password jack: ' + err);
-      });
+      user
+        .updatePassword('secret')
+        .catch(err => logger.error('At Set Password jack: ' + err));
     })
-    .catch(err => {
-      logger.error('At User Create jack: ' + err);
-    });
+    .catch(err => logger.error('At User Create jack: ' + err));
 
   User.create(
     {
       displayName: 'Jill',
-      auth: {
-        username: 'jill',
-      },
+      auth: { username: 'jill' },
     },
-    {
-      include: [UserAuth],
-    }
+    { include: [UserAuth] }
   )
     .then(user => {
-      user.updatePassword('birthday').catch(err => {
-        logger.error('At Set Password jill: ' + err);
-      });
+      user
+        .updatePassword('birthday')
+        .catch(err => logger.error('At Set Password jill: ' + err));
     })
-    .catch(err => {
-      logger.error('At User Create jill: ' + err);
-    });
+    .catch(err => logger.error('At User Create jill: ' + err));
 }
 
 module.exports = {
@@ -120,7 +92,5 @@ module.exports = {
     auth: Auth,
     user: User,
   },
-  associations: {
-    userauth: UserAuth,
-  },
+  associations: { userauth: UserAuth },
 };
