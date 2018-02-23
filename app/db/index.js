@@ -1,6 +1,7 @@
 'use strict';
 
 let Sequelize = require('sequelize');
+let logger = require('winston').loggers.get('sequelize');
 
 let config = require('../config');
 
@@ -18,22 +19,108 @@ let sequelize = new Sequelize({
     acquire: 30000,
     idle: 10000,
   },
-  /* logging: false, */
-  logging: console.log,
+  logging: msg => {
+    logger.verbose(msg);
+  },
 });
 
 sequelize
-  .authenticate()
+  .authenticate({
+    logging: msg => {
+      logger.verbose(msg);
+    },
+  })
   .then(() => {
-    console.log('MySQL connection has been established successfully.');
+    logger.info('Database Connection Established');
+    initTables();
   })
   .catch(err => {
-    console.error('Unable to connect to the MySQL database:', err);
+    logger.error('Database Connection Failed: ', err);
   });
+
+let Auth = sequelize.import('auth', require('./schemas/auth'));
+let User = sequelize.import('user', require('./schemas/user'));
+
+let UserAuth = User.hasOne(Auth);
+
+function initTables() {
+  Auth.drop() // Drop the table, if it exists
+    .then(() => {
+      User.drop()
+        .then(() => {
+          User.sync() // Create table if it doesn't exist
+            .then(() => {
+              Auth.sync()
+                .then(() => {
+                  tablesReady();
+                })
+                .catch(err => {
+                  logger.error('At Sync Auth: ' + err);
+                });
+            })
+            .catch(err => {
+              logger.error('At Sync User: ' + err);
+            });
+        })
+        .catch(err => {
+          logger.error('At Drop User: ' + err);
+        });
+    })
+    .catch(err => {
+      logger.error('At Drop Auth: ' + err);
+    });
+}
+
+function tablesReady() {
+  logger.info('Database Tables are Ready');
+  User.create(
+    {
+      displayName: 'Jack',
+      auth: {
+        username: 'jack',
+      },
+    },
+    {
+      include: [UserAuth],
+    }
+  )
+    .then(user => {
+      user.updatePassword('secret').catch(err => {
+        logger.error('At Set Password jack: ' + err);
+      });
+    })
+    .catch(err => {
+      logger.error('At User Create jack: ' + err);
+    });
+
+  User.create(
+    {
+      displayName: 'Jill',
+      auth: {
+        username: 'jill',
+      },
+    },
+    {
+      include: [UserAuth],
+    }
+  )
+    .then(user => {
+      user.updatePassword('birthday').catch(err => {
+        logger.error('At Set Password jill: ' + err);
+      });
+    })
+    .catch(err => {
+      logger.error('At User Create jill: ' + err);
+    });
+}
 
 module.exports = {
   sequelize,
   schemas: {
-    user: sequelize.import('user', require('./schemas/user')),
+    auth: Auth,
+    user: User,
+  },
+  assoc: {
+    userauth: UserAuth,
   },
 };
