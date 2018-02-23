@@ -23,9 +23,11 @@ The majority of console messages will either be `info`, `warn`, or `error`.
 These are different log levels provided by winston, and you can read more about them [here](https://github.com/winstonjs/winston#logging-levels).
 
 All log files map to a console log label (shown in brackets after the message level):
+
 - `access.log` -> `[access]`
 - `database.log` -> `[sequelize]`
 - `exception.log` -> no label
+
 Although morgan is the engine for the access log, it will pass messages for console to winston allowing consistent console output.
 
 The log files may contain more messages than is being displayed in the console.
