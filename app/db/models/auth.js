@@ -43,7 +43,7 @@ let init = (sequelize, DataTypes) => {
 
     return new Promise((fulfill, reject) => {
       bcrypt
-        .compare(password, this.password, callback)
+        .compare(password, this.password)
         .then(isMatch => fulfill(isMatch))
         .catch(err => reject(err));
     });
