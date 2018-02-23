@@ -11,14 +11,18 @@ let init = (sequelize, DataTypes) => {
         unique: true,
       },
       password: { type: DataTypes.STRING },
-      googleId: {
-        type: DataTypes.STRING,
-        unique: true,
-      },
       facebookId: {
         type: DataTypes.STRING,
         unique: true,
       },
+      facebookToken: { type: DataTypes.STRING },
+      facebookName: { type: DataTypes.STRING },
+      googleId: {
+        type: DataTypes.STRING,
+        unique: true,
+      },
+      googleToken: { type: DataTypes.STRING },
+      googleName: { type: DataTypes.STRING },
       state: {
         type: DataTypes.ENUM,
         values: ['active', 'pending', 'deleted'],

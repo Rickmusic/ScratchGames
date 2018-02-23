@@ -17,21 +17,13 @@ let serializeUser = function(user, done) {
 
 let deserializeUser = function(id, done) {
   User.findById(id)
-    .then(user => {
-      done(null, user);
-    })
-    .catch(err => {
-      return done(err);
-    });
+    .then(user => done(null, user))
+    .catch(err => done(err));
 };
 
 let local = new LocalStrategy(function(username, password, done) {
   process.nextTick(function() {
-    Auth.findOne({
-      where: {
-        username: username.toLowerCase(),
-      },
-    })
+    Auth.findOne({ where: { username: username.toLowerCase() } })
       .then(auth => {
         if (!auth) {
           return done(null, false, {
@@ -47,53 +39,32 @@ let local = new LocalStrategy(function(username, password, done) {
                 message: 'Incorrect username or password.',
               });
             }
+
             return deserializeUser(auth.userId, done);
           })
-          .catch(err => {
-            return done(err);
-          });
+          .catch(err => done(err));
       })
-      .catch(err => {
-        return done(err);
-      });
+      .catch(err => done(err));
   });
 });
 
 let localsignup = new LocalStrategy(function(username, password, done) {
   process.nextTick(function() {
-    Auth.findOne({
-      where: {
-        username: username.toLowerCase(),
-      },
-    })
+    Auth.findOne({ where: { username: username.toLowerCase() } })
       .then(user => {
-        if (user) {
-          return done(null, false, {
-            message: 'Username already exists.',
-          });
-        }
+        if (user)
+          return done(null, false, { message: 'Username already exists.' });
 
-        User.create(
-          {
-            auth: {
-              username: username,
-            },
-          },
-          {
-            include: [UserAuth],
-          }
-        )
+        User.create({ auth: { username: username } }, { include: [UserAuth] })
           .then(user => {
-            user.updatePassword(password);
-            return done(null, user);
+            user
+              .updatePassword(password)
+              .then(() => done(null, user))
+              .catch(err => done(err));
           })
-          .catch(err => {
-            done(err);
-          });
+          .catch(err => done(err));
       })
-      .catch(err => {
-        return done(err);
-      });
+      .catch(err => done(err));
   });
 });
 
@@ -105,38 +76,26 @@ let facebook = new FacebookStrategy(
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function() {
-      Auth.findOne({
-        where: {
-          facebookId: profile.id,
-        },
-      })
+      Auth.findOne({ where: { facebookId: profile.id } })
         .then(auth => {
-          if (auth) {
-            return deserializeUser(auth.userId, done);
-          }
+          if (auth) return deserializeUser(auth.userId, done);
 
           User.create(
             {
               displayName: profile.displayName,
               auth: {
                 facebookId: profile.id,
+                facebookToken: accessToken,
+                facebookName: profile.displayName,
                 state: 'active',
               },
             },
-            {
-              include: [UserAuth],
-            }
+            { include: [UserAuth] }
           )
-            .then(user => {
-              return done(null, user);
-            })
-            .catch(err => {
-              return done(err);
-            });
+            .then(user => done(null, user))
+            .catch(err => done(err));
         })
-        .catch(err => {
-          return done(err);
-        });
+        .catch(err => done(err));
     });
   }
 );
@@ -149,38 +108,26 @@ let google = new GoogleStrategy(
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function() {
-      Auth.findOne({
-        where: {
-          googleId: profile.id,
-        },
-      })
+      Auth.findOne({ where: { googleId: profile.id } })
         .then(auth => {
-          if (auth) {
-            return deserializeUser(auth.userId, done);
-          }
+          if (auth) return deserializeUser(auth.userId, done);
 
           User.create(
             {
               displayName: profile.displayName,
               auth: {
                 googleId: profile.id,
+                googleToken: accessToken,
+                googleName: profile.displayName,
                 state: 'active',
               },
             },
-            {
-              include: [UserAuth],
-            }
+            { include: [UserAuth] }
           )
-            .then(user => {
-              return done(null, user);
-            })
-            .catch(err => {
-              return done(err);
-            });
+            .then(user => done(null, user))
+            .catch(err => done(err));
         })
-        .catch(err => {
-          return done(err);
-        });
+        .catch(err => done(err));
     });
   }
 );

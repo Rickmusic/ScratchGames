@@ -23,7 +23,6 @@
     "consistent-return": "warn",
     "no-console": "off",
     "no-extra-parens": "warn",
-    "curly": ["warn", "multi-or-nest"],
     "arrow-body-style": ["warn", "as-needed"],
     "no-var": "warn",
     "arrow-spacing": "warn",
