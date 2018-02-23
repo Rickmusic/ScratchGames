@@ -2,7 +2,8 @@
 
 Our system currently makes use of two loggers: [`morgan`](https://github.com/expressjs/morgan) and [`winston`](https://github.com/winstonjs/winston)
 
-##Log files:
+Log files:
+-----------
 
 - `access.log`: logs the requests made by clients to the node server (managed by morgan)
 - `database.log`: logs the database queries and any database related info and error messages (managed by winston)
@@ -11,7 +12,8 @@ Our system currently makes use of two loggers: [`morgan`](https://github.com/exp
 Please be aware that all files manages by morgan do not have a filesize cap. 
 Winston log files are configured with a max file size of 2MB.
 
-##Console Ouput
+Console Ouput:
+--------------
 
 Console output is done through winston, although there may be cases where npm packeges call `console.log`.
 
