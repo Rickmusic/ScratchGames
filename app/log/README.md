@@ -10,7 +10,9 @@ Log files:
 - `exception.log`: logs any Unhandled Exceptions that get thrown (managed by winston)
 
 Please be aware that all files manages by morgan do not have a filesize cap. 
-Winston log files are configured with a max file size of 2MB.
+
+Winston log files are configured with a max file size of 1MB.
+There may be up to five of these files (with a number as a suffix); the file without a suffix is the newest. 
 
 Console Ouput:
 --------------

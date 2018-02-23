@@ -25,8 +25,9 @@ winston.loggers.add('exception', {
     humanReadableUnhandledException: true,
     json: false,
     filename: path.join(__dirname, 'exception.log'),
-    maxsize: 2000000, // 2 MB
-    maxFiles: 1,
+    maxsize: 1000000, // 1 MB
+    maxFiles: 5,
+    tailable: true, // rotate so non-suffix is newest
   },
 });
 
@@ -51,8 +52,9 @@ winston.loggers.add('sequelize', {
     timestamp: true,
     json: false,
     filename: path.join(__dirname, 'database.log'),
-    maxsize: 2000000, // 2 MB
-    maxFiles: 1,
+    maxsize: 1000000, // 1 MB
+    maxFiles: 5,
+    tailable: true, // rotate so non-suffix is newest
   },
 });
 
