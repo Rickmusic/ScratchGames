@@ -67,6 +67,7 @@ function tablesReady() {
     .then(user => {
       user
         .updatePassword('secret')
+        .then(() => logger.info('User jack Created'))
         .catch(err => logger.error('At Set Password jack: ' + err));
     })
     .catch(err => logger.error('At User Create jack: ' + err));
@@ -81,6 +82,7 @@ function tablesReady() {
     .then(user => {
       user
         .updatePassword('birthday')
+        .then(() => logger.info('User jill Created'))
         .catch(err => logger.error('At Set Password jill: ' + err));
     })
     .catch(err => logger.error('At User Create jill: ' + err));
