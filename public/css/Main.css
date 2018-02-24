@@ -52,6 +52,9 @@ input[type=text]{
 input[type=password]{
     font-size: 1.5em;
 }
+input[type=email]{
+    font-size: 1.5em;
+}
 
 input[type=submit] {
     font-size: 1.5em;

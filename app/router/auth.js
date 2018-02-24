@@ -6,6 +6,8 @@ let router = express.Router();
 let path = require('path');
 
 let passport = require('../passport');
+let mailer = require('../mailer');
+let logger = require('winston');
 
 let rootdir = { root: path.join(__dirname, '../../') };
 
@@ -14,7 +16,6 @@ router.get('/login', function(req, res) {
     req.session.return_to = req.query.redirect;
   }
   res.sendFile(path.join('public/html/login.html'), rootdir);
-  //res.redirect('/login.html?redirect=' + req.query.redirect);
 });
 
 router.post(
@@ -49,6 +50,43 @@ router.post('/login/ajax', function(req, res, next) {
     });
   })(req, res, next);
 });
+
+router.post(
+  '/signup',
+  passport.authenticate('local-signup', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/home');
+
+    /*rand = Math.floor(Math.random() * 100 + 54);
+    host = req.get('host');
+    link = 'http://' + req.get('host') + '/verify?id=' + rand;*/
+    mailer.sendVerification(
+      req.body.email,
+      req.user.displayName,
+      '1234',
+      function(err) {
+        console.log(err);
+      }
+    );
+  }
+);
+
+/*router.get('/verify', function(req, res) {
+  console.log(req.protocol + ':/' + req.get('host'));
+  if (req.protocol + '://' + req.get('host') == 'http://' + host) {
+    console.log('Domain is matched. Information is from Authentic email');
+    if (req.query.id == rand) {
+      console.log('email is verified');
+      res.end('<h1>Email ' + mailOptions.to + ' is been Successfully verified');
+    } else {
+      console.log('email is not verified');
+      res.end('<h1>Bad Request</h1>');
+    }
+  }
+ else {
+    res.end('<h1>Request is from unknown source');
+  }
+});*/
 
 router.get('/auth/facebook', passport.authenticate('facebook'));
 

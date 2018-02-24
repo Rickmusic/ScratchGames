@@ -55,7 +55,13 @@ let localsignup = new LocalStrategy(function(username, password, done) {
         if (user)
           return done(null, false, { message: 'Username already exists.' });
 
-        User.create({ auth: { username: username } }, { include: [UserAuth] })
+        User.create(
+          {
+            displayName: username,
+            auth: { username: username.toLowerCase() },
+          },
+          { include: [UserAuth] }
+        )
           .then(user => {
             user
               .updatePassword(password)

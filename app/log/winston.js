@@ -53,6 +53,21 @@ winston.loggers.add('morgan-file', {
   },
 });
 
+// Seperate Logger for Passport/Authentication
+winston.loggers.add('auth', {
+  console: {
+    level: 'info',
+    colorize: true,
+    label: 'auth',
+  },
+  file: {
+    level: 'verbose',
+    timestamp: true,
+    json: false,
+    filename: path.join(__dirname, 'authorization.log'),
+  },
+});
+
 // Seperate Logger for Database/Sequelize
 winston.loggers.add('sequelize', {
   console: {
