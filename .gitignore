@@ -65,6 +65,7 @@ typings/
 app/config/config.json
 
 # App Logs
+app/log/access.log*
 app/log/database.log*
 app/log/exception.log*
 

@@ -1,27 +1,31 @@
 'use strict';
 
 let morgan = require('morgan');
-let path = require('path');
-let fs = require('fs');
 
-let winston = require('./winston').loggers.get('morgan');
-let winstonStream = {
+let winston = require('./winston');
+
+let fileLog = winston.loggers.get('morgan-file');
+let fileStream = {
   write: function(message, encoding) {
-    winston.debug(encoding);
-    winston.warn(message);
+    fileLog.debug(encoding);
+    fileLog.verbose(message);
   },
 };
 
-let accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {
-  flags: 'a',
-});
+let consoleLog = winston.loggers.get('morgan-console');
+let consoleStream = {
+  write: function(message, encoding) {
+    consoleLog.debug(encoding);
+    consoleLog.warn(message);
+  },
+};
 
 module.exports = {
-  file: morgan('combined', { stream: accessLogStream }),
+  file: morgan('combined', { stream: fileStream }),
   console: morgan('dev', {
     skip: function(req, res) {
       return res.statusCode < 400;
     },
-    stream: winstonStream,
+    stream: consoleStream,
   }),
 };
