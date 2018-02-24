@@ -11,5 +11,5 @@ To Run:
 * Make sure the Database is running (see [Database Readme](app/db/))
 * Open browser to localhost/80
 
-Node logs are located at `app/log`.
+Node logs are located at [`app/log`](app/log/).
 Check Nginx docs for Nginx log location.
