@@ -31,12 +31,25 @@ winston.loggers.add('exception', {
   },
 });
 
-// Handel Morgan Console printing
-winston.loggers.add('morgan', {
+// Handel Morgan Console and File logging
+winston.loggers.add('morgan-console', {
   console: {
     level: 'info',
     colorize: true,
     label: 'access',
+  },
+});
+winston.loggers.add('morgan-file', {
+  console: { silent: true },
+  file: {
+    level: 'verbose',
+    timestamp: false, // Mogan adds timestamp
+    showLevel: false,
+    json: false,
+    filename: path.join(__dirname, 'access.log'),
+    maxsize: 1000000, // 1 MB
+    maxFiles: 5,
+    tailable: true, // rotate so non-suffix is newest
   },
 });
 
