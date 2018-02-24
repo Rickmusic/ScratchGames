@@ -6,7 +6,15 @@
     "port": "<DBPort>",
     "name": "<DBName>"
   },
-  "sessionSecret": "<RandomString>",
+  "mailer": {
+    "service": "<nodemailerService>",
+    "address": "<EmailFromAddress>",
+    "username": "<EmailUsername>",
+    "password": "<EmailPassword>"
+  },
+  "session": {
+    "secret": "<RandomString>"
+  },
   "facebook": {
     "clientID": "<AppID>",
     "clientSecret": "<AppSecret>",

@@ -23,10 +23,10 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser(config.sessionSecret));
+app.use(cookieParser(config.session.secret));
 app.use(
   session({
-    secret: config.sessionSecret,
+    secret: config.session.secret,
     resave: false, // don't automatically write to session store
     saveUninitialized: false, // don't save new sessions
     cookie: {

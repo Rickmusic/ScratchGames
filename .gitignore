@@ -76,6 +76,12 @@ nginx/conf/*
 # Intellij IDE
 .idea/*
 
+# Emacs/Vim Temp Files
+*~
 *.swp
+
+# Local Vim Config
 .vimrc
+
+# Todo Files
 TODO
