@@ -31,28 +31,30 @@ sequelize
   .catch(err => logger.error('Database Connection Failed: ', err));
 
 let Auth = sequelize.import('auth', require('./models/auth'));
+let Token = sequelize.import('toekn', require('./models/token'));
 let User = sequelize.import('user', require('./models/user'));
 
 let UserAuth = User.hasOne(Auth);
+let TokenUser = Token.belongsTo(User);
 
 function initTables() {
-  Auth.drop() // Drop the table, if it exists
+  Promise.all([Auth.drop(), Token.drop()]) // Drop the tables, if they exists
     .then(() => {
-      User.drop()
+      User.drop() // Ordered for foreign key constraints on add/drop of tables
         .then(() => {
           User.sync() // Create table if it doesn't exist
             .then(() => {
-              Auth.sync()
+              Promise.all([Auth.sync(), Token.sync()])
                 .then(() => {
                   tablesReady();
                 })
-                .catch(err => logger.error('At Sync Auth: ' + err));
+                .catch(err => logger.error('At Sync Auth/Token: ' + err));
             })
             .catch(err => logger.error('At Sync User: ' + err));
         })
         .catch(err => logger.error('At Drop User: ' + err));
     })
-    .catch(err => logger.error('At Drop Auth: ' + err));
+    .catch(err => logger.error('At Drop Auth/Token: ' + err));
 }
 
 function tablesReady() {
@@ -69,6 +71,9 @@ function tablesReady() {
         .updatePassword('secret')
         .then(() => logger.info('User jack Created'))
         .catch(err => logger.error('At Set Password jack: ' + err));
+      Token.createVerifyToken(user)
+        .then(token => logger.info('Token jack Created: ' + token))
+        .catch(err => logger.error('At Create Token jack: ' + err));
     })
     .catch(err => logger.error('At User Create jack: ' + err));
 
@@ -94,5 +99,5 @@ module.exports = {
     auth: Auth,
     user: User,
   },
-  associations: { userauth: UserAuth },
+  associations: { userauth: UserAuth, tokenuser: TokenUser },
 };

@@ -26,7 +26,6 @@
     "arrow-body-style": ["warn", "as-needed"],
     "no-var": "warn",
     "arrow-spacing": "warn",
-    "implicit-arrow-linebreak": ["warn", "beside"],
     "brace-style": ["warn", "stroustrup", { "allowSingleLine": true }],
     "object-curly-newline": ["warn", { "multiline": true }]
   }
