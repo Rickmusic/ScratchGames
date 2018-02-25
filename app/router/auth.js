@@ -65,7 +65,7 @@ router.post(
       req.body.email,
       req.user.displayName,
       '1234',
-      function(err, info) {
+      function(err) {
         if (err)
           return logger.warn(
             'Signup ' +
@@ -73,9 +73,7 @@ router.post(
               ' - Failed to Send Verification Email'
           );
         return logger.info(
-          'Signup ' +
-            req.user.displayName +
-            ' - Verification Email Sent'
+          'Signup ' + req.user.displayName + ' - Verification Email Sent'
         );
       }
     );
@@ -101,7 +99,7 @@ router.post('/signup/ajax', function(req, res, next) {
         req.body.email,
         req.user.displayName,
         '1234',
-        function(err, info) {
+        function(err) {
           if (err)
             return logger.warn(
               'Signup ' +
@@ -109,9 +107,7 @@ router.post('/signup/ajax', function(req, res, next) {
                 ' - Failed to Send Verification Email'
             );
           return logger.info(
-            'Signup ' +
-              req.user.displayName +
-              ' - Verification Email Sent'
+            'Signup ' + req.user.displayName + ' - Verification Email Sent'
           );
         }
       );

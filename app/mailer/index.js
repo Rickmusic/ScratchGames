@@ -24,7 +24,7 @@ let sendVerification = function(useremail, username, token, callback) {
     },
     (error, info) => {
       if (error) {
-        logger.warn('Verification Message Error: ' + error);
+        logger.verbose('Verification Message Error: ' + error);
         return callback(error);
       }
       logger.verbose(
