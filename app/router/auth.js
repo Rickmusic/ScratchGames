@@ -70,14 +70,12 @@ router.post(
           return logger.warn(
             'Signup ' +
               req.user.displayName +
-              ' - Failed to Send Verification Email: ' +
-              err
+              ' - Failed to Send Verification Email'
           );
         return logger.info(
           'Signup ' +
             req.user.displayName +
-            ' - Verification Email Sent: ' +
-            info
+            ' - Verification Email Sent'
         );
       }
     );
