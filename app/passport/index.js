@@ -6,6 +6,7 @@ let FacebookStrategy = require('passport-facebook').Strategy;
 let GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 let config = require('../config');
+let logger = require('winston').loggers.get('auth');
 let db = require('../db');
 let Auth = db.models.auth;
 let User = db.models.user;
@@ -23,9 +24,12 @@ let deserializeUser = function(id, done) {
 
 let local = new LocalStrategy(function(username, password, done) {
   process.nextTick(function() {
+    logger.verbose('Login ' + username);
+    logger.silly('user: ' + username + ' pwd: ' + password);
     Auth.findOne({ where: { username: username.toLowerCase() } })
       .then(auth => {
         if (!auth) {
+          logger.warn('Login ' + username + ' Failed: User not found');
           return done(null, false, {
             message: 'Incorrect username or password.',
           });
@@ -35,11 +39,13 @@ let local = new LocalStrategy(function(username, password, done) {
           .validatePassword(password)
           .then(isMatch => {
             if (!isMatch) {
+              logger.warn('Login ' + username + ' Failed: Incorrect Password');
               return done(null, false, {
                 message: 'Incorrect username or password.',
               });
             }
 
+            logger.debug('Login ' + username + ': Correct Password');
             return deserializeUser(auth.userId, done);
           })
           .catch(err => done(err));
@@ -50,10 +56,17 @@ let local = new LocalStrategy(function(username, password, done) {
 
 let localsignup = new LocalStrategy(function(username, password, done) {
   process.nextTick(function() {
+    logger.verbose('Signup User ' + username);
+    logger.silly('user: ' + username + ' pwd: ' + password);
     Auth.findOne({ where: { username: username.toLowerCase() } })
       .then(user => {
-        if (user)
+        if (user) {
+          logger.warn(
+            'Signup ' + username + ' Failed: Username already exists'
+          );
           return done(null, false, { message: 'Username already exists.' });
+        }
+        logger.debug('Signup ' + username + ': Creating New User');
 
         User.create(
           {
@@ -82,9 +95,18 @@ let facebook = new FacebookStrategy(
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function() {
+      logger.verbose('Facebook Auth ' + profile.displayName);
       Auth.findOne({ where: { facebookId: profile.id } })
         .then(auth => {
-          if (auth) return deserializeUser(auth.userId, done);
+          if (auth) {
+            logger.debug(
+              'Facebook Auth ' + profile.displayName + ': User Found'
+            );
+            return deserializeUser(auth.userId, done);
+          }
+          logger.debug(
+            'Facebook Auth ' + profile.displayName + ': Creating New User'
+          );
 
           User.create(
             {
@@ -114,9 +136,16 @@ let google = new GoogleStrategy(
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function() {
+      logger.verbose('Google Auth ' + profile.displayName);
       Auth.findOne({ where: { googleId: profile.id } })
         .then(auth => {
-          if (auth) return deserializeUser(auth.userId, done);
+          if (auth) {
+            logger.debug('Google Auth ' + profile.displayName + ': User Found');
+            return deserializeUser(auth.userId, done);
+          }
+          logger.debug(
+            'Google Auth ' + profile.displayName + ': Creating New User'
+          );
 
           User.create(
             {
@@ -139,6 +168,7 @@ let google = new GoogleStrategy(
 );
 
 let init = function() {
+  logger.debug('Passport Initalize');
   passport.serializeUser(serializeUser);
   passport.deserializeUser(deserializeUser);
 
@@ -148,6 +178,8 @@ let init = function() {
   passport.use(facebook);
 
   passport.use(google);
+
+  logger.debug('Passport Initalize: Compleate');
 
   return passport;
 };

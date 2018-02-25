@@ -31,7 +31,7 @@ winston.loggers.add('exception', {
   },
 });
 
-// Handel Morgan Console and File logging
+// Loggers for Morgan Console and File
 winston.loggers.add('morgan-console', {
   console: {
     level: 'info',
@@ -53,22 +53,22 @@ winston.loggers.add('morgan-file', {
   },
 });
 
-// Seperate Logger for Passport/Authentication
+// Logger for Passport/Authentication
 winston.loggers.add('auth', {
   console: {
-    level: 'info',
+    level: 'warn',
     colorize: true,
     label: 'auth',
   },
   file: {
-    level: 'verbose',
+    level: 'info',
     timestamp: true,
     json: false,
     filename: path.join(__dirname, 'authorization.log'),
   },
 });
 
-// Seperate Logger for Database/Sequelize
+// Logger for Database/Sequelize
 winston.loggers.add('sequelize', {
   console: {
     level: 'info',

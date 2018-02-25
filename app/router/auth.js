@@ -7,7 +7,7 @@ let path = require('path');
 
 let passport = require('../passport');
 let mailer = require('../mailer');
-let logger = require('winston');
+let logger = require('winston').loggers.get('auth');
 
 let rootdir = { root: path.join(__dirname, '../../') };
 
@@ -32,7 +32,7 @@ router.post('/login/ajax', function(req, res, next) {
       return next(err);
     }
     if (!user) {
-      return res.send({
+      return res.json({
         success: false,
         message: info.message ? info.message : 'Authentication Failed',
       });
@@ -41,9 +41,10 @@ router.post('/login/ajax', function(req, res, next) {
       if (err) {
         return next(err);
       }
+      logger.info('Login ' + req.user.displayName + ': Success');
       let redirect = req.session.return_to ? req.session.return_to : '/home';
       delete req.session.return_to;
-      return res.send({
+      return res.json({
         success: true,
         redirect: redirect,
       });
@@ -64,12 +65,65 @@ router.post(
       req.body.email,
       req.user.displayName,
       '1234',
-      function(err) {
-        console.log(err);
+      function(err, info) {
+        if (err)
+          return logger.warn(
+            'Signup ' +
+              req.user.displayName +
+              ' - Failed to Send Verification Email: ' +
+              err
+          );
+        return logger.info(
+          'Signup ' +
+            req.user.displayName +
+            ' - Verification Email Sent: ' +
+            info
+        );
       }
     );
   }
 );
+
+router.post('/signup/ajax', function(req, res, next) {
+  passport.authenticate('local-signup', function(err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.json({
+        success: false,
+        message: info.message ? info.message : 'Signup Failed',
+      });
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+        return next(err);
+      }
+      mailer.sendVerification(
+        req.body.email,
+        req.user.displayName,
+        '1234',
+        function(err, info) {
+          if (err)
+            return logger.warn(
+              'Signup ' +
+                req.user.displayName +
+                ' - Failed to Send Verification Email'
+            );
+          return logger.info(
+            'Signup ' +
+              req.user.displayName +
+              ' - Verification Email Sent'
+          );
+        }
+      );
+      return res.json({
+        success: true,
+        redirect: '/home',
+      });
+    });
+  })(req, res, next);
+});
 
 /*router.get('/verify', function(req, res) {
   console.log(req.protocol + ':/' + req.get('host'));
@@ -92,10 +146,11 @@ router.get('/auth/facebook', passport.authenticate('facebook'));
 
 router.get(
   '/auth/facebook/callback',
-  passport.authenticate('facebook', {
-    successRedirect: '/home',
-    failureRedirect: '/login',
-  })
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res) {
+    logger.info('Facebook Auth ' + req.user.displayName + ': Success');
+    res.redirect('/home');
+  }
 );
 
 router.get(
@@ -109,11 +164,13 @@ router.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
+    logger.info('Google Auth ' + req.user.displayName + ': Success');
     res.redirect('/home');
   }
 );
 
 router.get('/logout', function(req, res) {
+  logger.verbose('Logout ' + req.user.displayName);
   req.logout();
   res.redirect('/');
 });

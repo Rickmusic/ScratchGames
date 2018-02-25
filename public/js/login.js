@@ -27,9 +27,9 @@ $(function() {
   $('form#register').submit(function() {
     console.log('Register Form Submitted');
     $.ajax({
-      url: '/signup',
+      url: '/signup/ajax',
       method: 'POST',
-      data: $('#signup').serialize(),
+      data: $('#register').serialize(),
       success: function(result) {
         console.log('Ajax Connected', result);
         if (result.success) {
