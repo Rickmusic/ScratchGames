@@ -65,6 +65,9 @@ winston.loggers.add('auth', {
     timestamp: true,
     json: false,
     filename: path.join(__dirname, 'authorization.log'),
+    maxsize: 1000000, // 1 MB
+    maxFiles: 5,
+    tailable: true, // rotate so non-suffix is newest
   },
 });
 
