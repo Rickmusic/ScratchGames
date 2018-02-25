@@ -6,6 +6,7 @@ Log files:
 -----------
 
 - `access.log`: logs the requests made by clients to the node server (powered by morgan)
+- `authorization.log`: logs all signup/login/oauth/logout messages.
 - `database.log`: logs the database queries and any database related info and error messages
 - `exception.log`: logs any Unhandled Exceptions that get thrown
 
@@ -23,6 +24,7 @@ These are different log levels provided by winston, and you can read more about 
 All log files map to a console log label (shown in brackets after the message level):
 
 - `access.log` -> `[access]`
+- `authorization.log` -> `[auth]`
 - `database.log` -> `[sequelize]`
 - `exception.log` -> no label
 
