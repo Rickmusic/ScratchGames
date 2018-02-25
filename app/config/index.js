@@ -14,7 +14,11 @@ let init = function() {
         service: process.env.mailerService,
         address: process.env.mailerAddress,
         username: process.env.mailerUsername,
-        password: process.env.mailerPassword,
+        clientID: process.env.mailerClientID,
+        clientSecret: process.env.mailerClientSecret,
+        accessToken: process.env.mailerAccessToken,
+        refreshToken: process.env.mailerRefreshToken,
+        expiryDate: process.env.mailerExpiryDate,
       },
       session: { secret: process.env.sessionSecret },
       facebook: {

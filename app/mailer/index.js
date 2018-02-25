@@ -7,7 +7,15 @@ let config = require('../config');
 
 let transport = nodemailer.createTransport({
   service: config.mailer.service,
-  auth: { user: config.mailer.username, pass: config.mailer.password },
+  auth: {
+    type: 'OAuth2',
+    user: config.mailer.username,
+    clientId: config.mailer.clientID,
+    clientSecret: config.mailer.clientSecret,
+    accessToken: config.mailer.accessToken,
+    refreshToken: config.mailer.refreshToken,
+    expires: config.mailer.expiryDate,
+  },
 });
 
 let sendVerification = function(useremail, username, token, callback) {

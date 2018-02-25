@@ -10,7 +10,12 @@
     "service": "<nodemailerService>",
     "address": "<EmailFromAddress>",
     "username": "<EmailUsername>",
-    "password": "<EmailPassword>"
+    "clientID": "<OAuthClientID",
+    "clientSecret": "<OAuthClientSecret>",
+    "accessToken": "<<OAuthAccessToken",
+    "refreshToken": "<OAuthRefreshToken",
+    "//" : "<AccessTokenExpiryDate> as number:"
+    "expiryDate": 0
   },
   "session": {
     "secret": "<RandomString>"
