@@ -12,6 +12,12 @@ let init = (sequelize, DataTypes) => {
       firstName: { type: DataTypes.STRING },
       lastName: { type: DataTypes.STRING },
       displayName: { type: DataTypes.STRING },
+      status: {
+        type: DataTypes.ENUM,
+        values: ['active', 'pending', 'limited', 'deleted'],
+        allowNull: false,
+        defaultValue: 'limited',
+      },
     },
     {
       getterMethods: {

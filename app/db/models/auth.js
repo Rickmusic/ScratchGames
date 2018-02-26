@@ -28,12 +28,6 @@ let init = (sequelize, DataTypes) => {
       },
       googleToken: { type: DataTypes.STRING },
       googleName: { type: DataTypes.STRING },
-      state: {
-        type: DataTypes.ENUM,
-        values: ['active', 'pending', 'deleted'],
-        allowNull: false,
-        defaultValue: 'pending',
-      },
     },
     {
       getterMethods: {},

@@ -116,11 +116,11 @@ let facebook = new FacebookStrategy(
           User.create(
             {
               displayName: profile.displayName,
+              status: 'active',
               auth: {
                 facebookId: profile.id,
                 facebookToken: accessToken,
                 facebookName: profile.displayName,
-                state: 'active',
               },
             },
             { include: [UserAuth] }
@@ -155,11 +155,11 @@ let google = new GoogleStrategy(
           User.create(
             {
               displayName: profile.displayName,
+              status: 'active',
               auth: {
                 googleId: profile.id,
                 googleToken: accessToken,
                 googleName: profile.displayName,
-                state: 'active',
               },
             },
             { include: [UserAuth] }

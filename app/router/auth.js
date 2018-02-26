@@ -8,13 +8,15 @@ let path = require('path');
 let passport = require('../passport');
 let mailer = require('../mailer');
 let logger = require('winston').loggers.get('auth');
+let db = require('../db/');
+let Token = db.models.token;
 
 let rootdir = { root: path.join(__dirname, '../../') };
 
 router.get('/login', function(req, res) {
-  if (req.query.redirect) {
-    req.session.return_to = req.query.redirect;
-  }
+  if (req.isAuthenticated()) return res.redirect('/home');
+
+  if (req.query.redirect) req.session.return_to = req.query.redirect;
   res.sendFile(path.join('public/html/login.html'), rootdir);
 });
 
@@ -106,22 +108,39 @@ router.post('/signup/ajax', function(req, res, next) {
   })(req, res, next);
 });
 
-/*router.get('/verify', function(req, res) {
-  console.log(req.protocol + ':/' + req.get('host'));
-  if (req.protocol + '://' + req.get('host') == 'http://' + host) {
-    console.log('Domain is matched. Information is from Authentic email');
-    if (req.query.id == rand) {
-      console.log('email is verified');
-      res.end('<h1>Email ' + mailOptions.to + ' is been Successfully verified');
-    } else {
-      console.log('email is not verified');
-      res.end('<h1>Bad Request</h1>');
-    }
+router.get('/verify', function(req, res) {
+  if (!req.query.token) {
+    logger.warn('Verify called without a token');
+    return res.sendStatus(400);
   }
- else {
-    res.end('<h1>Request is from unknown source');
-  }
-});*/
+  process.nextTick(function() {
+    Token.findOne({ where: { token: req.query.token } })
+      .then(token => {
+        if (!token || token.type !== 'verify') {
+          logger.warn('Verify Token not found');
+          return res.sendStatus(400);
+        }
+        if (token.hasExpired()) {
+          logger.warn('Verify Token has expired');
+          return res.send('Token has expired.');
+        }
+        token
+          .getUser()
+          .then(user => {
+            if (!user) {
+              logger.error('Verify user not found');
+              return res.sendStatus(400);
+            }
+            user
+              .update({ status: 'active' })
+              .then(() => res.redirect('/login'))
+              .catch(err => logger.error('Verify Update User Status: ' + err));
+          })
+          .catch(err => logger.error('Verify Get User Error: ' + err));
+      })
+      .catch(err => logger.error('Verify Get Token Error: ' + err));
+  });
+});
 
 router.get('/auth/facebook', passport.authenticate('facebook'));
 

@@ -52,17 +52,14 @@ router.get('/profile', isAuthenticated, function(req, res) {
 });
 
 router.get('/user', isAuthenticatedDNE, function(req, res) {
-  res.send({
-    displayname: req.user.displayName,
-  });
+  res.send({ displayname: req.user.displayName });
 });
 
 router.get('/info', isAuthenticatedDNE, function(req, res) {
   res.send({
-    username: req.user.username,
     userid: req.user.id,
     displayname: req.user.displayName,
-    emails: req.user.emails,
+    status: req.user.status,
   });
 });
 

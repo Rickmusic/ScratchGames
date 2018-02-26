@@ -34,6 +34,11 @@ let init = (sequelize, DataTypes) => {
     }
   );
 
+  Token.prototype.hasExpired = function() {
+    if (moment().diff(this.expires) < 0) return false;
+    return true;
+  };
+
   Token.createVerifyToken = function(user, callback) {
     if (callback) {
       this.createVerifyToken(user)
