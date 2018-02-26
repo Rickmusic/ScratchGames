@@ -11,6 +11,11 @@ let init = (sequelize, DataTypes) => {
         unique: true,
       },
       password: { type: DataTypes.STRING },
+      email: {
+        type: DataTypes.STRING,
+        unique: true,
+        validate: { isEmail: true },
+      },
       facebookId: {
         type: DataTypes.STRING,
         unique: true,

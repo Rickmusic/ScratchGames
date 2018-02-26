@@ -58,25 +58,17 @@ router.post(
   function(req, res) {
     res.redirect('/home');
 
-    /*rand = Math.floor(Math.random() * 100 + 54);
-    host = req.get('host');
-    link = 'http://' + req.get('host') + '/verify?id=' + rand;*/
-    mailer.sendVerification(
-      req.body.email,
-      req.user.displayName,
-      '1234',
-      function(err) {
-        if (err)
-          return logger.warn(
-            'Signup ' +
-              req.user.displayName +
-              ' - Failed to Send Verification Email'
-          );
-        return logger.info(
-          'Signup ' + req.user.displayName + ' - Verification Email Sent'
+    mailer.sendVerification(req, function(err) {
+      if (err)
+        return logger.warn(
+          'Signup ' +
+            req.user.displayName +
+            ' - Failed to Send Verification Email'
         );
-      }
-    );
+      return logger.info(
+        'Signup ' + req.user.displayName + ' - Verification Email Sent'
+      );
+    });
   }
 );
 
@@ -95,22 +87,17 @@ router.post('/signup/ajax', function(req, res, next) {
       if (err) {
         return next(err);
       }
-      mailer.sendVerification(
-        req.body.email,
-        req.user.displayName,
-        '1234',
-        function(err) {
-          if (err)
-            return logger.warn(
-              'Signup ' +
-                req.user.displayName +
-                ' - Failed to Send Verification Email'
-            );
-          return logger.info(
-            'Signup ' + req.user.displayName + ' - Verification Email Sent'
+      mailer.sendVerification(req, function(err) {
+        if (err)
+          return logger.warn(
+            'Signup ' +
+              req.user.displayName +
+              ' - Failed to Send Verification Email'
           );
-        }
-      );
+        return logger.info(
+          'Signup ' + req.user.displayName + ' - Verification Email Sent'
+        );
+      });
       return res.json({
         success: true,
         redirect: '/home',

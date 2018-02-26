@@ -98,6 +98,7 @@ module.exports = {
   models: {
     auth: Auth,
     user: User,
+    token: Token,
   },
   associations: { userauth: UserAuth, tokenuser: TokenUser },
 };

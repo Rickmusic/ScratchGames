@@ -54,7 +54,12 @@ let local = new LocalStrategy(function(username, password, done) {
   });
 });
 
-let localsignup = new LocalStrategy(function(username, password, done) {
+let localsignup = new LocalStrategy({ passReqToCallback: true }, function(
+  req,
+  username,
+  password,
+  done
+) {
   process.nextTick(function() {
     logger.verbose('Signup User ' + username);
     logger.silly('user: ' + username + ' pwd: ' + password);
@@ -71,7 +76,7 @@ let localsignup = new LocalStrategy(function(username, password, done) {
         User.create(
           {
             displayName: username,
-            auth: { username: username.toLowerCase() },
+            auth: { username: username.toLowerCase(), email: req.body.email },
           },
           { include: [UserAuth] }
         )
