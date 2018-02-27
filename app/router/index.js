@@ -14,7 +14,7 @@ let isAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.redirect('/login?redirect=' + req.originalUrl);
+    res.redirect('/login?redirect=' + encodeURIComponent(req.originalUrl));
   }
 };
 

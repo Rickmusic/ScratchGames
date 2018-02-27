@@ -33,7 +33,7 @@ app.use(
       path: '/', // base URL path that will trigger client to send cookie
       httpOnly: true, // hide cookie from client-side JavaScript
       secure: false, // send cookie on non-secure connections
-      maxAge: 172800000, // 2 days (in milliseconds)
+      maxAge: false, // non-persistent (persistent login handeled by passport)
     },
   })
 );
