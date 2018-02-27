@@ -25,9 +25,9 @@ let sendVerification = function(req, callback) {
   let lookupAuth = req.user.getAuth();
 
   Promise.all([createToken, lookupAuth])
-    .then(result => {
-      let token = result[0];
-      let auth = result[1];
+    .then(promises => {
+      let token = promises[0];
+      let auth = promises[1];
       let link =
         req.get('X-Forwarded-Proto') + // Set by Nginx
         '://' +
