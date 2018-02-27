@@ -13,6 +13,21 @@ let Token = db.models.token;
 
 let rootdir = { root: path.join(__dirname, '../../') };
 
+let rememberMe = function(req, res, next) {
+  if (!req.body.remember_me) return next();
+  logger.info('Creating Remember Me for ' + req.user.displayName);
+  Token.createRememberMeToken(req.user, function(err, token) {
+    if (err) return next(err);
+    res.cookie('remember_me', token, {
+      path: '/',
+      httpOnly: true,
+      secure: false,
+      maxAge: 604800000, // 7 days in milliseconds
+    });
+    next();
+  });
+};
+
 router.get('/login', function(req, res) {
   if (req.isAuthenticated()) return res.redirect('/home');
 
@@ -22,37 +37,41 @@ router.get('/login', function(req, res) {
 
 router.post(
   '/login',
-  passport.authenticate('local', {
-    successRedirect: '/home',
-    failureRedirect: '/login',
-  })
+  passport.authenticate('local', { failureRedirect: '/login' }),
+  rememberMe,
+  function(req, res) {
+    res.redirect('/home');
+  }
 );
 
-router.post('/login/ajax', function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      return res.json({
-        success: false,
-        message: info.message ? info.message : 'Authentication Failed',
-      });
-    }
-    req.logIn(user, function(err) {
-      if (err) {
-        return next(err);
+router.post(
+  '/login/ajax',
+  function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
+      if (err) return next(err);
+      if (!user) {
+        return res.json({
+          success: false,
+          message: info.message ? info.message : 'Authentication Failed',
+        });
       }
-      logger.info('Login ' + req.user.displayName + ': Success');
-      let redirect = req.session.return_to ? req.session.return_to : '/home';
-      delete req.session.return_to;
-      return res.json({
-        success: true,
-        redirect: redirect,
+      req.logIn(user, function(err) {
+        if (err) return next(err);
+        logger.info('Login ' + req.user.displayName + ': Success');
+        next();
       });
+    })(req, res, next);
+  },
+  rememberMe,
+  function(req, res) {
+    let redirect = req.session.return_to ? req.session.return_to : '/home';
+    delete req.session.return_to;
+    return res.json({
+      success: true,
+      redirect: redirect,
     });
-  })(req, res, next);
-});
+  }
+);
 
 router.post(
   '/signup',
@@ -76,9 +95,7 @@ router.post(
 
 router.post('/signup/ajax', function(req, res, next) {
   passport.authenticate('local-signup', function(err, user, info) {
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
     if (!user) {
       return res.json({
         success: false,
@@ -86,9 +103,7 @@ router.post('/signup/ajax', function(req, res, next) {
       });
     }
     req.logIn(user, function(err) {
-      if (err) {
-        return next(err);
-      }
+      if (err) return next(err);
       mailer.sendVerification(req, function(err) {
         if (err)
           return logger.warn(
@@ -114,9 +129,9 @@ router.get('/verify', function(req, res) {
     return res.sendStatus(400);
   }
   process.nextTick(function() {
-    Token.findOne({ where: { token: req.query.token } })
+    Token.findOne({ where: { token: req.query.token, type: 'verify' } })
       .then(token => {
-        if (!token || token.type !== 'verify') {
+        if (!token) {
           logger.warn('Verify Token not found');
           return res.sendStatus(400);
         }
@@ -171,6 +186,7 @@ router.get(
 
 router.get('/logout', function(req, res) {
   logger.verbose('Logout ' + req.user.displayName);
+  res.clearCookie('remember_me');
   req.logout();
   res.redirect('/');
 });

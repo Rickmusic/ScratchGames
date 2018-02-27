@@ -4,12 +4,14 @@ let passport = require('passport');
 let LocalStrategy = require('passport-local').Strategy;
 let FacebookStrategy = require('passport-facebook').Strategy;
 let GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+let RememberMeStrategy = require('passport-remember-me-extended').Strategy;
 
 let config = require('../config');
 let logger = require('winston').loggers.get('auth');
 let db = require('../db');
 let Auth = db.models.auth;
 let User = db.models.user;
+let Token = db.models.token;
 let UserAuth = db.associations.userauth;
 
 let serializeUser = function(user, done) {
@@ -63,7 +65,9 @@ let localsignup = new LocalStrategy({ passReqToCallback: true }, function(
   process.nextTick(function() {
     logger.verbose('Signup User ' + username);
     logger.silly('user: ' + username + ' pwd: ' + password);
-    let lookupUsername = Auth.findOne({ where: { username: username.toLowerCase() } });
+    let lookupUsername = Auth.findOne({
+      where: { username: username.toLowerCase() },
+    });
     let lookupEmail = Auth.findOne({ where: { email: req.body.email } });
     Promise.all([lookupUsername, lookupEmail])
       .then(promises => {
@@ -76,9 +80,7 @@ let localsignup = new LocalStrategy({ passReqToCallback: true }, function(
           return done(null, false, { message: 'Username already exists.' });
         }
         if (email) {
-          logger.warn(
-            'Signup ' + username + ' Failed: Email already exists'
-          );
+          logger.warn('Signup ' + username + ' Failed: Email already exists');
           return done(null, false, { message: 'Email already exists.' });
         }
 
@@ -102,6 +104,22 @@ let localsignup = new LocalStrategy({ passReqToCallback: true }, function(
       .catch(err => done(err));
   });
 });
+
+let rememberme = new RememberMeStrategy(
+  function(token, done) {
+    Token.consumeRememberMeToken(token, function(err, user) {
+      if (err) return done(err);
+      if (!user) return done(null, false);
+      return done(null, user);
+    });
+  },
+  function(user, done) {
+    Token.createRememberMeToken(user, function(err, token) {
+      if (err) return done(err);
+      return done(null, token);
+    });
+  }
+);
 
 let facebook = new FacebookStrategy(
   {
@@ -190,6 +208,8 @@ let init = function() {
 
   passport.use(local);
   passport.use('local-signup', localsignup);
+
+  passport.use(rememberme);
 
   passport.use(facebook);
 

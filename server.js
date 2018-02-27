@@ -40,6 +40,7 @@ app.use(
 // Passport init and session must come after express-session init
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(passport.authenticate('remember-me'));
 app.use(flash());
 
 app.use(morgan.file);

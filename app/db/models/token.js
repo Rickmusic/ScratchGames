@@ -14,7 +14,7 @@ let init = (sequelize, DataTypes) => {
       },
       type: {
         type: DataTypes.ENUM,
-        values: ['verify', 'pwdreset'],
+        values: ['verify', 'pwdreset', 'rememberme'],
         defaultValue: 'verify',
         allowNull: false,
       },
@@ -35,7 +35,12 @@ let init = (sequelize, DataTypes) => {
   );
 
   Token.prototype.hasExpired = function() {
-    if (moment().utc().diff(moment(this.expires)) < 0) return false;
+    if (
+      moment()
+        .utc()
+        .diff(moment(this.expires)) < 0
+    )
+      return false;
     return true;
   };
 
@@ -81,6 +86,43 @@ let init = (sequelize, DataTypes) => {
         userId: user.id,
       })
         .then(token => fulfill(token.token))
+        .catch(err => reject(err));
+    });
+  };
+
+  Token.createRememberMeToken = function(user, callback) {
+    if (callback) {
+      this.createRememberMeToken(user)
+        .then(token => callback(null, token))
+        .catch(err => callback(err));
+      return;
+    }
+    return new Promise((fulfill, reject) => {
+      Token.create({
+        token: crypto.randomBytes(180).toString('base64'),
+        type: 'rememberme',
+        userId: user.id,
+      })
+        .then(token => fulfill(token.token))
+        .catch(err => reject(err));
+    });
+  };
+
+  Token.consumeRememberMeToken = function(tokenString, callback) {
+    if (callback) {
+      this.consumeRememberMeToken(tokenString)
+        .then(user => callback(null, user))
+        .catch(err => callback(err));
+      return;
+    }
+    return new Promise((fulfill, reject) => {
+      Token.findOne({ where: { token: tokenString, type: 'rememberme' } })
+        .then(token => {
+          if (!token) fulfill(false); // No user found
+          let user = token.getUser();
+          token.destroy();
+          fulfill(user);
+        })
         .catch(err => reject(err));
     });
   };
