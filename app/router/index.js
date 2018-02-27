@@ -5,34 +5,9 @@ let router = express.Router();
 
 let path = require('path');
 
-let auth = require('./auth');
+let { router: auth, isAuthenticated, isAuthenticatedDNE } = require('./auth');
 
 let rootdir = { root: path.join(__dirname, '../../') };
-
-// Redirects if not logged in
-let isAuthenticated = function(req, res, next) {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.redirect('/login?redirect=' + encodeURIComponent(req.originalUrl));
-  }
-};
-
-/*let isAuthenticatedAPI = function(req, res, next) {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.sendStatus(401);
-  }
-};*/
-
-let isAuthenticatedDNE = function(req, res, next) {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.sendStatus(404);
-  }
-};
 
 // Handeled by Nginx
 /*router.get ('/', function (req, res) {

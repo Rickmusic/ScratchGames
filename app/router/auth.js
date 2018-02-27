@@ -203,4 +203,36 @@ router.get('/logout', function(req, res) {
   res.redirect('/');
 });
 
-module.exports = router;
+// Redirects if not logged in
+let isAuthenticated = function(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.redirect('/login?redirect=' + encodeURIComponent(req.originalUrl));
+  }
+};
+
+// Response Status Forbidden if not logged in
+let isAuthenticatedAPI = function(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.sendStatus(403);
+  }
+};
+
+// Responce Status Not Found if not logged in
+let isAuthenticatedDNE = function(req, res, next) {
+  if (req.isAuthenticated()) {
+    next();
+  } else {
+    res.sendStatus(404);
+  }
+};
+
+module.exports = {
+  router,
+  isAuthenticated,
+  isAuthenticatedAPI,
+  isAuthenticatedDNE,
+};
