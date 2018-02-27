@@ -71,9 +71,6 @@ function tablesReady() {
         .updatePassword('secret')
         .then(() => logger.info('User jack Created'))
         .catch(err => logger.error('At Set Password jack: ' + err));
-      Token.createVerifyToken(user)
-        .then(token => logger.info('Token jack Created: ' + token))
-        .catch(err => logger.error('At Create Token jack: ' + err));
     })
     .catch(err => logger.error('At User Create jack: ' + err));
 

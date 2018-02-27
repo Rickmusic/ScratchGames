@@ -35,7 +35,7 @@ let init = (sequelize, DataTypes) => {
   );
 
   Token.prototype.hasExpired = function() {
-    if (moment().diff(this.expires) < 0) return false;
+    if (moment().utc().diff(moment(this.expires)) < 0) return false;
     return true;
   };
 

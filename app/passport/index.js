@@ -63,14 +63,25 @@ let localsignup = new LocalStrategy({ passReqToCallback: true }, function(
   process.nextTick(function() {
     logger.verbose('Signup User ' + username);
     logger.silly('user: ' + username + ' pwd: ' + password);
-    Auth.findOne({ where: { username: username.toLowerCase() } })
-      .then(user => {
+    let lookupUsername = Auth.findOne({ where: { username: username.toLowerCase() } });
+    let lookupEmail = Auth.findOne({ where: { email: req.body.email } });
+    Promise.all([lookupUsername, lookupEmail])
+      .then(promises => {
+        let user = promises[0];
+        let email = promises[1];
         if (user) {
           logger.warn(
             'Signup ' + username + ' Failed: Username already exists'
           );
           return done(null, false, { message: 'Username already exists.' });
         }
+        if (email) {
+          logger.warn(
+            'Signup ' + username + ' Failed: Email already exists'
+          );
+          return done(null, false, { message: 'Email already exists.' });
+        }
+
         logger.debug('Signup ' + username + ': Creating New User');
 
         User.create(
