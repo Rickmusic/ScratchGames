@@ -31,7 +31,7 @@ sequelize
   .catch(err => logger.error('Database Connection Failed: ', err));
 
 let Auth = sequelize.import('auth', require('./models/auth'));
-let Token = sequelize.import('toekn', require('./models/token'));
+let Token = sequelize.import('token', require('./models/token'));
 let User = sequelize.import('user', require('./models/user'));
 
 let UserAuth = User.hasOne(Auth);
