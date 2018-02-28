@@ -63,7 +63,13 @@ let init = (sequelize, DataTypes) => {
         userId: user.id, // userId field created by belongsTo() in ../index.js
       })
         .then(token => fulfill(token.token))
-        .catch(err => reject(err));
+        .catch(err => {
+          if (err instanceof sequelize.UniqueConstraintError)
+            this.createVerifyToken(user)
+              .then(token => fulfill(token))
+              .catch(err => reject(err));
+          else reject(err);
+        });
     });
   };
 
@@ -86,7 +92,13 @@ let init = (sequelize, DataTypes) => {
         userId: user.id,
       })
         .then(token => fulfill(token.token))
-        .catch(err => reject(err));
+        .catch(err => {
+          if (err instanceof sequelize.UniqueConstraintError)
+            this.createPasswordResetToken(user)
+              .then(token => fulfill(token))
+              .catch(err => reject(err));
+          else reject(err);
+        });
     });
   };
 
@@ -104,7 +116,13 @@ let init = (sequelize, DataTypes) => {
         userId: user.id,
       })
         .then(token => fulfill(token.token))
-        .catch(err => reject(err));
+        .catch(err => {
+          if (err instanceof sequelize.UniqueConstraintError)
+            this.createRememberMeToken(user)
+              .then(token => fulfill(token))
+              .catch(err => reject(err));
+          else reject(err);
+        });
     });
   };
 
