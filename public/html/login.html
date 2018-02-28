@@ -6,7 +6,7 @@
         <link rel = "stylesheet" type = "text/css" href = "Main.css" />
         <script src="UI.js"></script>
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-        <script src="/login.js"></script>
+        <script src="login.js"></script>
     </head>
     <body>
         <div class="background">
@@ -25,14 +25,30 @@
                     <input id="uname" type="text" name="username" autofocus placeholder="Username"/><br/>
                     <br>
                     <input type="password" name="password" placeholder="Password"/>
+                    <br>
+                    <input type="checkbox" name="remember_me" value="Please_Do"> Keep Me Logged In<br>
                     <p id="message" style="color: white;"><p>
-                    <input type="submit" value="Submit"/>
+                    <input type="submit" value="Log In"/>
                 </form>
                 <div id="create" onclick="createUI()">
                     <p>Create an Account</p>
+                </div>
+                <div>
                     <a href="/auth/facebook">Login with Facebook</a>
                     <a href="/auth/google">Sign In with Google</a>
                 </div>
+                <br>
+                <hr>
+                <br>
+                <form id="register" action="/signup" method="post">
+                    <input id="uname" type="text" name="username" autofocus placeholder="Username"/><br/>
+                    <br>
+                    <input type="password" name="password" placeholder="Password"/><br/>
+                    <br>
+                    <input type="email" name="email" placeholder="Email Address"/>
+                    <p id="signupMessage" style="color: white;"><p>
+                    <input type="submit" value="Sign Up"/>
+                </form>
             </div>
             <div class="bottom"></div>
         </div>

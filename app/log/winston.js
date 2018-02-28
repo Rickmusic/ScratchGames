@@ -26,12 +26,12 @@ winston.loggers.add('exception', {
     json: false,
     filename: path.join(__dirname, 'exception.log'),
     maxsize: 1000000, // 1 MB
-    maxFiles: 5,
+    maxFiles: 2,
     tailable: true, // rotate so non-suffix is newest
   },
 });
 
-// Handel Morgan Console and File logging
+// Loggers for Morgan Console and File
 winston.loggers.add('morgan-console', {
   console: {
     level: 'info',
@@ -48,12 +48,30 @@ winston.loggers.add('morgan-file', {
     json: false,
     filename: path.join(__dirname, 'access.log'),
     maxsize: 1000000, // 1 MB
-    maxFiles: 5,
+    maxFiles: 2,
     tailable: true, // rotate so non-suffix is newest
   },
 });
 
-// Seperate Logger for Database/Sequelize
+// Logger for Passport/Authentication
+winston.loggers.add('auth', {
+  console: {
+    level: 'warn',
+    colorize: true,
+    label: 'auth',
+  },
+  file: {
+    level: 'info',
+    timestamp: true,
+    json: false,
+    filename: path.join(__dirname, 'authorization.log'),
+    maxsize: 1000000, // 1 MB
+    maxFiles: 2,
+    tailable: true, // rotate so non-suffix is newest
+  },
+});
+
+// Logger for Database/Sequelize
 winston.loggers.add('sequelize', {
   console: {
     level: 'info',
@@ -66,7 +84,7 @@ winston.loggers.add('sequelize', {
     json: false,
     filename: path.join(__dirname, 'database.log'),
     maxsize: 1000000, // 1 MB
-    maxFiles: 5,
+    maxFiles: 2,
     tailable: true, // rotate so non-suffix is newest
   },
 });

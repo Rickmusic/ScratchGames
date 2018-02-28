@@ -1,6 +1,6 @@
 'use strict';
 
-let init = function () {
+let init = function() {
   if (process.env.NODE_ENV === 'production') {
     return {
       db: {
@@ -10,22 +10,31 @@ let init = function () {
         port: process.env.dbPort,
         name: process.env.dbName,
       },
-      sessionSecret: process.env.sessionSecret,
+      mailer: {
+        service: process.env.mailerService,
+        address: process.env.mailerAddress,
+        username: process.env.mailerUsername,
+        clientID: process.env.mailerClientID,
+        clientSecret: process.env.mailerClientSecret,
+        accessToken: process.env.mailerAccessToken,
+        refreshToken: process.env.mailerRefreshToken,
+        expiryDate: process.env.mailerExpiryDate,
+      },
+      session: { secret: process.env.sessionSecret },
       facebook: {
         clientID: process.env.facebookClientID,
         clientSecret: process.env.facebookClientSecret,
-        callbackURL: "/auth/facebook/callback",
+        callbackURL: '/auth/facebook/callback',
       },
       google: {
         clientID: process.env.googleClientID,
         clientSecret: process.env.googleClientSecret,
-        callbackURL: "/auth/google/callback",
+        callbackURL: '/auth/google/callback',
       },
     };
   }
-  else {
-    return require('./config.json');
-  }
+
+  return require('./config.json');
 };
 
 module.exports = init();

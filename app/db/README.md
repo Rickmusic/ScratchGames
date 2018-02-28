@@ -7,13 +7,15 @@ or [WAMP](http://www.wampserver.com/en/#download-wrapper).
 
 Once you have one up and running, you will need to add some information into
 `app/config/config.json`:
-- `db.username` and `db.password`: The username and password for an account with SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, and DROP privileges on `db.name` 
+- `db.username` and `db.password`: The username and password for an account with SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, REFERENCES, INDEX and DROP privileges on `db.name` 
 - `db.host` and `db.port`: The hostname and port for the MySQL server (probably `localhost` and `3306`)
 
 - `db.name`: the schema name for the app to use
 
-The app needs CREATE, ALTER, and DROP privileges as Sequelize will create the necessary tables automatically.
+The app needs CREATE, ALTER, REFERENCES, INDEX and DROP privileges as Sequelize will 
+create the necessary tables automatically.
 
-All SQL queries are printed to console.log(), so you can see what it is doing if you want. In the future these will be redirected to a logger.
+All database queries, messages, and errors are logged in `app/log/database.log`, 
+while only info, warn, and error messages get shown on the console.
 
 Refer to your chosen MySQL provider for instructions on how to install and run.

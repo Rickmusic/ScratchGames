@@ -23,23 +23,24 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser(config.sessionSecret));
+app.use(cookieParser(config.session.secret));
 app.use(
   session({
-    secret: config.sessionSecret,
+    secret: config.session.secret,
     resave: false, // don't automatically write to session store
     saveUninitialized: false, // don't save new sessions
     cookie: {
       path: '/', // base URL path that will trigger client to send cookie
       httpOnly: true, // hide cookie from client-side JavaScript
       secure: false, // send cookie on non-secure connections
-      maxAge: 172800000, // 2 days (in milliseconds)
+      maxAge: false, // non-persistent (persistent login handeled by passport)
     },
   })
 );
 // Passport init and session must come after express-session init
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(passport.authenticate('remember-me'));
 app.use(flash());
 
 app.use(morgan.file);
