@@ -28,7 +28,7 @@ let createRememberMeToken = function(req, res, next) {
   });
 };
 
-let redirectPostLogin = function(req, res) {
+let redirectAfterLogin = function(req, res) {
   let redirectURI = req.session.return_to
     ? decodeURIComponent(req.session.return_to)
     : '/home';
@@ -53,7 +53,7 @@ router.post(
   '/login',
   passport.authenticate('local', { failureRedirect: '/login' }),
   createRememberMeToken,
-  redirectPostLogin
+  redirectAfterLogin
 );
 
 router.post(
@@ -75,7 +75,7 @@ router.post(
     })(req, res, next);
   },
   createRememberMeToken,
-  redirectPostLogin
+  redirectAfterLogin
 );
 
 router.post(
@@ -97,7 +97,7 @@ router.post(
       return next();
     });
   },
-  redirectPostLogin
+  redirectAfterLogin
 );
 
 router.post(
@@ -130,7 +130,7 @@ router.post(
       });
     })(req, res, next);
   },
-  redirectPostLogin
+  redirectAfterLogin
 );
 
 router.get('/verify', function(req, res, next) {
@@ -176,7 +176,7 @@ router.get(
     logger.info('Facebook Auth ' + req.user.displayName + ': Success');
     next();
   },
-  redirectPostLogin
+  redirectAfterLogin
 );
 
 router.get(
@@ -193,7 +193,7 @@ router.get(
     logger.info('Google Auth ' + req.user.displayName + ': Success');
     next();
   },
-  redirectPostLogin
+  redirectAfterLogin
 );
 
 router.get('/logout', function(req, res) {
