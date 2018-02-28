@@ -11,7 +11,7 @@ Log files:
 - `exception.log`: logs any Unhandled Exceptions that get thrown
 
 Log files are configured with a max file size of 1MB.
-There may be up to five files per log (with a number as a suffix); the file without a suffix is the newest. 
+There may be up to two files per log (with the second having a number as a suffix); the file without a suffix is the newest. 
 
 Console Ouput:
 --------------
