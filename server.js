@@ -26,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(config.session.secret));
 app.use(
   session({
+    name: 'sessionId',
     secret: config.session.secret,
     resave: false, // don't automatically write to session store
     saveUninitialized: false, // don't save new sessions

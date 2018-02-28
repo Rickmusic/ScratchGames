@@ -29,6 +29,12 @@ let createRememberMeToken = function(req, res, next) {
 };
 
 let redirectAfterLogin = function(req, res) {
+  res.cookie('been_here', "I've Been Here", {
+    path: '/',
+    httpOnly: true,
+    secure: false,
+    maxAge: 604800000, // 7 days in milliseconds
+  });
   let redirectURI = req.session.return_to
     ? decodeURIComponent(req.session.return_to)
     : '/home';
