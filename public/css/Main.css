@@ -1,81 +1,114 @@
 html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
 }
 body{
-    height: 100%;
-    background:black;
-
+    background-color: grey;
 }
-.background{
-    background: url("ScratchBack.jpg"), center;
-    background-size: cover;
-    height: 100%;
-    width: 100%;
+#logo{
+     width:5em;
+     padding-bottom: 1em;
+}
+.column{
+    margin: 0 auto;
+    width: 80%;
+    max-width: 800px;
+    background-color: white;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+.row{
+    order: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.left{
+    order: 1;
+    width: 46%;
+    border-right: lightgrey solid 0.2em;
+    text-align: left;
+    padding: 4%;
+}
+.right{
+    order: 2;
+    width: 46%;
+    text-align: left;
+    padding: 4%;
+}
+.bottom{
+    order: 2;
+    background-color: lightgrey;
+    padding: 2em;
 }
 .top{
     width: 100%;
     text-align: center;
 }
-.middle{
-    margin: 0 auto;
-    padding: 0.5em;
-    width: 30em;
-    background-color: rgba(214,107,19,0.40);
-    text-align: center;
-    border-radius: 4em;
-}
-nav{
-    width: 100%;
-    text-align: left;
+.createbtn{
     background-color: black;
     color: white;
-    font-size: 1.5em;
+    cursor: pointer;
+    text-align: center;
+    padding: 2%;
+    margin: 2%;
 }
-.nav{
-    width:10%;
+.center{
+    text-align: center;
+    padding: 3%;
+}
+.leftbtn{
+    width: 50%;
+    order: 1;
+    margin: auto;
     text-align: center;
 }
-.nav>a{
-    text-decoration: none;
-    color: white;
-    display: block;
+.rightbtn{
+    order: 2;
 }
-.nav>a:hover{
-    background-color: grey;
+#facebook{
+    background-color: darkblue;
+}
+#google{
+    background-color: firebrick;
+}
+#register{
+    padding-top: 1em;
+}
+#create{
+    display: none;
 }
 input[type=text]{
-    font-size: 1.5em;
+    font-size: 1em;
+    width: 90%;
+    height: 2em;
+    padding-left: 1em;
 }
 input[type=password]{
-    font-size: 1.5em;
-}
-input[type=email]{
-    font-size: 1.5em;
+    font-size: 1em;
+    width: 90%;
+    height: 2em;
+    padding-left: 1em;
 }
 
 input[type=submit] {
-    font-size: 1.5em;
-    background-color: #658b21;
+    font-size: 1em;
+    background-color: firebrick;
+    width: 95%;
+    height: 3em;
     cursor: pointer;
-    color: whitesmoke;
+    color: white;
     border: none;
-    width: 100px;
-    height: 2em;
+}
+.OauthLogo{
+    height: 1.5em;
 }
 h1{
     color: orange;
-    font-size: 3em;
+    font-size: 2em;
     font-family: "Georgia";
 }
 a{
     text-decoration: none;
-    font-size: 1.2em;
-
-}
-#create{
-    color: blue;
-    cursor: pointer;
 }
