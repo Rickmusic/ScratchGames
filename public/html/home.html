@@ -1,11 +1,89 @@
 <!doctype html>
 <html>
-    <head>
-        <title>Home Page</title>
-        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-        <script src="/home.js"></script>
-    </head>
-    <body>
-        <p>Hello, <span id="displayname"></span>. View your <a href="/profile">profile</a>.</p>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Scratch Games</title>
+    <link rel="stylesheet" type="text/css" href="Main.css"/>
+    <script src="UI.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/login.js"></script>
+</head>
+<body>
+<div class="top">
+    <h1>Scratch Games</h1>
+    <img id="logo" src="Logo4.png">
+</div>
+<div class="column">
+    <div id="create">
+        <p>Welcome to Scratch Games</p>
+        <form id="register" action="/login" method="post">
+            <input id="cuname" type="text" name="username" autofocus placeholder="Requested Username"/><br/>
+            <p id="Invalid username" style="color: red;"><p>
+            <br>
+            <input type="text" name="email" placeholder="Email Address"/>
+            <br>
+            <br>
+            <input type="password" name="password" placeholder="Password"/>
+            <br>
+            <br>
+            <input type="password" name="password" placeholder="Confirm Password"/>
+            <br>
+            <p id="cmessage" style="color: red;"><p>
+            <input type="submit" value="Create User"/>
+            <br>
+            <br>
+        </form>
+    </div>
+    <div class="row" class="middle" id="hide">
+        <div class="left">
+            <h2>Login</h2>
+            <form id="login" action="/login" method="post">
+                <input id="uname" type="text" name="username" autofocus placeholder="Username"/><br/>
+                <br>
+                <input type="password" name="password" placeholder="Password"/>
+                <br>
+                <br>
+                <input type="checkbox" name="remember_me" value="Please_Do"> Keep Me Logged In
+                <br>
+                <p id="message" style="color: red;"><p>
+                <input type="submit" value="Login"/>
+                <br>
+                <br>
+            </form>
+        </div>
+        <div class="right">
+            <p>If you don't already have an account create one using one of the methods below</p>
+            <div class="createbtn" onclick="createUI()">
+                <p>Create an Account</p>
+            </div>
+            <div class="center">or</div>
+
+            <a href="/auth/facebook">
+                <div class="createbtn" id="facebook">
+                   Sign in with Facebook
+                </div>
+            </a>
+            <a href="/auth/google">
+                <div class="createbtn" id="google">
+                    Sign In with Google
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="bottom" id="hide2">So you can't get into your account? <a href="">Did you forget your password?</a></div>
+</div>
+</body>
+<script>
+  function createUI() {
+    let x = document.getElementById("hide");
+    x.style.display = "none";
+    let y = document.getElementById("hide2");
+    y.style.display = "none";
+    let z = document.getElementById("create");
+    z.style.display = "block";
+  }
+
+
+</script>
 </html>
+
