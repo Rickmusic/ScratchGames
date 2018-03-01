@@ -49,3 +49,12 @@ $(function() {
     return false;
   });
 });
+
+function createUI() {
+    let x = document.getElementById("hide");
+    x.style.display = "none";
+    let y = document.getElementById("hide2");
+    y.style.display = "none";
+    let z = document.getElementById("create");
+    z.style.display = "block";
+}
