@@ -1,0 +1,33 @@
+.wrapper {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+    -moz-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -moz-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center; /* IE (& Edge?) */
+    justify-content: center;
+    -webkit-justify-content: space-evenly;
+    justify-content: space-evenly;
+}
+.header {
+    background-color: black;
+    padding: 2px 0 2px 0;
+}
+.header #logo {
+    width: 2em;
+    padding-bottom: 0;
+    padding-right: 10px;
+}
+.header a {
+    color: white;
+}
+.header h2 {
+    color: orange;
+    font-family: "Georgia";
+}

@@ -5,35 +5,9 @@ html, body {
 body{
     background-color: grey;
 }
-.wrapper{
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-flex-direction: row;
-    -moz-flex-direction: row;
-    flex-direction: row;
-    -webkit-flex-wrap: wrap;
-    -moz-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-justify-content: center; /* IE (& Edge?) */
-    justify-content: center;
-    -webkit-justify-content: space-evenly;
-    justify-content: space-evenly;
-}
-.header{
-    background-color: black;
-    padding: 2px 0 2px 0;
-}
 #logo{
      width:5em;
      padding-bottom: 1em;
-}
-.header #logo {
-    width: 2em;
-    padding-bottom: 0;
-    padding-right: 10px;
 }
 .column{
     margin: 0 auto;
@@ -130,16 +104,11 @@ input[type=submit] {
 .OauthLogo{
     height: 1.5em;
 }
-h1,h2,h3{
-    color: orange;
-    font-family: "Georgia";
-}
 h1{
+    color: orange;
     font-size: 2em;
+    font-family: "Georgia";
 }
 a{
     text-decoration: none;
-}
-.header a{
-    color: white;
 }
