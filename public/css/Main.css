@@ -3,7 +3,7 @@ html, body {
     padding: 0;
 }
 body{
-    background-color: grey;
+    background-color: #C4C2C2;
 }
 #logo{
      width:5em;
@@ -27,7 +27,7 @@ body{
 .left{
     order: 1;
     width: 46%;
-    border-right: lightgrey solid 0.2em;
+    border-right:  #F3F3F3 solid 0.2em;
     text-align: left;
     padding: 4%;
 }
@@ -39,76 +39,94 @@ body{
 }
 .bottom{
     order: 2;
-    background-color: lightgrey;
+    background-color: #F3F3F3;
     padding: 2em;
 }
 .top{
     width: 100%;
     text-align: center;
 }
-.createbtn{
-    background-color: black;
-    color: white;
-    cursor: pointer;
-    text-align: center;
-    padding: 2%;
-    margin: 2%;
-}
 .center{
     text-align: center;
     padding: 3%;
 }
-.leftbtn{
-    width: 50%;
-    order: 1;
-    margin: auto;
-    text-align: center;
-}
-.rightbtn{
-    order: 2;
-}
-#facebook{
-    background-color: darkblue;
-}
-#google{
-    background-color: firebrick;
-}
+
 #register{
     padding-top: 1em;
 }
 #create{
     display: none;
 }
-input[type=text]{
-    font-size: 1em;
-    width: 90%;
+
+.createbtn{
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 2em;
+    padding: 2%;
+    margin: 1em;
     height: 2em;
-    padding-left: 1em;
 }
-input[type=password]{
+
+.leftbtn{
+    width: 50%;
+    order: 1;
+    margin: auto;
+    text-align: center;
+}
+
+#facebook{
+    background-color: #34589D;
+}
+#google{
+    background-color: #FF2711;
+}
+
+input{
     font-size: 1em;
     width: 90%;
     height: 2em;
     padding-left: 1em;
+    margin-top: 1em;
+    border: #F3F3F3 solid 2px;
+}
+
+input[type=checkbox]{
+    margin-top: 3em;
+    width:2em;
+    font-size: 0.5em;
 }
 
 input[type=submit] {
-    font-size: 1em;
-    background-color: firebrick;
+    background-color: #E00F1F;
     width: 95%;
     height: 3em;
     cursor: pointer;
     color: white;
     border: none;
+    margin-bottom: 1em;
 }
-.OauthLogo{
-    height: 1.5em;
+
+label{
+    color: black;
 }
+
 h1{
     color: orange;
     font-size: 2em;
     font-family: "Georgia";
 }
+h2{
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+.bottom > a{
+    text-decoration: underline;
+    color: black;
+}
+
 a{
     text-decoration: none;
 }
