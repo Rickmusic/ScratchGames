@@ -1,3 +1,48 @@
+/* ---------------- Page Defaults ---------------- */
+
+*, 
+*:before, 
+*:after {
+    box-sizing: inherit;
+}
+      
+html {
+    box-sizing: border-box;
+    height: 100%;
+}
+
+img {
+    display: block; 
+    vertical-align: initial;
+}
+
+body {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+
+/* --------------- Main.css Overides --------------- */
+
+body {
+    background-color: white;
+}
+
+a {
+    font-size: 1.25em;
+}
+
+p {
+    font-size: 2em;
+}
+
+/* ---------------- Flexbox Wrapper ---------------- */
+
 .wrapper {
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -15,6 +60,10 @@
     -webkit-justify-content: space-evenly;
     justify-content: space-evenly;
 }
+
+
+/* ---------------- Header Styling ---------------- */
+
 .header {
     background-color: black;
     padding: 2px 0 2px 0;
@@ -30,4 +79,25 @@
 .header h2 {
     color: orange;
     font-family: "Georgia";
+}
+
+
+/* ---------------- Footer Styling ---------------- */
+
+.footer {
+    padding-top: 20px;
+}
+
+
+.footer p {
+    font-size: 0.75em;
+}
+
+
+/* ---------------- Info Styling ---------------- */
+
+.main {
+    flex: 1;
+    margin: 0 auto;
+    max-width: 1060px;
 }
