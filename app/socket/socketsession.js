@@ -7,7 +7,7 @@
 
 let cookieParser = require('../cookie');
 let session = require('../session');
-let passport = require('../passport');
+let { passport } = require('../passport');
 
 let socketSession = function(socket, next) {
   let req = socket.request;
@@ -25,10 +25,9 @@ let socketSession = function(socket, next) {
   //  Override socket.on
   socket.onevent = function() {
     let _args = arguments;
-     _onevent.apply(socket, _args);
-     if (shouldSave(req)) {
-       req.session.save();
-     }
+    _onevent.apply(socket, _args);
+    if (shouldSave(req)) req.session.save();
+    if (req.user && req.user.changed()) req.user.save();
   };
 
   /*

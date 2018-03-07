@@ -5,7 +5,7 @@ let router = express.Router();
 
 let path = require('path');
 
-let passport = require('../passport');
+let { passport } = require('../passport');
 let mailer = require('../mailer');
 let logger = require('winston').loggers.get('auth');
 let db = require('../db/');

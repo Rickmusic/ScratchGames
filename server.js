@@ -10,7 +10,7 @@ let winston = require('./app/log/winston'); // All other files can just require(
 
 let cookieParser = require('./app/cookie');
 let session = require('./app/session');
-let passport = require('./app/passport');
+let { passport, passportAutosave } = require('./app/passport');
 let router = require('./app/router');
 let http = require('./app/socket')(app);
 
@@ -26,10 +26,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser);
 app.use(session);
+
 // Passport init and session must come after express-session init
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate('remember-me'));
+app.use(passportAutosave);
 app.use(flash());
 
 app.use(morgan.file);
