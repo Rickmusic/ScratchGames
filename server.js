@@ -5,7 +5,6 @@ let flash = require('express-flash');
 let bodyParser = require('body-parser');
 let path = require('path');
 
-let config = require('./app/config');
 let morgan = require('./app/log/morgan');
 let winston = require('./app/log/winston'); // All other files can just require('winston') once configured
 
