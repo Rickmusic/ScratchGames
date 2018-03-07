@@ -12,6 +12,7 @@ let winston = require('./app/log/winston'); // All other files can just require(
 let session = require('./app/session');
 let passport = require('./app/passport');
 let router = require('./app/router');
+let http = require('./app/socket')(app);
 
 let port = process.env.PORT || 3000;
 
@@ -36,6 +37,6 @@ app.use(morgan.console); // Display 400 and 500 response codes to console
 
 app.use('/', router);
 
-app.listen(port, function() {
+http.listen(port, function() {
   winston.info('Server listening at port %d', port);
 });

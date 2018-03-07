@@ -32,6 +32,7 @@
     "passport-local": "^1.0.0",
     "passport-remember-me-extended": "0.0.3",
     "sequelize": "^4.33.4",
+    "socket.io": "^2.0.4",
     "winston": "^2.4.0"
   },
   "devDependencies": {
