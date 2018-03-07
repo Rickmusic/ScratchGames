@@ -1,0 +1,81 @@
+.right{
+    order: 2;
+    width: 46%;
+    text-align: left;
+    padding: 4%;
+}
+.left{
+    order: 1;
+    width: 46%;
+    border-right:  #F3F3F3 solid 0.2em;
+    text-align: left;
+    padding: 4%;
+}
+h1{
+    display: block;
+}
+.column{
+    width: 80%;
+    max-width: 800px;
+}
+.or{
+    text-align: center;
+    padding: 3%;
+}
+.left,.right{
+    border: none;
+}
+.top{
+    padding: 1em;
+}
+.bottom > a{
+    text-decoration: underline;
+    color: black;
+}
+
+a{
+    text-decoration: none;
+}
+#logo{
+    width:5em;
+    padding-bottom: 1em;
+}
+.bottom{
+    order: 2;
+    background-color: #F3F3F3;
+    padding: 2em;
+}
+
+
+#register{
+    padding-top: 1em;
+}
+#create{
+    display: none;
+}
+
+.createbtn{
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 2em;
+    padding: 2%;
+    margin: 1em;
+    height: 2em;
+}
+
+.leftbtn{
+    width: 50%;
+    order: 1;
+    margin: auto;
+    text-align: center;
+}
+
+#facebook{
+    background-color: #34589D;
+}
+#google{
+    background-color: #FF2711;
+}

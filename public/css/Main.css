@@ -1,88 +1,110 @@
 html, body {
     margin: 0;
     padding: 0;
+
 }
 body{
     background-color: #C4C2C2;
 }
-#logo{
-     width:5em;
-     padding-bottom: 1em;
+.top{
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+    padding: 1em;
+ }
+.corner{
+    float: right;
+    padding-right: 2em;
+    padding-top: 0.5em;
 }
 .column{
     margin: 0 auto;
-    width: 80%;
-    max-width: 800px;
+    width: 100%;
     background-color: white;
     text-align: center;
     display: flex;
     flex-direction: column;
 }
+.left{
+    order: 1;
+    width: 15%;
+}
+.right{
+    order: 3;
+    width: 15%;
+}
+.center{
+    width: 70%;
+    order: 2;
+    border: black solid 2px;
+
+}
+
 .row{
     order: 1;
     display: flex;
     flex-direction: row;
+
+}
+.left,.right,.center{
+    text-align: center;
+    border-top: black solid 2px;
 }
 
-.left{
-    order: 1;
-    width: 46%;
-    border-right:  #F3F3F3 solid 0.2em;
-    text-align: left;
-    padding: 4%;
-}
-.right{
-    order: 2;
-    width: 46%;
-    text-align: left;
-    padding: 4%;
-}
-.bottom{
-    order: 2;
-    background-color: #F3F3F3;
-    padding: 2em;
-}
-.top{
-    width: 100%;
-    text-align: center;
-}
-.center{
-    text-align: center;
-    padding: 3%;
-}
-
-#register{
-    padding-top: 1em;
-}
-#create{
-    display: none;
-}
-
-.createbtn{
-    background-color: black;
-    color: white;
-    cursor: pointer;
-    text-align: center;
+.nav{
+    width: 23%;
+    height: 100%;
+    display: inline-block;
     vertical-align: middle;
     line-height: 2em;
-    padding: 2%;
-    margin: 1em;
+    cursor: pointer;
+    border-right: black solid 2px;
+}
+.end{
+    border: none;
+}
+nav{
     height: 2em;
+    border-bottom: black solid 2px;
+}
+.sideTitle{
+    height: 2em;
+    vertical-align: middle;
+    line-height: 2em;
+    border-bottom: black solid 2px;
+}
+.accordbtn{
+    cursor: pointer;
+}
+.accordcon{
+    display: none;
+}
+.accordbtn.active:after{
+    content:'\02795';
+    font-size:0.7em;
+    padding-left: 1em;
 }
 
-.leftbtn{
-    width: 50%;
-    order: 1;
-    margin: auto;
-    text-align: center;
+
+ul{
+    list-style-type: none;
+    margin: 0;
+    padding:0;
 }
 
-#facebook{
-    background-color: #34589D;
+#change{
+    min-height: 400px; /* In progress and will change */
 }
-#google{
-    background-color: #FF2711;
+.leaderboard{
+    border-top: black solid 2px;
 }
+
+
+
+
+
+
+
 
 input{
     font-size: 1em;
@@ -117,16 +139,9 @@ h1{
     color: orange;
     font-size: 2em;
     font-family: "Georgia";
+    display: inline;
 }
 h2{
     margin-top: 1em;
     margin-bottom: 1em;
-}
-.bottom > a{
-    text-decoration: underline;
-    color: black;
-}
-
-a{
-    text-decoration: none;
 }

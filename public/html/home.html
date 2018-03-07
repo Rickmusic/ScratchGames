@@ -13,12 +13,106 @@
         <meta name="theme-color" content="#ffffff">
 
         <link rel="stylesheet" type="text/css" href="Main.css"/>
-        <title>Profile</title>
+        <title>Scratch Games</title>
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-        <script src="/profile.js"></script>
+        <!--<script src="/profile.js"></script>-->
+        <script src="/home.js"></script>
     </head>
     <body>
-        <p id="profile"></p>
-        <a href="/logout">Log out</a>
+    <div class="corner"><a href="/logout">Log out</a></div>
+    <div class="top">
+        <h1>Scratch Games</h1>
+    </div>
+    <div class="row">
+        <div class="left">
+            <div class="sideTitle">Players</div>
+            <div class="accord">
+                <h4 class="accordbtn">Global</h4>
+                <div class="accordcon">
+                    <ul id="globalPlayers">
+                        <li>Austin</li>
+                    </ul>
+                </div>
+                <h4 class="accordbtn">Lobby</h4>
+                <div class="accordcon">
+                    <ul id="LobbyPlayers">
+                        <li>Some random Guy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="center">
+            <nav>
+                <div class="nav">Home</div>
+                <div class="nav">Profiles</div>
+                <div class="nav">My Leaderboard</div>
+                <div class="nav end">Joincode</div>
+            </nav>
+            <div id="change">
+                The Everything
+            </div>
+            <div class="leaderboard">
+                Can't remember how the leaderboards all work. Is this only the top ten players per game?
+                Where my Leaderboard shows where I stand in the overall leaderboard?
+                <div class="accord">
+                    <h4 class="accordbtn">UNO</h4>
+                    <div class="accordcon">
+                        <ul id="UNO">
+                            <li>Austin</li>
+                        </ul>
+                    </div>
+                    <h4 class="accordbtn">SomeGame</h4>
+                    <div class="accordcon">
+                        <ul id="SomeOtherGame">
+                            <li>Some random Guy</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="right">
+            <div class="sideTitle">Chat</div>
+            <div class="accord">
+                <h4 class="accordbtn">Global</h4>
+                <div class="accordcon">
+                    <ul id="globalChat">
+                        <li>Message stand in Global Chat</li>
+                    </ul>
+                </div>
+                <h4 class="accordbtn">Lobby</h4>
+                <div class="accordcon">
+                    <ul id="lobbyChat">
+                        <li>Message stand in Lobby Chat</li>
+                    </ul>
+                </div>
+                <h4 class="accordbtn">Jill</h4>
+                <div class="accordcon">
+                    <ul id="JillChat">
+                        <li>Message stand in Jill Chat</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!--<p id="profile"></p>-->
+
     </body>
+
 </html>
