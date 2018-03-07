@@ -1,7 +1,6 @@
 'use strict';
 
-let session = require('../session');
-let passport = require('../passport');
+let socketsession = require('./socketsession');
 
 let events = function(io) {
 
@@ -19,15 +18,7 @@ let init = function(app) {
   // Use Express Session and Passport Sessions
   //   Express available in events as socket.request.session
   //   Passport available in events as socket.request.user
-  io.use(function(socket, next) {
-    session(socket.request, socket.request.res, next);
-  });
-  io.use(function(socket, next) {
-    passport.initialize()(socket.request, socket.request.res, next);
-  });
-  io.use(function(socket, next) {
-    passport.session()(socket.request, socket.request.res, next);
-  });
+  io.use(socketsession);
 
   events (io);
 

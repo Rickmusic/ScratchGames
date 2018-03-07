@@ -3,12 +3,13 @@ let app = express();
 
 let flash = require('express-flash');
 let bodyParser = require('body-parser');
-let cookieParser = require('cookie-parser');
 let path = require('path');
 
 let config = require('./app/config');
 let morgan = require('./app/log/morgan');
 let winston = require('./app/log/winston'); // All other files can just require('winston') once configured
+
+let cookieParser = require('./app/cookie');
 let session = require('./app/session');
 let passport = require('./app/passport');
 let router = require('./app/router');
@@ -24,7 +25,7 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser(config.session.secret));
+app.use(cookieParser);
 app.use(session);
 // Passport init and session must come after express-session init
 app.use(passport.initialize());
