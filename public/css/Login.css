@@ -56,14 +56,6 @@ a{
 
 .createbtn{
     background-color: black;
-    color: white;
-    cursor: pointer;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 2em;
-    padding: 2%;
-    margin: 1em;
-    height: 2em;
 }
 
 .leftbtn{

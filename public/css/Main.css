@@ -49,8 +49,8 @@ body{
 .left,.right,.center{
     text-align: center;
     border-top: black solid 2px;
+    border-bottom: black solid 2px;
 }
-
 .nav{
     width: 23%;
     height: 100%;
@@ -85,7 +85,6 @@ nav{
     padding-left: 1em;
 }
 
-
 ul{
     list-style-type: none;
     margin: 0;
@@ -93,18 +92,13 @@ ul{
 }
 
 #change{
-    min-height: 400px; /* In progress and will change */
+    margin-top: 1em;
+    padding-bottom: 1em;
+    border-top: black solid 2px;
 }
 .leaderboard{
     border-top: black solid 2px;
 }
-
-
-
-
-
-
-
 
 input{
     font-size: 1em;
@@ -144,4 +138,32 @@ h1{
 h2{
     margin-top: 1em;
     margin-bottom: 1em;
+}
+
+/*Inner Body Home */
+.createbtn{
+    background-color: green;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 2em;
+    padding: 2%;
+    margin: 1em;
+    height: 2em;
+}
+.small{
+    height: 1em;
+    line-height: 1em;
+}
+#table{
+    min-height: 300px;
+    border: black solid 2px;
+    margin: 1em;
+}
+table{
+    width: 100%;
+}
+th, td {
+    border: 1px solid black;
 }
