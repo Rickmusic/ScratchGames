@@ -43,45 +43,13 @@
         </div>
         <div class="center">
             <nav>
-                <div class="nav">Home</div>
-                <div class="nav">Profiles</div>
-                <div class="nav">My Leaderboard</div>
-                <div class="nav end">Joincode</div>
+                <div class="nav" id="navh">Home</div>
+                <div class="nav" id="navp">Profiles</div>
+                <div class="nav" id="navl">My Leaderboard</div>
+                <div class="nav end" id="navj">Joincode</div>
             </nav>
             <div id="change">
-                <div id="bighome">
-                    <nav>
-                        <div class="nav">All</div>
-                        <div class="nav">UNO</div>
-                        <div class="nav">Go Fish</div>
-                        <div class="nav end">Fibbage</div>
-                    </nav>
-                    <div id="table">
-                        <table id="lobbylist">
-                            <tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th># of Players</th>
-                                <th># of Spectators</th>
-                                <th>Join</th>
-                                <th>Spectate</th>
-                            </tr>
-                            <tr>
-                                <td>Austin is great</td>
-                                <td>UNO</td>
-                                <td>1</td>
-                                <td>38932</td>
-                                <td>Locked Symbol</td>
-                                <td>Unlocked Symbol</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div id="search">
-                        <input type="text" placeholder="Search">
-                    </div>
-                    <button id="createbtn">Create Lobby</button>
-                </div>
-
+                <!-- Loaded From Snippets -->
             </div>
             <div class="leaderboard">
                 Can't remember how the leaderboards all work. Is this only the top ten players per game?
@@ -126,8 +94,6 @@
             </div>
         </div>
     </div>
-        <!--<p id="profile"></p>-->
-
 
     <!-- Playing with a modal content box -->
     <div class="modal" id="createModal">
@@ -137,7 +103,7 @@
             <p>Lobby Settings</p>
             </div>
             <div id="createForm">
-                <form id="createLobby" action="/createLobby" method="post">
+                <form id="createLobby" action="">
                     <input id="name" type="text" name="username" placeholder="Lobby Name"/>
                     <div class="row">
                         <div class="leftForm">
