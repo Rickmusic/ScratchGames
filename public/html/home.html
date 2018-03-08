@@ -79,10 +79,9 @@
                     <div id="search">
                         <input type="text" placeholder="Search">
                     </div>
-                    <div class="createbtn small">
-                        Create Lobby
-                    </div>
+                    <button id="createbtn">Create Lobby</button>
                 </div>
+
             </div>
             <div class="leaderboard">
                 Can't remember how the leaderboards all work. Is this only the top ten players per game?
@@ -129,6 +128,54 @@
     </div>
         <!--<p id="profile"></p>-->
 
+
+    <!-- Playing with a modal content box -->
+    <div class="modal" id="createModal">
+        <div class="modalContent">
+            <span class="close">&times;</span>
+            <div id="createHeader">
+            <p>Lobby Settings</p>
+            </div>
+            <div id="createForm">
+                <form id="createLobby" action="/createLobby" method="post">
+                    <input id="name" type="text" name="username" placeholder="Lobby Name"/>
+                    <div class="row">
+                        <div class="leftForm">
+                            <label for="leftRadio">Public</label>
+                            <input type="radio" id="leftRadio" name="public" value="public" checked>
+                        </div>
+                        <div class="rightForm">
+                            <label for="rightRadio">Private</label>
+                            <input type="radio" id="rightRadio" name="public" value="private">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="type">Game type:</label>
+                        <select name="type" id="type">
+
+                            <option value="pizza">Games list auto generated here?</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="numPlay">Max number of players:</label>
+                        <select name="numPlayers" id="numPlay">
+                            <option value="1">#of players auto constrained</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="numSpec">Number of allowed Spectators:</label>
+                        <select name="numSpec" id="numSpec">
+                            <option value="1">#of spec</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                    <p id="message" style="color: red;"><p>
+                    <input type="submit" value="Create"/>
+                </form>
+            </div>
+        </div>
+    </div>
     </body>
 
 </html>

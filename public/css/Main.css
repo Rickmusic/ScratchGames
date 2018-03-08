@@ -52,7 +52,7 @@ body{
     border-bottom: black solid 2px;
 }
 .nav{
-    width: 23%;
+    width: 22%;
     height: 100%;
     display: inline-block;
     vertical-align: middle;
@@ -100,30 +100,7 @@ ul{
     border-top: black solid 2px;
 }
 
-input{
-    font-size: 1em;
-    width: 90%;
-    height: 2em;
-    padding-left: 1em;
-    margin-top: 1em;
-    border: #F3F3F3 solid 2px;
-}
 
-input[type=checkbox]{
-    margin-top: 3em;
-    width:2em;
-    font-size: 0.5em;
-}
-
-input[type=submit] {
-    background-color: #E00F1F;
-    width: 95%;
-    height: 3em;
-    cursor: pointer;
-    color: white;
-    border: none;
-    margin-bottom: 1em;
-}
 
 label{
     color: black;
@@ -166,4 +143,84 @@ table{
 }
 th, td {
     border: 1px solid black;
+}
+
+button{
+    width: 50%;
+    height: 2em;
+    background-color: green;
+    border: none;
+    margin: 1em;
+    cursor: pointer;
+}
+
+/*Inner body home Modal Handling */
+.modal{
+    display: none;
+    position: fixed;
+    z-index:1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+.modalContent{
+    background-color: whitesmoke;
+    margin: auto;
+    border: black solid 2px;
+    width: 60%;
+    margin-top: 10%;
+}
+/* The Close Button */
+.close {
+    color: black;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    padding-right: 1em;
+    padding-top: 0.3em;
+}
+
+.close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#createHeader{
+    width: 100%;
+    border-bottom: black solid 2px;
+    text-align: center;
+}
+
+
+#createLobby{
+
+    text-align: center;
+}
+
+input{
+    width: 60%;
+    margin-top: 1em;
+}
+input[type=radio]{
+    width: 1em;
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+select{
+    margin: 1em;
+}
+.leftForm{
+    order: 1;
+    width: 50%;
+    padding: 1em;
+    text-align: right;
+}
+.rightForm{
+    order: 2;
+    width: 50%;
+    padding: 1em;
+    text-align: left;
 }
