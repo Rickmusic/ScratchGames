@@ -1,226 +1,224 @@
-html, body {
-    margin: 0;
-    padding: 0;
-
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
-body{
-    background-color: #C4C2C2;
+body {
+  background-color: #c4c2c2;
 }
-.top{
-    width: 100%;
-    text-align: center;
-    display: inline-block;
-    padding: 1em;
- }
-.corner{
-    float: right;
-    padding-right: 2em;
-    padding-top: 0.5em;
+.top {
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+  padding: 1em;
 }
-.column{
-    margin: 0 auto;
-    width: 100%;
-    background-color: white;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
+.corner {
+  float: right;
+  padding-right: 2em;
+  padding-top: 0.5em;
 }
-.left{
-    order: 1;
-    width: 15%;
+.column {
+  margin: 0 auto;
+  width: 100%;
+  background-color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
 }
-.right{
-    order: 3;
-    width: 15%;
+.left {
+  order: 1;
+  width: 15%;
 }
-.center{
-    width: 70%;
-    order: 2;
-    border: black solid 2px;
-
+.right {
+  order: 3;
+  width: 15%;
 }
-
-.row{
-    order: 1;
-    display: flex;
-    flex-direction: row;
-
-}
-.left,.right,.center{
-    text-align: center;
-    border-top: black solid 2px;
-    border-bottom: black solid 2px;
-}
-.nav{
-    width: 22%;
-    height: 100%;
-    display: inline-block;
-    vertical-align: middle;
-    line-height: 2em;
-    cursor: pointer;
-    border-right: black solid 2px;
-}
-.end{
-    border: none;
-}
-nav{
-    height: 2em;
-    border-bottom: black solid 2px;
-}
-.sideTitle{
-    height: 2em;
-    vertical-align: middle;
-    line-height: 2em;
-    border-bottom: black solid 2px;
-}
-.accordbtn{
-    cursor: pointer;
-}
-.accordcon{
-    display: none;
-}
-.accordbtn.active:after{
-    content:'\02795';
-    font-size:0.7em;
-    padding-left: 1em;
+.center {
+  width: 70%;
+  order: 2;
+  border: black solid 2px;
 }
 
-ul{
-    list-style-type: none;
-    margin: 0;
-    padding:0;
+.row {
+  order: 1;
+  display: flex;
+  flex-direction: row;
+}
+.left,
+.right,
+.center {
+  text-align: center;
+  border-top: black solid 2px;
+  border-bottom: black solid 2px;
+}
+.nav {
+  width: 22%;
+  height: 100%;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 2em;
+  cursor: pointer;
+  border-right: black solid 2px;
+}
+.end {
+  border: none;
+}
+nav {
+  height: 2em;
+  border-bottom: black solid 2px;
+}
+.sideTitle {
+  height: 2em;
+  vertical-align: middle;
+  line-height: 2em;
+  border-bottom: black solid 2px;
+}
+.accordbtn {
+  cursor: pointer;
+}
+.accordcon {
+  display: none;
+}
+.accordbtn.active:after {
+  content: '\02795';
+  font-size: 0.7em;
+  padding-left: 1em;
 }
 
-#change{
-    margin-top: 1em;
-    padding-bottom: 1em;
-    border-top: black solid 2px;
-}
-.leaderboard{
-    border-top: black solid 2px;
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
-
-
-label{
-    color: black;
+#change {
+  margin-top: 1em;
+  padding-bottom: 1em;
+  border-top: black solid 2px;
+}
+.leaderboard {
+  border-top: black solid 2px;
 }
 
-h1{
-    color: orange;
-    font-size: 2em;
-    font-family: "Georgia";
-    display: inline;
+label {
+  color: black;
 }
-h2{
-    margin-top: 1em;
-    margin-bottom: 1em;
+
+h1 {
+  color: orange;
+  font-size: 2em;
+  font-family: 'Georgia';
+  display: inline;
+}
+h2 {
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 /*Inner Body Home */
-.createbtn{
-    background-color: green;
-    color: white;
-    cursor: pointer;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 2em;
-    padding: 2%;
-    margin: 1em;
-    height: 2em;
+.createbtn {
+  background-color: green;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 2em;
+  padding: 2%;
+  margin: 1em;
+  height: 2em;
 }
-.small{
-    height: 1em;
-    line-height: 1em;
+.small {
+  height: 1em;
+  line-height: 1em;
 }
-#table{
-    min-height: 300px;
-    border: black solid 2px;
-    margin: 1em;
+#table {
+  min-height: 300px;
+  border: black solid 2px;
+  margin: 1em;
 }
-table{
-    width: 100%;
+table {
+  width: 100%;
 }
-th, td {
-    border: 1px solid black;
+th,
+td {
+  border: 1px solid black;
 }
 
-button{
-    width: 50%;
-    height: 2em;
-    background-color: green;
-    border: none;
-    margin: 1em;
-    cursor: pointer;
+button {
+  width: 50%;
+  height: 2em;
+  background-color: green;
+  border: none;
+  margin: 1em;
+  cursor: pointer;
 }
 
 /*Inner body home Modal Handling */
-.modal{
-    display: none;
-    position: fixed;
-    z-index:1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
 }
-.modalContent{
-    background-color: whitesmoke;
-    margin: auto;
-    border: black solid 2px;
-    width: 60%;
-    margin-top: 10%;
+.modalContent {
+  background-color: whitesmoke;
+  margin: auto;
+  border: black solid 2px;
+  width: 60%;
+  margin-top: 10%;
 }
 /* The Close Button */
 .close {
-    color: black;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    padding-right: 1em;
-    padding-top: 0.3em;
+  color: black;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  padding-right: 1em;
+  padding-top: 0.3em;
 }
 
-.close:hover, .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-#createHeader{
-    width: 100%;
-    border-bottom: black solid 2px;
-    text-align: center;
+#createHeader {
+  width: 100%;
+  border-bottom: black solid 2px;
+  text-align: center;
 }
 
-
-#createLobby{
-
-    text-align: center;
+#createLobby {
+  text-align: center;
 }
 
-input{
-    width: 60%;
-    margin-top: 1em;
+input {
+  width: 60%;
+  margin-top: 1em;
 }
-input[type=radio]{
-    width: 1em;
-    margin-bottom: 1em;
-    margin-top: 1em;
+input[type='radio'] {
+  width: 1em;
+  margin-bottom: 1em;
+  margin-top: 1em;
 }
-select{
-    margin: 1em;
+select {
+  margin: 1em;
 }
-.leftForm{
-    order: 1;
-    width: 50%;
-    padding: 1em;
-    text-align: right;
+.leftForm {
+  order: 1;
+  width: 50%;
+  padding: 1em;
+  text-align: right;
 }
-.rightForm{
-    order: 2;
-    width: 50%;
-    padding: 1em;
-    text-align: left;
+.rightForm {
+  order: 2;
+  width: 50%;
+  padding: 1em;
+  text-align: left;
 }

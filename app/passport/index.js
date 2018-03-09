@@ -220,12 +220,12 @@ let init = function() {
   return passport;
 };
 
-let autosaveMiddleware = function (req, res, next) {
+let autosaveMiddleware = function(req, res, next) {
   function afterResponse() {
     res.removeListener('finish', afterResponse);
     res.removeListener('close', afterResponse);
     if (req.user && req.user.changed()) req.user.save();
-  };
+  }
   res.on('finish', afterResponse);
   res.on('close', afterResponse);
   next();

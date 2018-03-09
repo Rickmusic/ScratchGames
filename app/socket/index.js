@@ -3,9 +3,8 @@
 let socketsession = require('./socketsession');
 
 let events = function(io) {
-
-  io.on('connection', function(socket){
-    socket.on('chat message', function(msg){
+  io.on('connection', function(socket) {
+    socket.on('chat message', function(msg) {
       io.emit('chat message', msg);
     });
   });
@@ -20,7 +19,7 @@ let init = function(app) {
   //   Passport available in events as socket.request.user
   io.use(socketsession);
 
-  events (io);
+  events(io);
 
   return http;
 };

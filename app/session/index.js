@@ -5,7 +5,6 @@ let session = require('express-session');
 let config = require('../config');
 
 let init = function() {
-  
   return session({
     secret: config.session.secret,
     resave: false, // don't automatically write to session store
