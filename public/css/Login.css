@@ -1,0 +1,97 @@
+.right{
+    order: 2;
+    width: 46%;
+    text-align: left;
+    padding: 4%;
+}
+.left{
+    order: 1;
+    width: 46%;
+    border-right:  #F3F3F3 solid 0.2em;
+    text-align: left;
+    padding: 4%;
+}
+h1{
+    display: block;
+}
+.column{
+    width: 80%;
+    max-width: 800px;
+}
+.or{
+    text-align: center;
+    padding: 3%;
+}
+.left,.right{
+    border: none;
+}
+.top{
+    padding: 1em;
+}
+.bottom > a{
+    text-decoration: underline;
+    color: black;
+}
+
+a{
+    text-decoration: none;
+}
+#logo{
+    width:5em;
+    padding-bottom: 1em;
+}
+.bottom{
+    order: 2;
+    background-color: #F3F3F3;
+    padding: 2em;
+}
+
+
+#register{
+    padding-top: 1em;
+}
+#create{
+    display: none;
+}
+
+.createbtn{
+    background-color: black;
+}
+
+.leftbtn{
+    width: 50%;
+    order: 1;
+    margin: auto;
+    text-align: center;
+}
+
+#facebook{
+    background-color: #34589D;
+}
+#google{
+    background-color: #FF2711;
+}
+input{
+    font-size: 1em;
+    width: 90%;
+    height: 2em;
+    padding-left: 1em;
+    margin-top: 1em;
+    border: #F3F3F3 solid 2px;
+}
+
+input[type=checkbox]{
+    margin-top: 3em;
+    width:2em;
+    font-size: 0.5em;
+}
+
+input[type=submit] {
+    background-color: #E00F1F;
+    width: 95%;
+    height: 3em;
+    cursor: pointer;
+    color: white;
+    border: none;
+    margin-bottom: 1em;
+}

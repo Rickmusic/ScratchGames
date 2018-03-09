@@ -220,4 +220,18 @@ let init = function() {
   return passport;
 };
 
-module.exports = init();
+let autosaveMiddleware = function (req, res, next) {
+  function afterResponse() {
+    res.removeListener('finish', afterResponse);
+    res.removeListener('close', afterResponse);
+    if (req.user && req.user.changed()) req.user.save();
+  };
+  res.on('finish', afterResponse);
+  res.on('close', afterResponse);
+  next();
+};
+
+module.exports = {
+  passport: init(),
+  passportAutosave: autosaveMiddleware,
+};

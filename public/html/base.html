@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+    <head>
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+        <link rel="manifest" href="/favicon/site.webmanifest">
+        <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#da532c">
+        <link rel="shortcut icon" href="/favicon/favicon.ico">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="stylesheet" type="text/css" href="Main.css"/>
+        <title>Scratch Games</title>
+
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="socket.io/socket.io.js"></script>
+        <script src="base.js"></script>
+    </head>
+    <body>
+    <div class="corner"><a href="/logout">Log out</a></div>
+    <div class="top">
+        <h1>Scratch Games</h1>
+    </div>
+    <div class="row">
+        <div class="left">
+            <div class="sideTitle">Players</div>
+            <div class="accord">
+                <h4 class="accordbtn">Global</h4>
+                <div class="accordcon">
+                    <ul id="globalPlayers">
+                        <li>Austin</li>
+                    </ul>
+                </div>
+                <h4 class="accordbtn">Lobby</h4>
+                <div class="accordcon">
+                    <ul id="LobbyPlayers">
+                        <li>Some random Guy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="center">
+            <nav>
+                <div class="nav" id="navh">Home</div>
+                <div class="nav" id="navp">Profiles</div>
+                <div class="nav" id="navl">My Leaderboard</div>
+                <div class="nav end" id="navj">Joincode</div>
+            </nav>
+            <div id="change">
+                <!-- Loaded From Snippets -->
+            </div>
+            <div class="leaderboard">
+                Can't remember how the leaderboards all work. Is this only the top ten players per game?
+                Where my Leaderboard shows where I stand in the overall leaderboard?
+                <div class="accord">
+                    <h4 class="accordbtn2">UNO</h4>
+                    <div class="accordcon">
+                        <ul id="UNO">
+                            <li>Austin</li>
+                        </ul>
+                    </div>
+                    <h4 class="accordbtn2">SomeGame</h4>
+                    <div class="accordcon">
+                        <ul id="SomeOtherGame">
+                            <li>Some random Guy</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <div class="sideTitle">Chat</div>
+            <div class="accord">
+                <h4 class="accordbtn">Global</h4>
+                <div class="accordcon">
+                    <ul id="globalChat">
+                        <li>Message stand in Global Chat</li>
+                    </ul>
+                </div>
+                <h4 class="accordbtn">Lobby</h4>
+                <div class="accordcon">
+                    <ul id="lobbyChat">
+                        <li>Message stand in Lobby Chat</li>
+                    </ul>
+                </div>
+                <h4 class="accordbtn">Jill</h4>
+                <div class="accordcon">
+                    <ul id="JillChat">
+                        <li>Message stand in Jill Chat</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Playing with a modal content box -->
+    <div class="modal" id="createModal">
+        <div class="modalContent">
+            <span class="close">&times;</span>
+            <div id="createHeader">
+            <p>Lobby Settings</p>
+            </div>
+            <div id="createForm">
+                <form id="createLobby" action="">
+                    <input id="name" type="text" name="username" placeholder="Lobby Name"/>
+                    <div class="row">
+                        <div class="leftForm">
+                            <label for="leftRadio">Public</label>
+                            <input type="radio" id="leftRadio" name="public" value="public" checked>
+                        </div>
+                        <div class="rightForm">
+                            <label for="rightRadio">Private</label>
+                            <input type="radio" id="rightRadio" name="public" value="private">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="type">Game type:</label>
+                        <select name="type" id="type">
+
+                            <option value="pizza">Games list auto generated here?</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="numPlay">Max number of players:</label>
+                        <select name="numPlayers" id="numPlay">
+                            <option value="1">#of players auto constrained</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="numSpec">Number of allowed Spectators:</label>
+                        <select name="numSpec" id="numSpec">
+                            <option value="1">#of spec</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                    <p id="message" style="color: red;"><p>
+                    <input type="submit" value="Create"/>
+                </form>
+            </div>
+        </div>
+    </div>
+    </body>
+
+</html>
