@@ -19,11 +19,7 @@ let rootdir = { root: path.join(__dirname, '../../') };
 });*/
 
 router.get('/home', isAuthenticated, function(req, res) {
-  res.sendFile(path.join('public/html/home.html'), rootdir);
-});
-
-router.get('/profile', isAuthenticated, function(req, res) {
-  res.sendFile(path.join('public/html/profile.html'), rootdir);
+  res.sendFile(path.join('public/html/base.html'), rootdir);
 });
 
 router.get('/user', isAuthenticatedDNE, function(req, res) {
