@@ -47,52 +47,54 @@ let socketSession = function(socket, next) {
       });
     });
   });
-  
+
   /*
    * These functions hash, isModified, isSaved, shouldSave
    * and shouldDestroy are canibalized from express-session
    * in order to this module being able to comply with the autoSave options.
    */
 
-    function hash(sess) {
-      return crc(JSON.stringify(sess, function(key, val) {
+  function hash(sess) {
+    return crc(
+      JSON.stringify(sess, function(key, val) {
         if (key !== 'cookie') {
           return val;
         }
-      }));
+      })
+    );
+  }
+
+  // check if session has been modified
+  function isModified(sess) {
+    return originalId !== sess.id || originalHash !== hash(sess);
+  }
+
+  // check if session has been modified
+  function isModified(sess) {
+    return originalId !== sess.id || originalHash !== hash(sess);
+  }
+
+  // check if session has been saved
+  function isSaved(sess) {
+    return originalId === sess.id && savedHash === hash(sess);
+  }
+
+  // determine if session should be destroyed
+  function shouldDestroy(req) {
+    return req.sessionID && unsetDestroy && req.session == null;
+  }
+
+  // determine if session should be saved to store
+  function shouldSave(req) {
+    // cannot set cookie without a session ID
+    if (typeof req.sessionID !== 'string') {
+      return false;
     }
 
-    // check if session has been modified
-    function isModified(sess) {
-      return originalId !== sess.id || originalHash !== hash(sess);
-    }
-
-   // check if session has been modified
-    function isModified(sess) {
-      return originalId !== sess.id || originalHash !== hash(sess);
-    }
-
-    // check if session has been saved
-    function isSaved(sess) {
-      return originalId === sess.id && savedHash === hash(sess);
-    }
-
-    // determine if session should be destroyed
-    function shouldDestroy(req) {
-      return req.sessionID && unsetDestroy && req.session == null;
-    }
-
-    // determine if session should be saved to store
-    function shouldSave(req) {
-      // cannot set cookie without a session ID
-      if (typeof req.sessionID !== 'string') {
-        return false;
-      }
-
-      return !saveUninitializedSession && cookieId !== req.sessionID ? 
-        isModified(req.session) : 
-        !isSaved(req.session)
-    }
+    return !saveUninitializedSession && cookieId !== req.sessionID
+      ? isModified(req.session)
+      : !isSaved(req.session);
+  }
 };
 
 module.exports = socketSession;
