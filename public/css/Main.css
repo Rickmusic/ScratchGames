@@ -27,14 +27,14 @@ body {
 }
 .left {
   order: 1;
-  width: 15%;
+  width: 20%;
 }
 .right {
   order: 3;
-  width: 15%;
+  width: 20%;
 }
 .center {
-  width: 70%;
+  width: 60%;
   order: 2;
   border: black solid 2px;
 }
@@ -73,17 +73,21 @@ nav {
   line-height: 2em;
   border-bottom: black solid 2px;
 }
+
+
+/* Accordian handling */
 .accordbtn {
   cursor: pointer;
 }
-.accordcon {
+.accordcon{
   display: none;
 }
-.accordbtn.active:after {
+.accordbtn.active:after{
   content: '\02795';
   font-size: 0.7em;
   padding-left: 1em;
 }
+
 
 ul {
   list-style-type: none;
@@ -138,10 +142,6 @@ h2 {
 }
 table {
   width: 100%;
-}
-th,
-td {
-  border: 1px solid black;
 }
 
 button {

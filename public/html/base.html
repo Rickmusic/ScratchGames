@@ -19,8 +19,9 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 
-
+        <!-- Custom Styling -->
         <link rel="stylesheet" type="text/css" href="Main.css"/>
+
         <title>Scratch Games</title>
 
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
@@ -61,16 +62,15 @@
                 <!-- Loaded From Snippets -->
             </div>
             <div class="leaderboard">
-                Can't remember how the leaderboards all work. Is this only the top ten players per game?
-                Where my Leaderboard shows where I stand in the overall leaderboard?
+                <h1>Top Players</h1>
                 <div class="accord">
-                    <h4 class="accordbtn2">UNO</h4>
+                    <h4 class="accordbtn">UNO</h4>
                     <div class="accordcon">
                         <ul id="UNO">
                             <li>Austin</li>
                         </ul>
                     </div>
-                    <h4 class="accordbtn2">SomeGame</h4>
+                    <h4 class="accordbtn">SomeGame</h4>
                     <div class="accordcon">
                         <ul id="SomeOtherGame">
                             <li>Some random Guy</li>
@@ -87,12 +87,24 @@
                     <ul id="globalChat">
                         <li>Message stand in Global Chat</li>
                     </ul>
+                    <div class="chatInput">
+                        <form action="">
+                            <input type="text" id="m" autocomplete="off" placeholder="Your message here"/>
+                            <button>Send</button>
+                        </form>
+                    </div>
                 </div>
                 <h4 class="accordbtn">Lobby</h4>
                 <div class="accordcon">
                     <ul id="lobbyChat">
                         <li>Message stand in Lobby Chat</li>
                     </ul>
+                    <div class="chatInput">
+                        <form action="">
+                            <input type="text" id="m" autocomplete="off" placeholder="Your message here"/>
+                            <button>Send</button>
+                        </form>
+                    </div>
                 </div>
                 <h4 class="accordbtn">Jill</h4>
                 <div class="accordcon">
@@ -127,7 +139,6 @@
                     <div>
                         <label for="type">Game type:</label>
                         <select name="type" id="type">
-
                             <option value="pizza">Games list auto generated here?</option>
                         </select>
                     </div>
