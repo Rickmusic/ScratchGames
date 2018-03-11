@@ -1,5 +1,8 @@
+//let socket = 1;
 // Onload Function //
+let socket = io();
 $(document).ready(function() {
+
   loadBase();
   let curPage = getCookie('curPage');
   if (curPage === '') {
@@ -12,7 +15,10 @@ $(document).ready(function() {
   }
 });
 
+// Attaches handlers to the baze UI elements. //
 function loadBase() {
+
+  // Top navigation bar //
     $('#navp').click(function () {
         loadProfile();
     });
@@ -34,20 +40,23 @@ function loadBase() {
                 .next()
                 .slideToggle('fast');
         });
-    // Adding Accordian Handler to bottom accordians //
-    $('.accordCol')
-        .find('.accordbtn')
-        .click(function () {
-            $(this)
-                .next()
-                .slideToggle('fast');
-            //Hide the other panels
-            $('.accordcon')
-                .not($(this).next())
-                .slideUp('fast');
-        });
+
+    $('.chat').submit(function(e) {
+      e.preventDefault();
+      let formName = $(this).closest('form').attr('name');
+      console.log(formName);
+      let messagedata = $("#"+ formName).val();
+      let msg ={
+          content: messagedata,
+          location: "."+formName,
+      };
+      socket.emit("chat message", msg);
+    });
+
 }
 
+
+//loading of pages. Handling events on the uppermost navigation bar//
 function loadLastpage(curPage) {
   if (curPage === 'home') {
     loadLobbyList();
@@ -82,8 +91,6 @@ function loadLobbyList() {
   });
 }
 
-
-
 function loadProfile() {
   setCookie('curPage', 'profile', 30);
   $.loadScript('profile.js', function () {
@@ -93,8 +100,20 @@ function loadProfile() {
 }
 
 
+// Handling reciept of chat message //
 
-// Library //
+socket.on('chat message', function(msg){
+  let listItem = "<li>";
+    let date = new Date(msg.timestamp);
+    //listItem += date.getHours() + ":";
+    //listItem +=  date.getMinutes()+ " ";
+    listItem += msg.user + ": ";
+    listItem += msg.content;
+    listItem += "</li>";
+    $(msg.location).append(listItem);
+});
+
+// Library functions//
 
 
 // This helps load in the external js files as needed. //

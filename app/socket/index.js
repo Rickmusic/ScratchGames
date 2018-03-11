@@ -5,7 +5,9 @@ let socketsession = require('./socketsession');
 let events = function(io) {
   io.on('connection', function(socket) {
     socket.on('chat message', function(msg) {
-      io.emit('chat message', msg);
+        let message = handleMessage(msg);
+        // We should store some of this information probably on the database //
+        io.emit('chat message', message);
     });
   });
 };
@@ -25,3 +27,13 @@ let init = function(app) {
 };
 
 module.exports = init;
+
+function handleMessage(msg) {
+    let message = {
+        content: msg.content,
+        timestamp: new Date(),
+        user: "SomeUser",
+        location: msg.location,
+    };
+    return message;
+}
