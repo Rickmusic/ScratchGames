@@ -6,6 +6,7 @@ let router = express.Router();
 let path = require('path');
 
 let { router: auth, isAuthenticated, isAuthenticatedDNE } = require('./auth');
+let staticRoutes = require('./static');
 
 let rootdir = { root: path.join(__dirname, '../../') };
 
@@ -35,5 +36,6 @@ router.get('/info', isAuthenticatedDNE, function(req, res) {
 });
 
 router.use('/', auth);
+router.use('/', staticRoutes);
 
 module.exports = router;

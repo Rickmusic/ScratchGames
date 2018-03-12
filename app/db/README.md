@@ -1,3 +1,5 @@
+# The Database
+
 This app is configured to use a MySQL database. 
 You can grab the MySQL Community Server for free at 
 <https://dev.mysql.com/downloads/mysql/>, or use the instance that is 
