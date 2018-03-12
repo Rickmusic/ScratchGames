@@ -2,6 +2,7 @@
 
 To Install:
 * run: `npm install`
+* Set up the [configuration settings](app/config)
 * See [Nginx Readme](nginx/) for installing Nginx
 * See [Database Readme](app/db/) for installing the database
 
