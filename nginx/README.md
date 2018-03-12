@@ -1,7 +1,7 @@
 # Nginx
 
 Note: nginx is not required to run this app, but can improve performance by offloading static file serving.
-The nginx path matching uses the exact same rules as the node router (see [`app/router/static.js`](app/router/static.js)).
+The nginx path matching uses the exact same rules as the node router (see [`app/router/static.js`](../app/router/static.js)).
 
 
 Installation:
