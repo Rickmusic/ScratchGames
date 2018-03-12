@@ -222,3 +222,11 @@ select {
   padding: 1em;
   text-align: left;
 }
+
+/* Chat Interface */
+#chat .name {
+    margin-right: 5px;
+}
+#chat .name:after {
+    content: ':'
+}
