@@ -1,6 +1,4 @@
-//let socket = 1;
 // Onload Function //
-let socket = io();
 $(document).ready(function() {
 
   loadBase();
@@ -40,19 +38,6 @@ function loadBase() {
                 .next()
                 .slideToggle('fast');
         });
-
-    $('.chat').submit(function(e) {
-      e.preventDefault();
-      let formName = $(this).closest('form').attr('name');
-      console.log(formName);
-      let messagedata = $("#"+ formName).val();
-      let msg ={
-          content: messagedata,
-          location: "."+formName,
-      };
-      socket.emit("chat message", msg);
-    });
-
 }
 
 
@@ -99,19 +84,6 @@ function loadProfile() {
   $('#change').load('profileSnip.html');
 }
 
-
-// Handling reciept of chat message //
-
-socket.on('chat message', function(msg){
-  let listItem = "<li>";
-    let date = new Date(msg.timestamp);
-    //listItem += date.getHours() + ":";
-    //listItem +=  date.getMinutes()+ " ";
-    listItem += msg.user + ": ";
-    listItem += msg.content;
-    listItem += "</li>";
-    $(msg.location).append(listItem);
-});
 
 // Library functions//
 
