@@ -9,7 +9,7 @@ let { passport } = require('../passport');
 let mailer = require('../mailer');
 let logger = require('winston').loggers.get('auth');
 let db = require('../db/');
-let Token = db.models.token;
+let { Token } = db.models;
 
 let rootdir = { root: path.join(__dirname, '../../') };
 
