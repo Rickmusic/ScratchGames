@@ -32,6 +32,7 @@
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
         <script src="socket.io/socket.io.js"></script>
         <script src="base.js"></script>
+        <script src="chat.js"></script>
     </head>
     <body>
     <div class="corner"><a href="/logout">Log out</a></div>
@@ -84,29 +85,25 @@
                 </div>
             </div>
         </div>
-        <div class="right">
+        <div id="chat" class="right">
             <div class="sideTitle">Chat</div>
             <div class="accord">
                 <h4 class="accordbtn">Global</h4>
-                <div class="accordcon">
-                    <ul class="global">
-
-                    </ul>
+                <div id="global-chat" class="accordcon">
+                    <ul></ul>
                     <div class="chatInput">
-                        <form class="chat" name="global" action="">
-                            <input type="text" id="global" autocomplete="off" placeholder="Your message here"/>
+                        <form class="chat-input" action="">
+                            <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
                             <input type="submit" value="Send"/>
                         </form>
                     </div>
                 </div>
                 <h4 class="accordbtn">Lobby</h4>
-                <div class="accordcon">
-                    <ul class="lobby">
-
-                    </ul>
+                <div id="lobby-chat" class="accordcon">
+                    <ul></ul>
                     <div class="chatInput">
-                        <form class="chat" name="lobby" action="">
-                            <input type="text" id="lobby" autocomplete="off" placeholder="Your message here"/>
+                        <form class="chat-input" action="">
+                            <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
                             <input type="submit" value="Send"/>
                         </form>
                     </div>
