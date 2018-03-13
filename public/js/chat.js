@@ -1,9 +1,11 @@
 $(function() {
   let socket = io('/chat');
 
+  socket.emit('hello', {});
+
   $('.chat-input').submit(function(e) {
     e.preventDefault();
-    let data = $(this).closest('form').serializeArray();
+    let data = $(this).closest('form').serializeJSON();
     switch($(this).closest('div[id]').attr('id')) {
       case 'global-chat':
         socket.emit("global message", data);

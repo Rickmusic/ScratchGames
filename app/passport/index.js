@@ -9,10 +9,8 @@ let RememberMeStrategy = require('passport-remember-me-extended').Strategy;
 let config = require('../config');
 let logger = require('winston').loggers.get('auth');
 let db = require('../db');
-let Auth = db.models.auth;
-let User = db.models.user;
-let Token = db.models.token;
-let UserAuth = db.associations.userauth;
+let { Auth, Token, User } = db.models;
+let { UserAuth } = db.associations;
 
 let serializeUser = function(user, done) {
   done(null, user.id);

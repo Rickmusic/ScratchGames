@@ -9,8 +9,6 @@ let init = (sequelize, DataTypes) => {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
       },
-      firstName: { type: DataTypes.STRING },
-      lastName: { type: DataTypes.STRING },
       displayName: { type: DataTypes.STRING },
       status: {
         type: DataTypes.ENUM,
@@ -18,13 +16,13 @@ let init = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'limited',
       },
+      role: {
+        type: DataTypes.ENUM,
+        values: ['player', 'spectator'],
+      },
     },
     {
-      getterMethods: {
-        fullName() {
-          return this.firstname + ' ' + this.lastname;
-        },
-      },
+      getterMethods: {},
       setterMethods: {},
       tableName: 'users',
     }

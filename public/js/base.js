@@ -1,18 +1,30 @@
 // Declare Global App Variable
 let Scratch = function () {};
 
+// Defining Custom jQuery Functions
+(function($) {
 
-// This helps load in the external js files as needed. //
-// The jquery original version is unstable//
-jQuery.loadScript = function(url, callback) {
-    jQuery.ajax({
-        url: url,
-        datatype: 'script',
-        success: callback,
-        async: true,
+  // This helps load in the external js files as needed. //
+  // The jquery original version is unstable//
+  $.loadScript = function(url, callback) {
+    $.ajax({
+      url: url,
+      datatype: 'script',
+      success: callback,
+      async: true,
     });
+  };
 
-}
+  $.fn.serializeJSON = function() {
+    let arr = this.serializeArray();
+    let obj = {};
+    for (let i of arr) {
+      obj[i.name] = i.value;
+    }
+    return obj;
+  };
+
+})(jQuery);
 
 
 // Onload Function //
