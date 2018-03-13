@@ -14,7 +14,6 @@ $(function() {
       default:
         console.log('Unknown Chat Container: ' + $(this).closest('div[id]').attr('id'));
     }
-    console.log("Sent");
     this.reset();
   });
 
@@ -28,11 +27,9 @@ $(function() {
 
   socket.on('global message', function(msg) {
     $('#global-chat ul').append(buildDisplayedMessage(msg));
-    console.log(msg);
   });
 
   socket.on('lobby message', function(msg) {
     $('#lobby-chat ul').append(buildDisplayedMessage(msg));
-    console.log(msg);
   });
 });

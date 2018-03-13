@@ -88,7 +88,7 @@ $(document).ready(function() {
   function loadLobbyList() {
     setCookie('curPage', 'home', 30);
     $.loadScript('home.js', function(){
-      home_init();
+      Scratch.home.init();
     });
   }
 
