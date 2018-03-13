@@ -28,9 +28,9 @@ let sendVerification = function(req, callback) {
     .then(promises => {
       let token = promises[0];
       let auth = promises[1];
-      let protocal = (req.get('X-Forwarded-Proto')) ? req.get('X-Forwarded-Proto') : req.protocol;
+      let protocol = (req.get('X-Forwarded-Proto')) ? req.get('X-Forwarded-Proto') : req.protocol;
       let link = 
-        protocal +
+        protocol +
         '://' +
         req.get('Host') +
         '/verify?token=' +
