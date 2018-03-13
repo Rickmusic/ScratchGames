@@ -20,14 +20,9 @@ let init = (sequelize, DataTypes) => {
         type: DataTypes.ENUM,
         values: ['player', 'spectator'],
       },
-      socket: { type: DataTypes.STRING },
     },
     {
-      getterMethods: {
-        fullName() {
-          return this.firstname + ' ' + this.lastname;
-        },
-      },
+      getterMethods: {},
       setterMethods: {},
       tableName: 'users',
     }

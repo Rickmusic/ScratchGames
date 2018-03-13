@@ -7,11 +7,10 @@ let { Message, User } = db.models;
 let init = function(io) {
   let chatio = io.of('/chat');
   chatio.on('connection', function(socket) {
-    //socket.request.user.socket = socket.id;
 
-    //socket.on('disconnect', function () {
-    //  socket.request.user.socket = null;
-    //});
+    socket.on('hello', function(data) {
+      socket.join(socket.request.user.id);
+    });
 
     let buildMessage = function(data, to) {
       let message = {
@@ -64,7 +63,7 @@ let init = function(io) {
             ToId: to.id,
           })
             .catch((err) => dblogger.error('At Create Private Message: ' + err));
-          chatio.to(to.socket).emit('private message', buildMessage(data, to));
+          chatio.to(to.id).emit('private message', buildMessage(data, to));
           socket.emit('private message', buildMessage(data, to));
         })
         .catch((err) => dblogger.error('At Private Message Lookup User: ' + err));
