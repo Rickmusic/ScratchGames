@@ -28,10 +28,11 @@ let sendVerification = function(req, callback) {
     .then(promises => {
       let token = promises[0];
       let auth = promises[1];
-      let link =
-        req.get('X-Forwarded-Proto') + // Set by Nginx
+      let protocal = (req.get('X-Forwarded-Proto')) ? req.get('X-Forwarded-Proto') : req.protocol;
+      let link = 
+        protocal +
         '://' +
-        req.get('Host') + // Set by Nginx
+        req.get('Host') +
         '/verify?token=' +
         token;
 
