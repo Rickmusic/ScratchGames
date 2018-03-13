@@ -25,7 +25,7 @@ $(document).ready(function() {
   } else {
     let x = loadLastpage(curPage);
     if (x === false) {
-      $('#change').load('lobbySnip.html');
+      $('#change').load('lobbyListSnip.html');
     }
   }
 
@@ -37,7 +37,7 @@ $(document).ready(function() {
           loadProfile();
       });
       $('#navh').click(function () {
-          loadLobbyList();
+          loadHome();
       });
       $('#navl').click(function () {
           loadMyLead();
@@ -60,7 +60,7 @@ $(document).ready(function() {
   //loading of pages. Handling events on the uppermost navigation bar//
   function loadLastpage(curPage) {
     if (curPage === 'home') {
-      loadLobbyList();
+      loadHome();
       return true;
     } else if (curPage === 'profile') {
       loadProfile();
@@ -85,7 +85,7 @@ $(document).ready(function() {
     $('#change').load('joincodeSnip.html');
   }
 
-  function loadLobbyList() {
+  function loadHome() {
     setCookie('curPage', 'home', 30);
     $.loadScript('home.js', function(){
       Scratch.home.init();
@@ -94,9 +94,9 @@ $(document).ready(function() {
 
   function loadProfile() {
     setCookie('curPage', 'profile', 30);
-    $.loadScript('profile.js', function () {
+    /*$.loadScript('profile.js', function () {
 
-    });
+    });*/
     $('#change').load('profileSnip.html');
   }
 
