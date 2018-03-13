@@ -13,7 +13,7 @@ Refer to your chosen MySQL provider for instructions on how to install and run.
 Tables
 ------
 
-To build the tables for this app, please see the [MySQL Schema Wiki](../../wiki/MySQL-Schema).
+To build the tables for this app, please see the [MySQL Schema Wiki](https://github.com/Rickmusic/ScratchGames/wiki/MySQL-Schema).
 
 
 App Configuration
