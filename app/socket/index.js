@@ -3,11 +3,7 @@
 let socketsession = require('./socketsession');
 
 let events = function(io) {
-  io.on('connection', function(socket) {
-    socket.on('chat message', function(msg) {
-      io.emit('chat message', msg);
-    });
-  });
+  require('./chat')(io);
 };
 
 let init = function(app) {
@@ -25,3 +21,4 @@ let init = function(app) {
 };
 
 module.exports = init;
+

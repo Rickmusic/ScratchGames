@@ -72,7 +72,7 @@ winston.loggers.add('auth', {
 });
 
 // Logger for Database/Sequelize
-winston.loggers.add('sequelize', {
+winston.loggers.add('db', {
   console: {
     level: 'info',
     colorize: true,

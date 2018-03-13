@@ -5,7 +5,7 @@ let logger = require('winston').loggers.get('auth');
 
 let config = require('../config');
 let db = require('../db');
-let Token = db.models.token;
+let { Token } = db.models;
 
 let transport = nodemailer.createTransport({
   service: config.mailer.service,

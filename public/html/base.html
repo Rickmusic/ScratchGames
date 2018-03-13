@@ -12,12 +12,27 @@
         <meta name="msapplication-config" content="/favicon/browserconfig.xml">
         <meta name="theme-color" content="#ffffff">
 
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+        <!-- Bootstrap -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+        <!-- Custom Styling -->
         <link rel="stylesheet" type="text/css" href="Main.css"/>
+
+        <!-- Socket -->
+        <script src="/socket.io/socket.io.js"></script>
+
         <title>Scratch Games</title>
 
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
         <script src="socket.io/socket.io.js"></script>
         <script src="base.js"></script>
+        <script src="chat.js"></script>
     </head>
     <body>
     <div class="corner"><a href="/logout">Log out</a></div>
@@ -53,16 +68,15 @@
                 <!-- Loaded From Snippets -->
             </div>
             <div class="leaderboard">
-                Can't remember how the leaderboards all work. Is this only the top ten players per game?
-                Where my Leaderboard shows where I stand in the overall leaderboard?
+                <h1>Top Players</h1>
                 <div class="accord">
-                    <h4 class="accordbtn2">UNO</h4>
+                    <h4 class="accordbtn">UNO</h4>
                     <div class="accordcon">
                         <ul id="UNO">
                             <li>Austin</li>
                         </ul>
                     </div>
-                    <h4 class="accordbtn2">SomeGame</h4>
+                    <h4 class="accordbtn">SomeGame</h4>
                     <div class="accordcon">
                         <ul id="SomeOtherGame">
                             <li>Some random Guy</li>
@@ -71,26 +85,28 @@
                 </div>
             </div>
         </div>
-        <div class="right">
+        <div id="chat" class="right">
             <div class="sideTitle">Chat</div>
             <div class="accord">
                 <h4 class="accordbtn">Global</h4>
-                <div class="accordcon">
-                    <ul id="globalChat">
-                        <li>Message stand in Global Chat</li>
-                    </ul>
+                <div id="global-chat" class="accordcon">
+                    <ul></ul>
+                    <div class="chatInput">
+                        <form class="chat-input" action="">
+                            <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
+                            <input type="submit" value="Send"/>
+                        </form>
+                    </div>
                 </div>
                 <h4 class="accordbtn">Lobby</h4>
-                <div class="accordcon">
-                    <ul id="lobbyChat">
-                        <li>Message stand in Lobby Chat</li>
-                    </ul>
-                </div>
-                <h4 class="accordbtn">Jill</h4>
-                <div class="accordcon">
-                    <ul id="JillChat">
-                        <li>Message stand in Jill Chat</li>
-                    </ul>
+                <div id="lobby-chat" class="accordcon">
+                    <ul></ul>
+                    <div class="chatInput">
+                        <form class="chat-input" action="">
+                            <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
+                            <input type="submit" value="Send"/>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,7 +135,6 @@
                     <div>
                         <label for="type">Game type:</label>
                         <select name="type" id="type">
-
                             <option value="pizza">Games list auto generated here?</option>
                         </select>
                     </div>
