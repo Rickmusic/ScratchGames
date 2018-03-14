@@ -1,11 +1,11 @@
+/* global Scratch */
 (function() {
   Scratch.profile = function() {};
 
-  /* This socket connects to server file app/socket/base.js 
-   * (If you want to have a new server file (maybe base.js is getting full, or would prefer to have no one else's code to work around), 
+  let socket = Scratch.sockets.base; /* This socket connects to server file app/socket/base.js */
+  /* (If you want to have a new server file (maybe base.js is getting full, or would prefer to have no one else's code to work around), 
    * just ask and I'll configure a new one. ~Kayleigh)
    */
-  let socket = Scratch.sockets.base;
 
   Scratch.profile.init = function() {
     /* This function is called on page load

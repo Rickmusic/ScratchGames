@@ -1,3 +1,4 @@
+/* global Scratch, io */
 $(function() {
   let socket = io('/chat'); /* Links to app/socket/chat.js */
 

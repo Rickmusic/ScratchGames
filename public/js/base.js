@@ -1,3 +1,4 @@
+/* global Scratch */
 /* Define Base Page Functions */
 (function() {
   Scratch.base = function() {};

@@ -1,3 +1,4 @@
+/* global Scratch */
 (function() {
   Scratch.lobbylist = function() {};
 

@@ -79,7 +79,7 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'lobby',
           js: 'lobby.js',
-          init: false,
+          init: 'lobby',
         };
         break;
       case 'game':
@@ -154,7 +154,12 @@ let Scratch = function() {};
     opts = opts || {};
     opts.title = opts.title || nav.title || document.title;
     opts.path =
-      opts.path || nav.path || window.location.pathname.replace(/^\//g, '');
+      opts.path ||
+      nav.path ||
+      window.location.pathname.replace
+        .replace(/^\//g, '')
+        .replace(/#.*/g, '')
+        .replace(/\?.*/g, '');
     if (opts.firstLoad && !opts.recall)
       history.replaceState({ loc: loc }, opts.title, opts.path);
     else history.pushState({ loc: loc }, opts.title, opts.path);
