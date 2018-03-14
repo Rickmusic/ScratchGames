@@ -3,6 +3,7 @@
 let socketsession = require('./socketsession');
 
 let events = function(io) {
+  require('./base')(io);
   require('./chat')(io);
 };
 
