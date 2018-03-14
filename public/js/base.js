@@ -10,16 +10,16 @@
     // Top navigation bar //
     // TODO Replace callback with local error handling callback function
     $('#navh').click(function() {
-      Scratch.navigate('lobbylist', Scratch.navigate.callback);
+      Scratch.nav.goTo('lobbylist', Scratch.nav.callback);
     });
     $('#navp').click(function() {
-      Scratch.navigate('profile', Scratch.navigate.callback);
+      Scratch.nav.goTo('profile', Scratch.nav.callback);
     });
     $('#navl').click(function() {
-      Scratch.navigate('leaderboard', Scratch.navigate.callback);
+      Scratch.nav.goTo('leaderboard', Scratch.nav.callback);
     });
     $('#navj').click(function() {
-      Scratch.navigate('joincode', Scratch.navigate.callback);
+      Scratch.nav.goTo('joincode', Scratch.nav.callback);
     });
 
     // Adding Accordian Handler to side accordians //
@@ -52,15 +52,12 @@
     });
   };
 
-  socket.on('navigate', function(nav) {
-    Scratch.navigate(nav);
-  });
 })();
 
 // Onload Function //
 $(document).ready(function() {
   Scratch.base.init();
-  Scratch.navigate.init(function(err) {
+  Scratch.nav.init(function(err) {
     // TODO better error handeling.
     // Will throw Scratch.error.ajax if AJAX fails
     // Will throw Scratch.error.navUknownLocation if brower url path didn't match a location.

@@ -43,7 +43,7 @@ let Scratch = function() {};
    * @param {array} arguments to use for call [optional]
    * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
    */
-  Scratch.navigate = function(loc, args, callback) {
+  Scratch.nav = function(loc, args, callback) {
     let nav = {};
     /*
      * Nav Object Values
@@ -127,34 +127,58 @@ let Scratch = function() {};
     navigate.apply(this, _args);
   };
 
+  Scratch.nav.goTo = function(loc, args, callback) {
+    Scratch.nav(loc, args, callback);
+  };
+
+  Scratch.nav.redirect = function(loc, args, callback) {
+    if (typeof args === 'function') {
+      callback = args;
+      args = undefined;
+    }
+    Scratch.nav(loc, args, { replaceState: true }, callback);
+  };
+
   // Page First Time Load or Page Reloaded
-  Scratch.navigate.init = function(cb) {
+  Scratch.nav.init = function(cb) {
     // On Back Button Press
     window.onpopstate = function(event) {
-      Scratch.navigate(event.state.loc, Scratch.navigate.callback);
+      Scratch.nav(event.state.loc, Scratch.nav.callback);
     };
+
+    /* Allow server to make nav calls */
+    Scratch.sockets.base.on('navigate', function(data) {
+      Scratch.nav(data.loc, data.args, data.opts, serverNavigateCallback);
+    });
+
+    /* Lookup which location to load */
     let currentState = history.state || {};
     if (currentState.loc)
-      return Scratch.navigate(
+      return Scratch.nav(
         currentState.loc,
-        { firstLoad: true, recall: true },
+        { pushState: false },
         cb
       );
-    Scratch.navigate(
+    Scratch.nav(
       window.location.pathname
-        .replace(/^\//g, '')
-        .replace(/#.*/g, '')
-        .replace(/\?.*/g, ''),
-      { firstLoad: true, recall: false },
+        .replace(/^\//g, '')   // Remove leading '/'
+        .replace(/#.*/g, '')   // Remove any anchor
+        .replace(/\?.*/g, ''), // Remove any get query
+      { replaceState: true },
       cb
     );
   };
+
+  function serverNavigateCallback(err) {
+    // TODO Determine how to deal with errors on server navigate
+    if (err) console.log(err);
+  }
 
   /*
    * @param {object} nav object
    * @param {string} location requested to be loaded
    * @param {array} arguments to nav.call [optional]
-   * @param {object} options [optional]
+   * @param {object} options (should be provided only by other Scratch.nav calls) [optional]
    * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
    */
   function navigate(nav, loc, args, opts, callback) {
@@ -165,7 +189,6 @@ let Scratch = function() {};
     if (typeof args === 'function') {
       callback = args;
       args = undefined;
-      opts = undefined;
     }
     else if (!Array.isArray(args)) {
       opts = args;
@@ -181,23 +204,24 @@ let Scratch = function() {};
     opts.noHistory = opts.noHistory || nav.modal || false;
     if (opts.noHistory) return loadHTML(nav, cb);
 
+    /* Default Values */
+    opts.pushState = opts.pushState || true;
+    opts.loc = opts.loc || loc;
     opts.title = opts.title || nav.title || document.title;
     opts.path =
       opts.path ||
       nav.path ||
       window.location.pathname
-        .replace(/^\//g, '')
-        .replace(/#.*/g, '')
-        .replace(/\?.*/g, '');
-    opts.loc = opts.loc || loc;
+        .replace(/^\//g, '')   // Remove leading '/'
+        .replace(/#.*/g, '')   // Remove any anchor
+        .replace(/\?.*/g, ''); // Remove any get query
 
     opts.state = opts.state || { loc: opts.loc };
 
-    if (opts.firstLoad) {
-      if (!opts.recall)
+    if (opts.replaceState)
         history.replaceState(opts.state, opts.title, opts.path);
-    }
-    else history.pushState(opts.state, opts.title, opts.path);
+    else if (opts.pushState)
+      history.pushState(opts.state, opts.title, opts.path);
     loadHTML(nav, cb);
   }
 
@@ -205,12 +229,12 @@ let Scratch = function() {};
     if (!nav.html) return loadJS(nav, cb);
     if (nav.modal)
       Scratch.base.loadModal(nav.html, err => {
-        if (err) return cb.call(Scratch.navigate, err);
+        if (err) return cb.call(Scratch.nav, err);
         loadJS(nav, cb);
       });
     else
       Scratch.base.loadMain(nav.html, err => {
-        if (err) return cb.call(Scratch.navigate, err);
+        if (err) return cb.call(Scratch.nav, err);
         loadJS(nav, cb);
       });
   }
@@ -218,24 +242,24 @@ let Scratch = function() {};
   function loadJS(nav, cb) {
     if (!nav.js) makeFunctionCall(nav, cb);
     $.loadScript(nav.js, err => {
-      if (err) return cb.call(Scratch.navigate, err);
+      if (err) return cb.call(Scratch.nav, err);
       makeFunctionCall(nav, cb);
     });
   }
 
   function makeFunctionCall(nav, cb) {
-    if (!nav.call) return cb.call(Scratch.navigate, null);
+    if (!nav.call) return cb.call(Scratch.nav, null);
     if (!nav.args) nav.args = [];
     let namespaces = nav.call.split('.');
     let func = namespaces.pop();
     let context = Scratch;
     for (let i = 0; i < namespaces.length; i++) {
-      if (!(typeof context[namespaces[i]] !== 'undefined')) return cb.call(Scratch.navigate, new Scratch.error.varUndefined(context, namespaces[i]));
+      if (!(typeof context[namespaces[i]] !== 'undefined')) return cb.call(Scratch.nav, new Scratch.error.varUndefined(context, namespaces[i]));
       context = context[namespaces[i]];
     }
-    if (typeof context[func] !== 'function') return cb.call(Scratch.navigate, new Scratch.error.notAFunction(context, func));
-    context[func].apply(Scratch.navigate, nav.args);
-    cb.call(Scratch.navigate, null);
+    if (typeof context[func] !== 'function') return cb.call(Scratch.nav, new Scratch.error.notAFunction(context, func));
+    context[func].apply(Scratch.nav, nav.args);
+    cb.call(Scratch.nav, null);
   }
 
   /*
@@ -257,7 +281,7 @@ let Scratch = function() {};
     callback(new Scratch.error.navUknownLocation(loc));
   }
 
-  Scratch.navigate.callback = function(err) {
+  Scratch.nav.callback = function(err) {
     // TODO Include location in base html to display errors.
     if (err) console.log('Scratch Games Nav Error', err);
   };

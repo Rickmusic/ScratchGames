@@ -20,7 +20,7 @@
       //      in case validation failed, or some other feedback needs to be given.
       //      Then, upon server saying all's good, we can join the lobby..
       // TODO Replace callback with local error handling callback function
-      Scratch.navigate('lobby', Scratch.navigate.callback);
+      Scratch.nav.goTo('lobby', Scratch.nav.callback);
     });
 
     $('#createbtn').click(function() {
