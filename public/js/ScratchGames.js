@@ -41,7 +41,7 @@ let Scratch = function() {};
   /*
    * @param {string} location to switch to
    */
-  Scratch.nav = function(loc, args, callback) {
+  Scratch.nav = function(loc) {
     let nav = {};
     /*
      * Nav Object Values
@@ -79,6 +79,7 @@ let Scratch = function() {};
         nav = {
           html: 'modals/createLobby.html',
           modal: true,
+          js: false,
           call: 'lobbylist.create.init',
         };
         break;
@@ -124,12 +125,10 @@ let Scratch = function() {};
         };
         break;
       default:
-        locationUknown.apply(this, Array.prototype.slice.call(arguments));
+        return undefined;
         break;
     }
-    let _args = Array.prototype.slice.call(arguments);
-    _args.unshift(nav);
-    navigate.apply(this, _args);
+    return nav;
   };
 
   /*
@@ -138,7 +137,7 @@ let Scratch = function() {};
    * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
    */
   Scratch.nav.goTo = function(loc, args, callback) {
-    Scratch.nav(loc, args, callback);
+    navigate(loc, args, callback);
   };
 
   /*
@@ -151,37 +150,26 @@ let Scratch = function() {};
       callback = args;
       args = undefined;
     }
-    Scratch.nav(loc, args, { replaceState: true }, callback);
+    navigate(loc, args, { replaceState: true }, callback);
   };
 
-  // Page First Time Load or Page Reloaded
+  /*
+   * Page First Time Load or Page Reloaded
+   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   */
   Scratch.nav.init = function(cb) {
-    // On Back Button Press
+    // On Browser Nav (Back or Forward)
     window.onpopstate = function(event) {
-      Scratch.nav(event.state.loc, Scratch.nav.callback);
+      navigate(event.state.loc, { pushState: false }, Scratch.nav.callback);
     };
 
     /* Allow server to make nav calls */
     Scratch.sockets.base.on('navigate', function(data) {
-      Scratch.nav(data.loc, data.args, data.opts, serverNavigateCallback);
+      navigate(data.loc, data.args, data.opts, serverNavigateCallback);
     });
 
     /* Lookup which location to load */
-    let currentState = history.state || {};
-    if (currentState.loc)
-      return Scratch.nav(
-        currentState.loc,
-        { pushState: false },
-        cb
-      );
-    Scratch.nav(
-      window.location.pathname
-        .replace(/^\//g, '')   // Remove leading '/'
-        .replace(/#.*/g, '')   // Remove any anchor
-        .replace(/\?.*/g, ''), // Remove any get query
-      { replaceState: true },
-      cb
-    );
+    navigate(getCurrentLoc(), { pushState: false }, cb);
   };
 
   function serverNavigateCallback(err) {
@@ -189,14 +177,20 @@ let Scratch = function() {};
     if (err) console.log(err);
   }
 
+
+  let currlocation;
   /*
-   * @param {object} nav object
-   * @param {string} location requested to be loaded
+   * -------------------------------------------------------------------
+   * Internal Navigate
+   * -------------------------------------------------------------------
+   * @param {string} location requested to be loaded or {object} location object
    * @param {array} arguments to nav.call [optional]
-   * @param {object} options (should be provided only by other Scratch.nav calls) [optional]
+   * @param {object} options (should be provided only by other Scratch.nav functions) [optional]
    * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
    */
-  function navigate(nav, loc, args, opts, callback) {
+  function navigate(newloc, args, opts, callback) {
+    if (typeof newloc === 'string')
+      newloc = { loc: newloc, nav: Scratch.nav(newloc) };
     if (typeof opts === 'function') {
       callback = opts;
       opts = undefined;
@@ -210,34 +204,37 @@ let Scratch = function() {};
       args = undefined;
     }
     if (typeof callback !== 'function') callback(); /* throw standard js error for not a function */
-    nav.args = args; /* stick args in nav so we have fewer args to internal function */
-    createHistory(nav, loc, opts, callback);
+
+    let currloc = currlocation || { nav: {} };
+    if (typeof newloc.nav === 'undefined') return callback(new Scratch.error.navUknownLocation(newloc.loc));
+    if (currloc.nav.modal) Scratch.base.hideModal();
+    currlocation = newloc;
+
+    newloc.nav.args = args; /* stick args in nav so we have fewer args to internal function */
+    createHistory(newloc.loc, newloc.nav, opts);
+    loadHTML(newloc.nav, callback);
   }
 
-  function createHistory(nav, loc, opts, cb) {
+  function createHistory(loc, nav, opts) {
     opts = opts || {};
-    opts.noHistory = opts.noHistory || nav.modal || false;
-    if (opts.noHistory) return loadHTML(nav, cb);
+    nav = nav || {};
+    opts.noHistory = (typeof opts.noHistory !== 'undefined') ? opts.noHistory : (nav.modal || false);
+    if (opts.noHistory) return;
 
     /* Default Values */
-    opts.pushState = opts.pushState || true;
+    opts.pushState = (typeof opts.pushState !== 'undefined') ? opts.pushState : true;
     opts.loc = opts.loc || loc;
     opts.title = opts.title || nav.title || document.title;
-    opts.path =
-      opts.path ||
-      nav.path ||
-      window.location.pathname
-        .replace(/^\//g, '')   // Remove leading '/'
-        .replace(/#.*/g, '')   // Remove any anchor
-        .replace(/\?.*/g, ''); // Remove any get query
+    opts.path = opts.path || nav.path || getURLLoc();
 
-    opts.state = opts.state || { loc: opts.loc };
+    opts.state = opts.state || {};
+    opts.state.loc = opts.loc;
 
     if (opts.replaceState)
         history.replaceState(opts.state, opts.title, opts.path);
     else if (opts.pushState)
       history.pushState(opts.state, opts.title, opts.path);
-    loadHTML(nav, cb);
+    return;
   }
 
   function loadHTML(nav, cb) {
@@ -276,24 +273,21 @@ let Scratch = function() {};
     context[func].apply(Scratch.nav, nav.args);
     cb.call(Scratch.nav, null);
   }
+  
+  function getCurrentLoc() {
+    let currentState = history.state || {};
+    if (currentState.loc) return { loc: currentState.loc, nav: Scratch.nav(currentState.loc) };
+    let loc = getURLLoc();
+    let nav = Scratch.nav(loc);
+    createHistory(loc, nav, { replaceState: true });
+    return { loc: loc, nav: nav };
+  }
 
-  /*
-   * @param {string} location requested to be loaded
-   * @param {array} arguments to nav.call [optional]
-   * @param {object} options [optional]
-   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
-   */
-  function locationUknown(loc, args, opts, callback) {
-    if (typeof opts === 'function') {
-      callback = opts;
-      opts = undefined;
-    }
-    if (typeof args === 'function') {
-      callback = args;
-      args = undefined;
-      opts = undefined;
-    }
-    callback(new Scratch.error.navUknownLocation(loc));
+  function getURLLoc() {
+    return window.location.pathname
+      .replace(/^\//g, '')   // Remove leading '/'
+      .replace(/#.*/g, '')   // Remove any anchor
+      .replace(/\?.*/g, ''); // Remove any get query
   }
 
   Scratch.nav.callback = function(err) {

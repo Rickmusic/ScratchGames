@@ -16,13 +16,13 @@
   Scratch.lobbylist.create.init = function() {
     $('#createLobby').submit(function(e) {
       e.preventDefault();
+      e.stopImmediatePropagation();
       let data = $(this)
         .closest('form')
         .serializeJSON();
       // TODO Form valid and filled out ? //
       socket.emit('create lobby', data);
       this.reset(); // Clear form input
-      $('#modal').hide();
       // TODO Instead of loading lobby here, we should wait for server to create the lobby
       //      in case validation failed, or some other feedback needs to be given.
       //      Then, upon server saying all's good, we can join the lobby..

@@ -57,6 +57,10 @@
     });
   };
 
+  Scratch.base.hideModal = function() {
+    $('#modal').hide();
+  };
+
 })();
 
 // Onload Function //
