@@ -40,8 +40,6 @@ let Scratch = function() {};
 (function() {
   /*
    * @param {string} location to switch to
-   * @param {array} arguments to use for call [optional]
-   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
    */
   Scratch.nav = function(loc, args, callback) {
     let nav = {};
@@ -75,6 +73,13 @@ let Scratch = function() {};
           path: 'leaderboard',
           js: false,
           call: false,
+        };
+        break;
+      case 'createlobby':
+        nav = {
+          html: 'modals/createLobby.html',
+          modal: true,
+          call: 'lobbylist.create.init',
         };
         break;
       case 'lobby':
@@ -127,10 +132,20 @@ let Scratch = function() {};
     navigate.apply(this, _args);
   };
 
+  /*
+   * @param {string} location to switch to
+   * @param {array} arguments to use for call [optional]
+   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   */
   Scratch.nav.goTo = function(loc, args, callback) {
     Scratch.nav(loc, args, callback);
   };
 
+  /*
+   * @param {string} location to switch to
+   * @param {array} arguments to use for call [optional]
+   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   */
   Scratch.nav.redirect = function(loc, args, callback) {
     if (typeof args === 'function') {
       callback = args;

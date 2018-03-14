@@ -30,6 +30,10 @@
           .next()
           .slideToggle('fast');
       });
+
+    $('#modalClose').click(function() {
+      $('#modal').hide();
+    });
   };
 
   Scratch.base.loadMain = function(html, callback) {
@@ -43,11 +47,12 @@
   };
 
   Scratch.base.loadModal = function(html, callback) {
-    $('#modal').load(html, function(response, status, xhr) {
+    $('#modalContent').load(html, function(response, status, xhr) {
       if (status === 'error')
         return callback(
           new Scratch.error.ajax('At loadModal', html, xhr.statusText)
         );
+      $('#modal').show();
       callback(null);
     });
   };
