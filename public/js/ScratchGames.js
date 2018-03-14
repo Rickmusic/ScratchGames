@@ -38,18 +38,23 @@ let Scratch = function() {};
  * ---------------------------------------- 
  */
 (function() {
-  Scratch.navigate = function(loc, callback) {
+  /*
+   * @param {string} location to switch to
+   * @param {array} arguments to use for call [optional]
+   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   */
+  Scratch.navigate = function(loc, args, callback) {
     let nav = {};
     /*
      * Nav Object Values
      * html: HTML snippet to load (or false)
      * modal: load into the modal window (boolean)
-     *   (if true, title and location are ignored)
+     *   (if true no history added, and as such title and location are ignored)
      * title: Window Title (false to keep same)
      * path: URL path (false to keep same)
-     *   (must be the same as 'loc')
+     *   (must be the same as loc, or if using aliases same as one of loc's)
      * js: the javascript file to load (or false)
-     * init: The 'Scratch.*.init()' call to make when loaded (or false)
+     * call: The 'Scratch.*' call to make when loaded (or false)
      */
     switch (loc) {
       case 'profile':
@@ -59,7 +64,7 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'profile',
           js: 'profile.js',
-          init: 'profile',
+          call: 'profile.init',
         };
         break;
       case 'leaderboard':
@@ -69,7 +74,7 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'leaderboard',
           js: false,
-          init: false,
+          call: false,
         };
         break;
       case 'lobby':
@@ -79,7 +84,7 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'lobby',
           js: 'lobby.js',
-          init: 'lobby',
+          call: 'lobby.init',
         };
         break;
       case 'game':
@@ -89,7 +94,7 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'game',
           js: false,
-          init: false,
+          call: false,
         };
         break;
       case 'joincode':
@@ -99,7 +104,7 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'joincode',
           js: false,
-          init: false,
+          call: false,
         };
         break;
       case 'lobbylist': // alias for home
@@ -110,16 +115,16 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'home',
           js: 'lobbylist.js',
-          init: 'lobbylist',
+          call: 'lobbylist.init',
         };
         break;
       default:
         locationUknown.apply(this, Array.prototype.slice.call(arguments));
         break;
     }
-    let args = Array.prototype.slice.call(arguments);
-    args.unshift(nav);
-    navigate.apply(this, args);
+    let _args = Array.prototype.slice.call(arguments);
+    _args.unshift(nav);
+    navigate.apply(this, _args);
   };
 
   // Page First Time Load or Page Reloaded
@@ -145,58 +150,108 @@ let Scratch = function() {};
     );
   };
 
-  function navigate(nav, loc, opts, callback) {
+  /*
+   * @param {object} nav object
+   * @param {string} location requested to be loaded
+   * @param {array} arguments to nav.call [optional]
+   * @param {object} options [optional]
+   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   */
+  function navigate(nav, loc, args, opts, callback) {
     if (typeof opts === 'function') {
       callback = opts;
       opts = undefined;
     }
-    if (nav.modal) return loadHTML(nav, callback);
+    if (typeof args === 'function') {
+      callback = args;
+      args = undefined;
+      opts = undefined;
+    }
+    else if (!Array.isArray(args)) {
+      opts = args;
+      args = undefined;
+    }
+    if (typeof callback !== 'function') callback(); /* throw standard js error for not a function */
+    nav.args = args; /* stick args in nav so we have fewer args to internal function */
+    createHistory(nav, loc, opts, callback);
+  }
+
+  function createHistory(nav, loc, opts, cb) {
     opts = opts || {};
+    opts.noHistory = opts.noHistory || nav.modal || false;
+    if (opts.noHistory) return loadHTML(nav, cb);
+
     opts.title = opts.title || nav.title || document.title;
     opts.path =
       opts.path ||
       nav.path ||
-      window.location.pathname.replace
+      window.location.pathname
         .replace(/^\//g, '')
         .replace(/#.*/g, '')
         .replace(/\?.*/g, '');
-    if (opts.firstLoad && !opts.recall)
-      history.replaceState({ loc: loc }, opts.title, opts.path);
-    else history.pushState({ loc: loc }, opts.title, opts.path);
-    loadHTML(nav, callback);
+    opts.loc = opts.loc || loc;
+
+    opts.state = opts.state || { loc: opts.loc };
+
+    if (opts.firstLoad) {
+      if (!opts.recall)
+        history.replaceState(opts.state, opts.title, opts.path);
+    }
+    else history.pushState(opts.state, opts.title, opts.path);
+    loadHTML(nav, cb);
   }
 
   function loadHTML(nav, cb) {
     if (!nav.html) return loadJS(nav, cb);
     if (nav.modal)
       Scratch.base.loadModal(nav.html, err => {
-        if (err) return cb(err);
+        if (err) return cb.call(Scratch.navigate, err);
         loadJS(nav, cb);
       });
     else
       Scratch.base.loadMain(nav.html, err => {
-        if (err) return cb(err);
+        if (err) return cb.call(Scratch.navigate, err);
         loadJS(nav, cb);
       });
   }
 
   function loadJS(nav, cb) {
-    if (!nav.js) doneLoading(nav, cb);
+    if (!nav.js) makeFunctionCall(nav, cb);
     $.loadScript(nav.js, err => {
-      if (err) return cb(err);
-      doneLoading(nav, cb);
+      if (err) return cb.call(Scratch.navigate, err);
+      makeFunctionCall(nav, cb);
     });
   }
 
-  function doneLoading(nav, cb) {
-    if (!nav.init) return cb(null);
-    Scratch[nav.init].init();
-    cb(null);
+  function makeFunctionCall(nav, cb) {
+    if (!nav.call) return cb.call(Scratch.navigate, null);
+    if (!nav.args) nav.args = [];
+    let namespaces = nav.call.split('.');
+    let func = namespaces.pop();
+    let context = Scratch;
+    for (let i = 0; i < namespaces.length; i++) {
+      if (!(typeof context[namespaces[i]] !== 'undefined')) return cb.call(Scratch.navigate, new Scratch.error.varUndefined(context, namespaces[i]));
+      context = context[namespaces[i]];
+    }
+    if (typeof context[func] !== 'function') return cb.call(Scratch.navigate, new Scratch.error.notAFunction(context, func));
+    context[func].apply(Scratch.navigate, nav.args);
+    cb.call(Scratch.navigate, null);
   }
 
-  function locationUknown(loc, opts, callback) {
+  /*
+   * @param {string} location requested to be loaded
+   * @param {array} arguments to nav.call [optional]
+   * @param {object} options [optional]
+   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   */
+  function locationUknown(loc, args, opts, callback) {
     if (typeof opts === 'function') {
       callback = opts;
+      opts = undefined;
+    }
+    if (typeof args === 'function') {
+      callback = args;
+      args = undefined;
       opts = undefined;
     }
     callback(new Scratch.error.navUknownLocation(loc));
@@ -225,6 +280,24 @@ let Scratch = function() {};
  */
 (function() {
   Scratch.error = function() {};
+
+  Scratch.error.varUndefined = function(context, variable) {
+    this.name = 'Variable Undefined';
+    this.message = 'Variable Undefined: ' + context + '.' + variable;
+    this.context = context;
+    this.variable = variable
+    this.stack = new Error().stack;
+  };
+  Scratch.error.varUndefined.prototype = new Error();
+
+  Scratch.error.notAFunction = function(context, variable) {
+    this.name = 'Not A Function';
+    this.message = 'Variable is not a Function: ' + context + '.' + variable;
+    this.context = context;
+    this.variable = variable
+    this.stack = new Error().stack;
+  };
+  Scratch.error.notAFunction.prototype = new Error();
 
   Scratch.error.navUknownLocation = function(loc) {
     this.name = 'Scratch Nav Location Unknown';
