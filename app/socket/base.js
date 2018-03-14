@@ -17,7 +17,7 @@ let init = function(io) {
           nav = { html: 'snippets/leaderboard.html', modal: false, js: null, call: null /*'leaderboard'*/ };
           break;
         case 'lobby':
-          nav = { html: null, modal: false, js: null, call: null };
+          nav = { html: 'snippets/lobby.html', modal: false, js: null, call: null };
           break;
         case 'game':
           nav = { html: null, modal: false, js: null, call: null };
@@ -27,7 +27,7 @@ let init = function(io) {
           break;
         case 'lobbylist':
         default:
-          nav = { html: 'snippets/lobbylist.html', modal: false, js: 'home.js', call: 'lobbylist' };
+          nav = { html: 'snippets/lobbyList.html', modal: false, js: 'lobbylist.js', call: 'lobbylist' };
           break;
       }
       socket.emit('navigate', nav);

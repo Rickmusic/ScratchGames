@@ -69,17 +69,17 @@ let Scratch = function () {};
   };
 
   Scratch.base.navigate = function(nav) {
+    socket.emit('navigate', { nav: nav });
+  };
+
+
+  socket.on('navigate', function(nav) {
     if (nav.modal) Scrach.base.loadModal(nav.html); 
     else Scratch.base.loadMain(nav.html);
     if (!nav.js) return;
     $.loadScript(nav.js, function () {
       Scratch[nav.call].init();
     });
-  };
-
-
-  socket.on('navigate', function(nav) {
-    Scratch.base.navigate(nav);
   });
 
 
