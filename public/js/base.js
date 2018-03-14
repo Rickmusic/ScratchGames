@@ -1,6 +1,7 @@
 // Declare Global App Variable
 let Scratch = function () {};
 
+
 // Defining Custom jQuery Functions
 (function($) {
 
@@ -27,114 +28,66 @@ let Scratch = function () {};
 })(jQuery);
 
 
-// Onload Function //
-$(document).ready(function() {
+/* Define Base Page Functions */
+(function() {
+  Scratch.base = function() {};
 
-  loadBase();
-  let curPage = getCookie('curPage');
-  if (curPage === '') {
-    setCookie('curPage', 'home', 30);
-  } else {
-    let x = loadLastpage(curPage);
-    if (x === false) {
-      $('#change').load('lobbySnip.html');
-    }
-  }
+  let socket = io();
 
   // Attaches handlers to the baze UI elements. //
-  function loadBase() {
-
+  Scratch.base.init = function() {
     // Top navigation bar //
-      $('#navp').click(function () {
-          loadProfile();
-      });
-      $('#navh').click(function () {
-          loadLobbyList();
-      });
-      $('#navl').click(function () {
-          loadMyLead();
-      });
-      $('#navj').click(function () {
-          loadJoincode();
-      });
-
-      // Adding Accordian Handler to side accordians //
-      $('.accord')
-          .find('.accordbtn')
-          .click(function () {
-              $(this)
-                  .next()
-                  .slideToggle('fast');
-          });
-  }
-
-
-  //loading of pages. Handling events on the uppermost navigation bar//
-  function loadLastpage(curPage) {
-    if (curPage === 'home') {
-      loadLobbyList();
-      return true;
-    } else if (curPage === 'profile') {
-      loadProfile();
-      return true;
-    } else if (curPage === 'joincode') {
-      loadJoincode();
-      return true;
-    } else if (curPage === 'myLeader') {
-      loadMyLead();
-      return true;
-    }
-    return false;
-  }
-
-  function loadMyLead() {
-    setCookie('curPage', 'myLeader', 30);
-    $('#change').load('leaderSnip.html');
-  }
-
-  function loadJoincode() {
-    setCookie('curPage', 'joincode', 30);
-    $('#change').load('joincodeSnip.html');
-  }
-
-  function loadLobbyList() {
-    setCookie('curPage', 'home', 30);
-    $.loadScript('home.js', function(){
-      Scratch.home.init();
+    $('#navh').click(function () {
+      socket.emit('navigate', { nav: 'lobbylist' });
     });
-  }
-
-  function loadProfile() {
-    setCookie('curPage', 'profile', 30);
-    $.loadScript('profile.js', function () {
-
+    $('#navp').click(function () {
+      socket.emit('navigate', { nav: 'profile' });
     });
-    $('#change').load('profileSnip.html');
-  }
+    $('#navl').click(function () {
+      socket.emit('navigate', { nav: 'leaderboard' });
+    });
+    $('#navj').click(function () {
+      socket.emit('navigate', { nav: 'joincode' });
+    });
+
+    // Adding Accordian Handler to side accordians //
+    $('.accord')
+      .find('.accordbtn')
+      .click(function () {
+          $(this)
+              .next()
+              .slideToggle('fast');
+      });
+  };
+
+  Scratch.base.loadMain = function(html) {
+    $('#main').load(html);
+  };
+
+  Scratch.base.loadModal= function(html) {
+    $('#modal').load(html);
+  };
+
+  Scratch.base.navigate = function(nav) {
+    if (nav.modal) Scrach.base.loadModal(nav.html); 
+    else Scratch.base.loadMain(nav.html);
+    if (!nav.js) return;
+    $.loadScript(nav.js, function () {
+      Scratch[nav.call].init();
+    });
+  };
 
 
-  // Library functions//
+  socket.on('navigate', function(nav) {
+    Scratch.base.navigate(nav);
+  });
 
-  function setCookie(cname, cvalue, exdays) {
-      let d = new Date();
-      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-      let expires = 'expires=' + d.toUTCString();
-      document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
-  }
 
-  function getCookie(cname) {
-      let name = cname + '=';
-      let decodedCookie = decodeURIComponent(document.cookie);
-      let ca = decodedCookie.split(';');
-      for (let i = 0; i < ca.length; i++) {
-          let c = ca[i];
-          while (c.charAt(0) == ' ') {
-              c = c.substring(1);
-          }
-          if (c.indexOf(name) == 0) {
-              return c.substring(name.length, c.length);
-          }
-      }
-      return '';
-  }
-});
+  // Onload Function //
+  $(document).ready(function() {
+    Scratch.base.init();
+    socket.emit('hello',{});
+  });
+})();
+
+

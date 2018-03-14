@@ -1,17 +1,19 @@
-Scratch.home = function() {};
+(function() {
+  Scratch.lobbylist = function() {};
 
-Scratch.home.init = function () {
-  // Determine game state and load. Currently only loading the not in a game state.
-  lobbylist();
-  function lobbylist(){
-      $('#change').load('lobbySnip.html', function() {
-          $('#createbtn').click(function() {
-              $('.modal').css('display', 'block');
-          });
-          $('.close').click(function() {
-              $('.modal').css('display', 'none');
-          });
+  Scratch.lobbylist.init = function () {
+
+    // Determine game state and load. Currently only loading the not in a game state.
+    lobbylist();
+
+    function lobbylist(){
+      $('#createbtn').click(function() {
+          $('#createModal').css('display', 'block');
       });
-  }
-};
+      $('.close').click(function() {
+          $(this).parents('.modal').css('display', 'none');
+      });
+    }
+  };
+})();
 
