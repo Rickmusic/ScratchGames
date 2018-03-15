@@ -5,31 +5,29 @@
   let socket = Scratch.sockets.base; /* Links to app/socket/base.js */
 
   Scratch.lobbylist.init = function() {
-    // Determine game state and load. Currently only loading the not in a game state.
-    //   Or maybe we just use a seperate page for that.
+    $('#createbtn').click(function() {
+      // TODO Replace callback with local error handling callback function
+      Scratch.nav.goTo('createlobby', Scratch.nav.callback);
+    });
+ };
+
+  Scratch.lobbylist.create = function() {};
+
+  Scratch.lobbylist.create.init = function() {
     $('#createLobby').submit(function(e) {
       e.preventDefault();
+      e.stopImmediatePropagation();
       let data = $(this)
         .closest('form')
         .serializeJSON();
       // TODO Form valid and filled out ? //
       socket.emit('create lobby', data);
       this.reset(); // Clear form input
-      $('#createModal').css('display', 'none');
       // TODO Instead of loading lobby here, we should wait for server to create the lobby
       //      in case validation failed, or some other feedback needs to be given.
       //      Then, upon server saying all's good, we can join the lobby..
       // TODO Replace callback with local error handling callback function
-      Scratch.navigate('lobby', Scratch.navigate.callback);
-    });
-
-    $('#createbtn').click(function() {
-      $('#createModal').css('display', 'block');
-    });
-    $('.close').click(function() {
-      $(this)
-        .parents('.modal')
-        .css('display', 'none');
+      Scratch.nav.goTo('lobby', Scratch.nav.callback);
     });
   };
 })();
