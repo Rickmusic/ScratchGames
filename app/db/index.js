@@ -26,7 +26,6 @@ sequelize
   .authenticate()
   .then(() => {
     logger.info('Database Connection Established');
-    initTables();
   })
   .catch(err => logger.error('Database Connection Failed: ', err));
 
@@ -48,72 +47,6 @@ let UserLobby = User.belongsTo(Lobby, { foreignKey: 'lobbyId' })
 let MessageFrom = Message.belongsTo(User, { as: 'Sender' });
 let MassageLobby = Message.belongsTo(Lobby);
 let MessageTo = Message.belongsTo(User, { as: 'To' });
-
-/* Set Up the Physical Database
- * .drop() will drop the table, if it exists
- * .sync() will create the table if it doesn't exist
- * Ordered due to foreign key constraints on add/drop of tables
- */
-function initTables() {
-  Promise.all([Auth.drop(), Token.drop(), Message.drop()])
-    .then(() => {
-      User.drop() 
-        .then(() => {
-          Lobby.drop()
-            .then(() => {
-              Lobby.sync()
-                .then(() => {
-                  User.sync() 
-                    .then(() => {
-                      Promise.all([Auth.sync(), Token.sync(), Message.sync()])
-                        .then(() => {
-                          tablesReady();
-                        })
-                        .catch(err => logger.error('At Sync Auth/Token/Message: ' + err));
-                    })
-                    .catch(err => logger.error('At Sync User: ' + err));
-                })
-                .catch(err => logger.error('At Sync Lobby: ' + err));
-            })
-            .catch(err => logger.error('At Drop Lobby: ' + err));
-        })
-        .catch(err => logger.error('At Drop User: ' + err));
-    })
-    .catch(err => logger.error('At Drop Auth/Token/Message: ' + err));
-}
-
-function tablesReady() {
-  logger.info('Database Tables are Ready');
-  User.create(
-    {
-      displayName: 'Jack',
-      auth: { username: 'jack' },
-    },
-    { include: [UserAuth] }
-  )
-    .then(user => {
-      user
-        .updatePassword('secret')
-        .then(() => logger.info('User jack Created'))
-        .catch(err => logger.error('At Set Password jack: ' + err));
-    })
-    .catch(err => logger.error('At User Create jack: ' + err));
-
-  User.create(
-    {
-      displayName: 'Jill',
-      auth: { username: 'jill' },
-    },
-    { include: [UserAuth] }
-  )
-    .then(user => {
-      user
-        .updatePassword('birthday')
-        .then(() => logger.info('User jill Created'))
-        .catch(err => logger.error('At Set Password jill: ' + err));
-    })
-    .catch(err => logger.error('At User Create jill: ' + err));
-}
 
 module.exports = {
   sequelize,

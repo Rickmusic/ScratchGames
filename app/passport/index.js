@@ -146,13 +146,17 @@ let facebook = new FacebookStrategy(
               status: 'active',
               auth: {
                 facebookId: profile.id,
-                facebookToken: accessToken,
                 facebookName: profile.displayName,
               },
             },
             { include: [UserAuth] }
           )
-            .then(user => done(null, user))
+            .then(user => {
+              user
+                .storeFacebookToken(accessToken)
+                .then(() => done(null, user))
+                .catch(err => done(err));
+            })
             .catch(err => done(err));
         })
         .catch(err => done(err));
@@ -185,13 +189,17 @@ let google = new GoogleStrategy(
               status: 'active',
               auth: {
                 googleId: profile.id,
-                googleToken: accessToken,
                 googleName: profile.displayName,
               },
             },
             { include: [UserAuth] }
           )
-            .then(user => done(null, user))
+            .then(user => {
+              user
+                .storeGoogleToken(accessToken)
+                .then(() => done(null, user))
+                .catch(err => done(err));
+            })
             .catch(err => done(err));
         })
         .catch(err => done(err));

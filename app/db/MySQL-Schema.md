@@ -1,0 +1,75 @@
+```SQL
+CREATE TABLE `lobbies` (
+    `id` CHAR(36) BINARY , 
+    `name` VARCHAR(255), 
+    `type` ENUM('public', 'private') NOT NULL DEFAULT 'public', 
+    `game` ENUM('UNO', 'SomeGame') NOT NULL DEFAULT 'UNO', 
+    `maxPlayers` INTEGER, 
+    `maxSpectators` INTEGER, 
+    `createdAt` DATETIME NOT NULL, 
+    `updatedAt` DATETIME NOT NULL, 
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+```
+```SQL
+CREATE TABLE `users` (
+    `id` CHAR(36) BINARY , 
+    `displayName` VARCHAR(255), 
+    `status` ENUM('active', 'pending', 'limited', 'deleted') NOT NULL DEFAULT 'limited', 
+    `role` ENUM('player', 'spectator'), 
+    `createdAt` DATETIME NOT NULL, 
+    `updatedAt` DATETIME NOT NULL, 
+    `lobbyId` CHAR(36) BINARY, 
+    PRIMARY KEY (`id`), 
+    FOREIGN KEY (`lobbyId`) REFERENCES `lobbies` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+```
+```SQL
+CREATE TABLE `authorization` (
+    `id` INTEGER NOT NULL auto_increment , 
+    `username` VARCHAR(255) UNIQUE, 
+    `password` VARCHAR(255), 
+    `email` VARCHAR(255) UNIQUE, 
+    `facebookId` VARCHAR(255) UNIQUE, 
+    `facebookToken` VARCHAR(255), 
+    `facebookName` VARCHAR(255), 
+    `googleId` VARCHAR(255) UNIQUE, 
+    `googleToken` VARCHAR(255), 
+    `googleName` VARCHAR(255), 
+    `createdAt` DATETIME NOT NULL, 
+    `updatedAt` DATETIME NOT NULL, 
+    `userId` CHAR(36) BINARY, 
+     PRIMARY KEY (`id`), 
+     FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+```
+```SQL
+CREATE TABLE `tokens` (
+    `id` INTEGER NOT NULL auto_increment , 
+    `token` VARCHAR(255) NOT NULL UNIQUE, 
+    `type` ENUM('verify', 'pwdreset', 'rememberme') NOT NULL DEFAULT 'verify', 
+    `expires` DATETIME, 
+    `createdAt` DATETIME NOT NULL, 
+    `updatedAt` DATETIME NOT NULL, 
+    `userId` CHAR(36) BINARY, 
+    PRIMARY KEY (`id`), 
+    FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+```
+```SQL
+CREATE TABLE `messages` (
+    `id` CHAR(36) BINARY , 
+    `transport` ENUM('global', 'lobby', 'private') NOT NULL DEFAULT 'global', 
+    `fromRole` ENUM('player', 'spectator'), 
+    `message` VARCHAR(255), 
+    `createdAt` DATETIME NOT NULL, 
+    `updatedAt` DATETIME NOT NULL, 
+    `SenderId` CHAR(36) BINARY, 
+    `lobbyId` CHAR(36) BINARY, 
+    `ToId` CHAR(36) BINARY, 
+    PRIMARY KEY (`id`), 
+    FOREIGN KEY (`SenderId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE, 
+    FOREIGN KEY (`lobbyId`) REFERENCES `lobbies` (`id`) ON DELETE SET NULL ON UPDATE CASCADE, 
+    FOREIGN KEY (`ToId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB;
+```
