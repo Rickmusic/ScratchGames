@@ -26,7 +26,6 @@ sequelize
   .authenticate()
   .then(() => {
     logger.info('Database Connection Established');
-    initTables();
   })
   .catch(err => logger.error('Database Connection Failed: ', err));
 
@@ -41,79 +40,16 @@ let User = sequelize.import('user', require('./models/user'));
  * A.has*(B): adds getter/setter methods to A, and puts foreign key in B
  * A.belongsTo(B): adds getter/setter methods to A, and puts foregin key in A
  */
-let UserAuth = User.hasOne(Auth);
-let TokenUser = Token.belongsTo(User);
+let UserAuth = User.hasOne(Auth, { foreignKey: 'userId' });
+let TokenUser = Token.belongsTo(User, { foreignKey: 'userId' });
 let LobbyUser = Lobby.hasMany(User, { as: 'Users', foreignKey: 'lobbyId' });
 let UserLobby = User.belongsTo(Lobby, { foreignKey: 'lobbyId' })
-let MessageFrom = Message.belongsTo(User, { as: 'Sender' });
-let MassageLobby = Message.belongsTo(Lobby);
-let MessageTo = Message.belongsTo(User, { as: 'To' });
+let MessageFrom = Message.belongsTo(User, { as: 'Sender', foreignKey: 'senderId' });
+let MassageLobby = Message.belongsTo(Lobby, { foreignKey: 'lobbyId' });
+let MessageTo = Message.belongsTo(User, { as: 'Recipient', foreignKey: 'recipientId' });
 
-/* Set Up the Physical Database
- * .drop() will drop the table, if it exists
- * .sync() will create the table if it doesn't exist
- * Ordered due to foreign key constraints on add/drop of tables
- */
-function initTables() {
-  Promise.all([Auth.drop(), Token.drop(), Message.drop()])
-    .then(() => {
-      User.drop() 
-        .then(() => {
-          Lobby.drop()
-            .then(() => {
-              Lobby.sync()
-                .then(() => {
-                  User.sync() 
-                    .then(() => {
-                      Promise.all([Auth.sync(), Token.sync(), Message.sync()])
-                        .then(() => {
-                          tablesReady();
-                        })
-                        .catch(err => logger.error('At Sync Auth/Token/Message: ' + err));
-                    })
-                    .catch(err => logger.error('At Sync User: ' + err));
-                })
-                .catch(err => logger.error('At Sync Lobby: ' + err));
-            })
-            .catch(err => logger.error('At Drop Lobby: ' + err));
-        })
-        .catch(err => logger.error('At Drop User: ' + err));
-    })
-    .catch(err => logger.error('At Drop Auth/Token/Message: ' + err));
-}
-
-function tablesReady() {
-  logger.info('Database Tables are Ready');
-  User.create(
-    {
-      displayName: 'Jack',
-      auth: { username: 'jack' },
-    },
-    { include: [UserAuth] }
-  )
-    .then(user => {
-      user
-        .updatePassword('secret')
-        .then(() => logger.info('User jack Created'))
-        .catch(err => logger.error('At Set Password jack: ' + err));
-    })
-    .catch(err => logger.error('At User Create jack: ' + err));
-
-  User.create(
-    {
-      displayName: 'Jill',
-      auth: { username: 'jill' },
-    },
-    { include: [UserAuth] }
-  )
-    .then(user => {
-      user
-        .updatePassword('birthday')
-        .then(() => logger.info('User jill Created'))
-        .catch(err => logger.error('At Set Password jill: ' + err));
-    })
-    .catch(err => logger.error('At User Create jill: ' + err));
-}
+/* The following relationships are not foreignKey constrained on the DB */
+let LobbyHost = Lobby.belongsTo(User, { as: 'Host', foreignKey: 'hostId'}) 
 
 module.exports = {
   sequelize,

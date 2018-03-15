@@ -5,7 +5,7 @@
     </div>
     <div id="createForm">
         <form id="createLobby" action="">
-            <input id="name" type="text" name="username" placeholder="Lobby Name"/>
+            <input id="name" type="text" name="lobbyname" placeholder="Lobby Name"/>
             <div class="row">
                 <div class="leftForm">
                     <label for="leftRadio">Public</label>
@@ -18,20 +18,23 @@
             </div>
             <div>
                 <label for="type">Game type:</label>
-                <select name="type" id="type">
-                    <option value="pizza">Games list auto generated here?</option>
+                <select name="gametype" id="type">
+                    <option value="" disabled selected>Games list auto generated here?</option>
+                    <!-- Options Loaded Dynamically -->
                 </select>
             </div>
             <div>
                 <label for="numPlay">Max number of players:</label>
                 <select name="numPlayers" id="numPlay">
-                    <option value="1">#of players auto constrained</option>
+                    <option value="" disabled selected>#of players auto constrained</option>
+                    <!-- Options Populated Dynamically -->
                 </select>
             </div>
             <div>
                 <label for="numSpec">Number of allowed Spectators:</label>
                 <select name="numSpec" id="numSpec">
-                    <option value="1">#of spec</option>
+                    <option value="" disabled selected>#of spec</option>
+                    <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
                 </select>

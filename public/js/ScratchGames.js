@@ -165,6 +165,8 @@ let Scratch = function() {};
 
     /* Allow server to make nav calls */
     Scratch.sockets.base.on('navigate', function(data) {
+      data.opts = data.opts || {};
+      if (data.redirect) data.opts.replaceState = true;
       navigate(data.loc, data.args, data.opts, serverNavigateCallback);
     });
 
@@ -252,7 +254,7 @@ let Scratch = function() {};
   }
 
   function loadJS(nav, cb) {
-    if (!nav.js) makeFunctionCall(nav, cb);
+    if (!nav.js) return makeFunctionCall(nav, cb);
     $.loadScript(nav.js, err => {
       if (err) return cb.call(Scratch.nav, err);
       makeFunctionCall(nav, cb);

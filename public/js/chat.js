@@ -1,5 +1,7 @@
 /* global Scratch, io */
 $(function() {
+  
+  let global = Scratch.sockets.base; /* Links to app/socket/base.js */
   let socket = io('/chat'); /* Links to app/socket/chat.js */
 
   socket.emit('hello', {});
@@ -48,5 +50,13 @@ $(function() {
 
   socket.on('lobby message', function(msg) {
     $('#lobby-chat ul').append(buildDisplayedMessage(msg));
+  });
+
+  global.on('join lobby', function(data) {
+    socket.emit('join lobby', {});
+  });
+
+  global.on('leave lobby', function(data) {
+    socket.emit('leave lobby', {});
   });
 });
