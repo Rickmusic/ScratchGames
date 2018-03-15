@@ -7,7 +7,8 @@ CREATE TABLE `lobbies` (
     `maxPlayers` INTEGER, 
     `maxSpectators` INTEGER, 
     `createdAt` DATETIME NOT NULL, 
-    `updatedAt` DATETIME NOT NULL, 
+    `updatedAt` DATETIME NOT NULL,
+    `hostId` CHAR(36) BINARY,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 ```
@@ -16,7 +17,7 @@ CREATE TABLE `users` (
     `id` CHAR(36) BINARY , 
     `displayName` VARCHAR(255), 
     `status` ENUM('active', 'pending', 'limited', 'deleted') NOT NULL DEFAULT 'limited', 
-    `role` ENUM('player', 'spectator'), 
+    `role` ENUM('host', 'player', 'spectator'), 
     `createdAt` DATETIME NOT NULL, 
     `updatedAt` DATETIME NOT NULL, 
     `lobbyId` CHAR(36) BINARY, 
@@ -60,16 +61,16 @@ CREATE TABLE `tokens` (
 CREATE TABLE `messages` (
     `id` CHAR(36) BINARY , 
     `transport` ENUM('global', 'lobby', 'private') NOT NULL DEFAULT 'global', 
-    `fromRole` ENUM('player', 'spectator'), 
+    `senderRole` ENUM('host', 'player', 'spectator'), 
     `message` VARCHAR(255), 
     `createdAt` DATETIME NOT NULL, 
     `updatedAt` DATETIME NOT NULL, 
-    `SenderId` CHAR(36) BINARY, 
+    `senderId` CHAR(36) BINARY, 
     `lobbyId` CHAR(36) BINARY, 
-    `ToId` CHAR(36) BINARY, 
+    `recipientId` CHAR(36) BINARY, 
     PRIMARY KEY (`id`), 
-    FOREIGN KEY (`SenderId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE, 
+    FOREIGN KEY (`senderId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE, 
     FOREIGN KEY (`lobbyId`) REFERENCES `lobbies` (`id`) ON DELETE SET NULL ON UPDATE CASCADE, 
-    FOREIGN KEY (`ToId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (`recipientId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 ```

@@ -40,13 +40,16 @@ let User = sequelize.import('user', require('./models/user'));
  * A.has*(B): adds getter/setter methods to A, and puts foreign key in B
  * A.belongsTo(B): adds getter/setter methods to A, and puts foregin key in A
  */
-let UserAuth = User.hasOne(Auth);
-let TokenUser = Token.belongsTo(User);
+let UserAuth = User.hasOne(Auth, { foreignKey: 'userId' });
+let TokenUser = Token.belongsTo(User, { foreignKey: 'userId' });
 let LobbyUser = Lobby.hasMany(User, { as: 'Users', foreignKey: 'lobbyId' });
 let UserLobby = User.belongsTo(Lobby, { foreignKey: 'lobbyId' })
-let MessageFrom = Message.belongsTo(User, { as: 'Sender' });
-let MassageLobby = Message.belongsTo(Lobby);
-let MessageTo = Message.belongsTo(User, { as: 'To' });
+let MessageFrom = Message.belongsTo(User, { as: 'Sender', foreignKey: 'senderId' });
+let MassageLobby = Message.belongsTo(Lobby, { foreignKey: 'lobbyId' });
+let MessageTo = Message.belongsTo(User, { as: 'Recipient', foreignKey: 'recipientId' });
+
+/* The following relationships are not foreignKey constrained on the DB */
+let LobbyHost = Lobby.belongsTo(User, { as: 'Host', foreignKey: 'hostId'}) 
 
 module.exports = {
   sequelize,

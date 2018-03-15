@@ -32,6 +32,44 @@ let init = (sequelize, DataTypes) => {
     }
   );
 
+  Lobby.prototype.addPlayer = function(user, callback) {
+    if (callback) {
+      this.addPlayer(user)
+        .then(() => callback(null))
+        .catch(err => callback(err));
+      return;
+    }
+
+    return new Promise((fulfill, reject) => {
+      let role = 'player';
+      if (user.id === this.hostId) role = 'host';
+      user.update({ role })
+        .then(() => {
+          this.addUser(user);
+          fulfill();
+        })
+        .catch(err => reject(err));
+    });
+  };
+
+  Lobby.prototype.addSpectator = function(user, callback) {
+    if (callback) {
+      this.addSpectator(user)
+        .then(() => callback(null))
+        .catch(err => callback(err));
+      return;
+    }
+
+    return new Promise((fulfill, reject) => {
+      user.update({ role: 'spectator' })
+        .then(() => {
+          this.addUser(user);
+          fulfill();
+        })
+        .catch(err => reject(err));
+    });
+  };
+
   return Lobby;
 };
 

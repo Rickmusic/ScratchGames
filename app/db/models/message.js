@@ -15,7 +15,7 @@ let init = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'global',
       },
-      fromRole: {
+      senderRole: {
         type: DataTypes.ENUM,
         values: ['player', 'spectator'],
       },

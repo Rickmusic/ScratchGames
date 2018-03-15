@@ -18,7 +18,7 @@ let init = (sequelize, DataTypes) => {
       },
       role: {
         type: DataTypes.ENUM,
-        values: ['player', 'spectator'],
+        values: ['host', 'player', 'spectator'],
       },
     },
     {

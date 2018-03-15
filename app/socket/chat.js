@@ -28,7 +28,7 @@ let init = function(io) {
       Message.create({
         transport: 'global',
         message: data.message,
-        fromId: socket.request.user.id,
+        senderId: socket.request.user.id,
       })
         .catch((err) => dblogger.error('At Create Global Message: ' + err));
       chatio.emit('global message', buildMessage(data));
@@ -39,12 +39,12 @@ let init = function(io) {
       Message.create({
         transport: 'lobby',
         message: data.message,
-        fromId: socket.request.user.id,
-        fromRole: socket.request.user.role,
+        senderId: socket.request.user.id,
+        senderRole: socket.request.user.role,
         lobbyId: socket.request.user.lobbyId,
       })
         .catch((err) => dblogger.error('At Create Lobby Message: ' + err));
-      if (socket.request.user.role === 'player') {
+      if (socket.request.user.role === 'player' || socket.request.user.role === 'host') {
         chatio.to(socket.request.user.lobbyId + 'player').emit('lobby player message', buildMessage(data));
         chatio.to(socket.request.user.lobbyId + 'spectator').emit('lobby player message', buildMessage(data));
       }
@@ -59,14 +59,25 @@ let init = function(io) {
           Message.create({
             transport: 'private',
             message: data.message,
-            fromId: socket.request.user.id,
-            ToId: to.id,
+            senderId: socket.request.user.id,
+            recipientId: to.id,
           })
             .catch((err) => dblogger.error('At Create Private Message: ' + err));
           chatio.to(to.id).emit('private message', buildMessage(data, to));
           socket.emit('private message', buildMessage(data, to));
         })
         .catch((err) => dblogger.error('At Private Message Lookup User: ' + err));
+    });
+
+    socket.on('join lobby', function(data) {
+      let role = socket.request.user.role;
+      if (role === 'host') role = 'player';
+      socket.join(socket.request.user.lobbyId + role);
+    });
+
+    socket.on('leave lobby', function(data) {
+      socket.leave(socket.request.user.lobbyId + 'player');
+      socket.leave(socket.request.user.lobbyId + 'spectator');
     });
   });
 };
