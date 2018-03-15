@@ -62,7 +62,7 @@ typings/
 
 
 # Local App Config
-app/config/config.json
+#app/config/config.json
 
 # App Logs
 app/log/access.log*

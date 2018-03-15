@@ -1,0 +1,32 @@
+{
+  "db": {
+    "username": "scratchclient",
+    "password": "P@ssw0rd",
+    "host": "162.246.156.245",
+    "port": "3306",
+    "name": "scratch_games"
+  },
+  "mailer": {
+    "service": "gmail",
+    "address": "noreply.scratchgames@gmail.com",
+    "username": "noreply.scratchgames@gmail.com",
+    "clientID": "229020458837-fii88p3qaqgr4626edpejvgirppf2e0p.apps.googleusercontent.com",
+    "clientSecret": "UgRLnOW8P7J2Ea2SiCqlzPlY",
+    "accessToken": "ya29.GlttBT5mhBB48xOxMZA1mJaDpHMQNKjFc3iZTKK2FMze8eljxFmBvxTMe8OnLO3Q3A-0zz7e2bjAgppUo-SF9-lA9R5gFurrDwaQGe_kbOVShj1BeqGTmqxbFIk6",
+    "refreshToken": "1/KgO7oIEDzA0kE4etRYtFEqDLZGR8DIqFc1b1UCFcUgo",
+    "expiryDate": 1519583732064
+  },
+  "session": {
+    "secret": "keyboard kittens"
+  },
+  "facebook": {
+    "clientID": "159553758175817",
+    "clientSecret": "503bb6aaf054b29fabbfd15a8a8c9f73",
+    "callbackURL": "/auth/facebook/callback"
+  },
+  "google": {
+    "clientID": "107247043457-5r6d0i259tjg7vjscmgmcl2msl1vk2mh.apps.googleusercontent.com",
+    "clientSecret": "2SUQwvEUIQp3IV_8SYOGJXNQ",
+    "callbackURL": "/auth/google/callback"
+  }
+}
