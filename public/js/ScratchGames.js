@@ -146,16 +146,12 @@ let Scratch = function() {};
    * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
    */
   Scratch.nav.redirect = function(loc, args, callback) {
-    if (typeof args === 'function') {
-      callback = args;
-      args = undefined;
-    }
     navigate(loc, args, { replaceState: true }, callback);
   };
 
   /*
    * Page First Time Load or Page Reloaded
-   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   * @param {function} function(err) where err can be a Scratch.error.* error, or null otherwise
    */
   Scratch.nav.init = function(cb) {
     // On Browser Nav (Back or Forward)
