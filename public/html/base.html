@@ -16,7 +16,9 @@
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
+
         <!-- Bootstrap -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -29,7 +31,8 @@
 
         <title>Scratch Games</title>
 
-        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+        <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
         <script src="socket.io/socket.io.js"></script>
         <script src="ScratchGames.js"></script>
         <script src="base.js"></script>
@@ -113,10 +116,12 @@
         </div>
     </div>
 
-    <div id="modal" class="modal">
-        <span id="modalClose" class="close">&times;</span>
-        <div id="modalContent">
-            <!-- Loaded From Snippets -->
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" id="modalContent">
+                <!-- Loaded by Snippets -->
+            </div>
         </div>
     </div>
     </body>

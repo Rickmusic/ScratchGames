@@ -58,7 +58,7 @@ let Scratch = function() {};
       case 'profile':
         nav = {
           html: 'snippets/profile.html',
-          modal: false,
+          modal: true,
           title: 'Scratch Games',
           path: 'profile',
           js: 'profile.js',
@@ -68,7 +68,7 @@ let Scratch = function() {};
       case 'leaderboard':
         nav = {
           html: 'snippets/leaderboard.html',
-          modal: false,
+          modal: true,
           title: 'Scratch Games',
           path: 'leaderboard',
           js: false,
@@ -106,7 +106,7 @@ let Scratch = function() {};
       case 'joincode':
         nav = {
           html: 'snippets/joincode.html',
-          modal: false,
+          modal: true,
           title: 'Scratch Games',
           path: 'joincode',
           js: false,
