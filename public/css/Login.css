@@ -11,6 +11,11 @@
   text-align: left;
   padding: 4%;
 }
+.row {
+  order: 1;
+  display: flex;
+  flex-direction: row;
+}
 h1 {
   display: block;
 }

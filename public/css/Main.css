@@ -1,7 +1,9 @@
-html,
-body {
+
+html, body {
   margin: 0;
   padding: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 body {
   background-color: #c4c2c2;
@@ -67,15 +69,11 @@ nav {
   height: 2em;
   border-bottom: black solid 2px;
 }
-.sideTitle {
-  height: 2em;
-  vertical-align: middle;
-  line-height: 2em;
-  border-bottom: black solid 2px;
-}
+
 
 
 /* Accordian handling */
+
 .accordbtn {
   cursor: pointer;
 }
@@ -153,26 +151,7 @@ button {
   cursor: pointer;
 }
 
-/*Inner body home Modal Handling */
-/*
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-.modalContent {
-  background-color: whitesmoke;
-  margin: auto;
-  border: black solid 2px;
-  width: 60%;
-  margin-top: 10%;
-}*/
-/* The Close Button */
+
 .close {
   color: black;
   float: right;
@@ -225,9 +204,45 @@ select {
 }
 
 /* Chat Interface */
+
 #chat .name {
     margin-right: 5px;
 }
 #chat .name:after {
     content: ':'
 }
+#chat{
+  margin: 0px;
+  padding: 0px;
+}
+
+#scratchLogo{
+  border-bottom: black solid 2px;
+  padding-bottom: 1em;
+}
+
+
+/* New Bootstrap things */
+.navbar-nav {
+  float:none;
+  margin:0 auto;
+  display: block;
+  text-align: center;
+}
+
+.navbar-nav > li {
+  display: inline-block;
+  float:none;
+}
+
+#logout{
+  padding-right: 1em;
+}
+
+.sideTitle {
+   height: 2em;
+   vertical-align: middle;
+   text-align: center;
+   line-height: 2em;
+   border-bottom: black solid 2px;
+ }

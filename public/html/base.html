@@ -39,12 +39,16 @@
         <script src="chat.js"></script>
     </head>
     <body>
-    <div class="corner"><a href="/logout">Log out</a></div>
-    <div class="top">
-        <h1>Scratch Games</h1>
-    </div>
+
+        <div class="d-flex justify-content-end" id="logout">
+            <a href="/logout"><h4>Log out</h4></a>
+        </div>
+        <div class="row justify-content-center" id="scratchLogo">
+            <h1>Scratch Games</h1>
+        </div>
+
     <div class="row">
-        <div class="left">
+        <div class="col-2">
             <div class="sideTitle">Players</div>
             <div class="accord">
                 <h4 class="accordbtn">Global</h4>
@@ -61,13 +65,23 @@
                 </div>
             </div>
         </div>
-        <div class="center">
-            <nav>
-                <div class="nav" id="navh">Home</div>
-                <div class="nav" id="navp">Profile</div>
-                <div class="nav" id="navl">My Leaderboard</div>
-                <div class="nav end" id="navj">Joincode</div>
+        <div class="col-8">
+            <nav class="navbar navbar-expand-sm navbar-light bg-light">
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><div id="navp">Profile</div></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><div id="navl">My Leaderboard</div></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><div id="navj">Joincode</div></a>
+                        </li>
+                    </ul>
+                </div>
             </nav>
+
             <div id="main">
                 <!-- Loaded From Snippets -->
             </div>
@@ -89,7 +103,7 @@
                 </div>
             </div>
         </div>
-        <div id="chat" class="right">
+        <div id="chat" class="col-2">
             <div class="sideTitle">Chat</div>
             <div class="accord">
                 <h4 class="accordbtn">Global</h4>
