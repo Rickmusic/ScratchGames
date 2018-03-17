@@ -52,7 +52,8 @@
         return callback(
           new Scratch.error.ajax('At loadModal', html, xhr.statusText)
         );
-      $('#modal').show();
+      $('#myModal').modal({ show: false})
+      $('#myModal').modal('show');
       callback(null);
     });
   };

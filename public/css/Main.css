@@ -154,6 +154,7 @@ button {
 }
 
 /*Inner body home Modal Handling */
+/*
 .modal {
   display: none;
   position: fixed;
@@ -170,7 +171,7 @@ button {
   border: black solid 2px;
   width: 60%;
   margin-top: 10%;
-}
+}*/
 /* The Close Button */
 .close {
   color: black;
