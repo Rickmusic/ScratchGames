@@ -19,20 +19,30 @@
 
 
         <title>Welcome</title>
-        <style>
-        body{
-            background-color: #4c4f55;
-        }
 
-        </style>
     </head>
     <body>
+        <section class = "intro">
+            <div class = "inner">
+                <!--animate.css and bootstrap css -->
+                <!--could probably delete all of the content in animate.css as i only use fadeInUpBig -->
+                <div class = 'content fadeInUpBig animated'>
+                    <!-- jumbotron vertical-center-->
+                    <section class="welcome">
+                        <h1>Welcome</h1>
 
-        <!--animate.css and bootstrap css -->
-        <div class = 'container fadeInDown animated jumbotron vertical-center'>
-            <!-- jumbotron vertical-center-->
-            <p class = 'jumboWord' >Welcome! Please <a href="/login">log in</a>.</p>
-        </div>
+                    </section>
+                    <section class = 'welcome'>
+                        <a class = 'btn' href = "/login">Log In</a>
+                    </section>
+
+                    <!--<p class = 'jumboWord' >Welcome! Please <a href="/login">log in</a>.</p>-->
+                </div>
+            </div>
+
+        </section>
+
+
 
     </body>
 </html>
