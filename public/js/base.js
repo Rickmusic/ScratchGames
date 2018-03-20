@@ -49,7 +49,7 @@
   };
 
   Scratch.base.hideModal = function() {
-    $('#modal').hide();
+    $('#myModal').modal("toggle");
   };
 
 })();
