@@ -27,14 +27,8 @@ body {
   display: flex;
   flex-direction: column;
 }
-.left {
-  order: 1;
-  width: 20%;
-}
-.right {
-  order: 3;
-  width: 20%;
-}
+
+
 .center {
   width: 60%;
   order: 2;
@@ -46,13 +40,7 @@ body {
   display: flex;
   flex-direction: row;
 }
-.left,
-.right,
-.center {
-  text-align: center;
-  border-top: black solid 2px;
-  border-bottom: black solid 2px;
-}
+
 .nav {
   width: 22%;
   height: 100%;
@@ -106,12 +94,7 @@ label {
   color: black;
 }
 
-h1 {
-  color: orange;
-  font-size: 2em;
-  font-family: 'Georgia';
-  display: inline;
-}
+
 h2 {
   margin-top: 1em;
   margin-bottom: 1em;
@@ -245,4 +228,38 @@ select {
    text-align: center;
    line-height: 2em;
    border-bottom: black solid 2px;
- }
+  background-color: #34589d;
+}
+
+h1 {
+      color: orange;
+      font-size: 2.5em;
+      font-family: 'Georgia';
+      display: inline;
+}
+h2{
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+}
+.col-2, .col-8{
+    padding: 0;
+}
+
+#left {
+  padding-left: 15px;
+  border-right: black solid 2px;
+}
+.right{
+    padding-right: 15px;
+    border-left: black solid 2px;
+}
+
+.navbar-light{
+  background-color: darkorange;
+}
+
+.scroll{
+    max-height: 400px;
+    overflow-y: auto;
+}
