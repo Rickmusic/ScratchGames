@@ -157,7 +157,7 @@ router.get('/verify', function(req, res, next) {
               return res.sendStatus(400);
             }
             user
-              .update({ status: 'active' })
+              .update({ accountStatus: 'active' })
               .then(() => res.redirect('/login'))
               .catch(err => next(err));
           })

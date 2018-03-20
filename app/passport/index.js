@@ -143,7 +143,7 @@ let facebook = new FacebookStrategy(
           User.create(
             {
               displayName: profile.displayName,
-              status: 'active',
+              accountStatus: 'active',
               auth: {
                 facebookId: profile.id,
                 facebookName: profile.displayName,
@@ -186,7 +186,7 @@ let google = new GoogleStrategy(
           User.create(
             {
               displayName: profile.displayName,
-              status: 'active',
+              accountStatus: 'active',
               auth: {
                 googleId: profile.id,
                 googleName: profile.displayName,
