@@ -101,23 +101,25 @@ $(function() {
 
 
 	socket.on('hello', function(data) {
-    console.log('Hello', data);
     // Clear and rebuild Online User list
 	  $('#global-players ul li').remove();	
 	  $('#lobby-players ul li').remove();	
     userListAdd(data.you, $('#global-players ul'));
     for (let user of data.onlineUsers) {
-      console.log(user);
       userListAdd(user, $('#global-players ul'));
     }
     if (data.lobby) {
       for (let user of data.lobby.users) {
-        console.log(user);
         userListAdd(user, $('#lobby-players ul'));
       }
     }
   });
 
+  socket.on('lobby users', function(data) {
+    for (let user of data.users) {
+      userListAdd(user, $('#lobby-players ul'));
+    }
+  });
 
   socket.on('user online', function(data) {
     userListAdd(user, $('#global-players ul'));
