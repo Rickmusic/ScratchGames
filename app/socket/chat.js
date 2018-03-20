@@ -4,9 +4,9 @@ let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { Message, User } = db.models;
 
-let init = function(io) {
-  let chatio = io.of('/chat');
-  chatio.on('connection', function(socket) {
+let init = function(global) {
+  let io = global.of('/chat');
+  io.on('connection', function(socket) {
 
     socket.on('hello', function(data) {
       socket.join(socket.request.user.id);
@@ -30,8 +30,8 @@ let init = function(io) {
         message: data.message,
         senderId: socket.request.user.id,
       })
-        .catch((err) => dblogger.error('At Create Global Message: ' + err));
-      chatio.emit('global message', buildMessage(data));
+        .catch(err => dblogger.error('At Create Global Message: ' + err));
+      io.emit('global message', buildMessage(data));
     });
 
     socket.on('lobby message', function(data) {
@@ -45,11 +45,11 @@ let init = function(io) {
       })
         .catch((err) => dblogger.error('At Create Lobby Message: ' + err));
       if (socket.request.user.role === 'player' || socket.request.user.role === 'host') {
-        chatio.to(socket.request.user.lobbyId + 'player').emit('lobby player message', buildMessage(data));
-        chatio.to(socket.request.user.lobbyId + 'spectator').emit('lobby player message', buildMessage(data));
+        io.to(socket.request.user.lobbyId + 'player').emit('lobby player message', buildMessage(data));
+        io.to(socket.request.user.lobbyId + 'spectator').emit('lobby player message', buildMessage(data));
       }
       else {
-        chatio.to(socket.request.user.lobbyId + 'spectator').emit('lobby spectator message', buildMessage(data));
+        io.to(socket.request.user.lobbyId + 'spectator').emit('lobby spectator message', buildMessage(data));
       }
     });
 
@@ -63,21 +63,24 @@ let init = function(io) {
             recipientId: to.id,
           })
             .catch((err) => dblogger.error('At Create Private Message: ' + err));
-          chatio.to(to.id).emit('private message', buildMessage(data, to));
+          io.to(to.id).emit('private message', buildMessage(data, to));
           socket.emit('private message', buildMessage(data, to));
         })
         .catch((err) => dblogger.error('At Private Message Lookup User: ' + err));
     });
 
     socket.on('join lobby', function(data) {
-      let role = socket.request.user.role;
-      if (role === 'host') role = 'player';
-      socket.join(socket.request.user.lobbyId + role);
+      socket.request.user.lobbyId = data.lobby;
+      if (data.role === 'player' || data.role === 'host')
+        socket.join(socket.request.user.lobbyId + 'player');
+      else 
+        socket.join(socket.request.user.lobbyId + 'spectator');
     });
 
     socket.on('leave lobby', function(data) {
-      socket.leave(socket.request.user.lobbyId + 'player');
-      socket.leave(socket.request.user.lobbyId + 'spectator');
+      socket.leave(data.lobby + 'player');
+      socket.leave(data.lobby + 'spectator');
+      socket.request.user.lobbyId = null;
     });
   });
 };
