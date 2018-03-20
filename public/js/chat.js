@@ -50,7 +50,11 @@ $(function() {
     $('#global-chat ul').append(buildDisplayedMessage(msg));
   });
 
-  socket.on('lobby message', function(msg) {
+  socket.on('lobby player message', function(msg) {
+    $('#lobby-chat ul').append(buildDisplayedMessage(msg));
+  });
+
+  socket.on('lobby spectator message', function(msg) {
     $('#lobby-chat ul').append(buildDisplayedMessage(msg));
   });
 
@@ -58,11 +62,13 @@ $(function() {
   /* Join / Leave Lobby (Recieved on Global Socket) */
 
   global.on('join lobby', function(data) {
-    socket.emit('join lobby', {});
+    // Echo to Chat Socket
+    socket.emit('join lobby', data);
   });
 
   global.on('leave lobby', function(data) {
-    socket.emit('leave lobby', {});
+    // Echo to Chat Socket
+    socket.emit('leave lobby', data);
   });
 
 
