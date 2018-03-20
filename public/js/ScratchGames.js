@@ -160,7 +160,8 @@ let Scratch = function() {};
   Scratch.nav.init = function(cb) {
     // On Browser Nav (Back or Forward)
     window.onpopstate = function(event) {
-      navigate(event.state.loc, { pushState: false }, Scratch.nav.callback);
+      if (event.state)
+        navigate(event.state.loc, { pushState: false }, Scratch.nav.callback);
     };
 
     /* Allow server to make nav calls */
