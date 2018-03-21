@@ -109,8 +109,8 @@ let Scratch = function() {};
           modal: true,
           title: 'Scratch Games',
           path: 'joincode',
-          js: false,
-          call: false,
+          js: 'joincode.js',
+          call: 'joincode.init',
         };
         break;
       case 'lobbylist': // alias for home
