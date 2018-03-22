@@ -13,7 +13,9 @@
         $('#joincodeForm').submit(function(e) {
             e.preventDefault();
             e.stopImmediatePropagation();
-            console.log("Something good happened");
+
+            // Form values are "player" and "spec" //
+
         }).validate();
     };
 

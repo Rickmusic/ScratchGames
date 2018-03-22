@@ -2,44 +2,45 @@
     <h3>Lobby Settings</h3>
 </div>
 <div class="modal-body">
-    <div id="createForm">
+    <div class="container">
         <form id="createLobby" action="">
-            <input id="name" type="text" name="lobbyname" placeholder="Lobby Name"/>
-            <div class="row">
-                <div class="leftForm">
-                    <label for="leftRadio">Public</label>
-                    <input type="radio" id="leftRadio" name="public" value="public" checked>
-                </div>
-                <div class="rightForm">
-                    <label for="rightRadio">Private</label>
-                    <input type="radio" id="rightRadio" name="public" value="private">
-                </div>
+            <div class="form-group">
+                <input class="form-control" id="name" type="text" name="lobbyname" placeholder="Lobby Name">
             </div>
-            <div>
+            <div class="form-group center">
+                <label class="radio-inline"><input type="radio" name="public" value="public" checked>Public</label>
+                <label class="radio-inline"><input type="radio" name="public" value="private">Private</label>
+            </div>
+            <div class="form-group">
                 <label for="type">Game type:</label>
-                <select name="gametype" id="type">
-                    <option value="" disabled selected>Games list auto generated here?</option>
+                <select class="form-control" name="gametype" id="type">
+                    <option value="" disabled selected>Select</option>
                     <!-- Options Loaded Dynamically -->
                 </select>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="numPlay">Max number of players:</label>
-                <select name="numPlayers" id="numPlay">
-                    <option value="" disabled selected>#of players auto constrained</option>
+                <select class="form-control" name="numPlayers" id="numPlay" disabled>
+                    <option value="" disabled selected>Select</option>
                     <!-- Options Populated Dynamically -->
                 </select>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="numSpec">Number of allowed Spectators:</label>
-                <select name="numSpec" id="numSpec">
-                    <option value="" disabled selected>#of spec</option>
+                <select name="numSpec" class="form-control" id="numSpec">
+                    <option value="" disabled selected>Select</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
                 </select>
             </div>
             <p id="message" style="color: red;"><p>
-            <input type="submit" value="Create"/>
+            <button type="submit" value="Create" class="btn btn-success">Create</button>
         </form>
     </div>
 </div>
