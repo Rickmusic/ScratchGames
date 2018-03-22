@@ -6,7 +6,8 @@ html, body {
   overflow-x: hidden;
   background-color: #c4c2c2;
   max-height: 100%;
-  /*overflow-y: hidden;*/
+  height: 100%;
+ /* overflow-y: hidden;*/
 }
 /* Chat Interface */
 
@@ -81,12 +82,10 @@ h2{
 }
 
 .scroll{
-    max-height: 60%;
     overflow-y: auto;
 }
 
 #scratchLogo{
-   border-bottom: black solid 2px;
    padding-bottom: 1em;
 }
 
@@ -98,4 +97,12 @@ ul{
 
 table{
     width: 100%;
+}
+
+.top{
+    height: 15%;
+    border-bottom: black solid 2px;
+}
+.fill{
+    height: 85%;
 }
