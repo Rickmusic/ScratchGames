@@ -1,8 +1,8 @@
 /* global Scratch */
+Scratch.base = function() {};
+
 /* Define Base Page Functions */
 (function() {
-  Scratch.base = function() {};
-
   let socket = Scratch.sockets.base; /* Links to app/socket/base.js */
 
   // Attaches handlers to the baze UI elements. //

@@ -313,6 +313,16 @@ let Scratch = function() {};
 (function() {
   Scratch.sockets = function() {};
   Scratch.sockets.base = io();
+  Scratch.sockets.game = io('/game');
+})();
+
+/* 
+ * ----------------------------------------
+ * Scratch Games
+ * ---------------------------------------- 
+ */
+(function() {
+  Scratch.games = function() {};
 })();
 
 /* 
