@@ -309,22 +309,22 @@ Scratch.games.GoFish = function() {};
 
   Scratch.games.GoFish.socketFunctions.hook = function() {
     socket.on('status', Scratch.games.GoFish.socketFunctions.status);
-    socket.on('user-joined', Scratch.games.GoFish.socketFunctions.user-joined);
-    socket.on('user-left', Scratch.games.GoFish.socketFunctions.user-left);
-    socket.on('game-state', Scratch.games.GoFish.socketFunctions.game-state);
-    socket.on('players-turn', Scratch.games.GoFish.socketFunctions.players-turn);
-    socket.on('game-info', Scratch.games.GoFish.socketFunctions.game-info);
-    socket.on('player-books', Scratch.games.GoFish.socketFunctions.player-books);
+    socket.on('user-joined', Scratch.games.GoFish.socketFunctions.userJoined);
+    socket.on('user-left', Scratch.games.GoFish.socketFunctions.userLeft);
+    socket.on('game-state', Scratch.games.GoFish.socketFunctions.gameState);
+    socket.on('players-turn', Scratch.games.GoFish.socketFunctions.playersTurn);
+    socket.on('game-info', Scratch.games.GoFish.socketFunctions.gameInfo);
+    socket.on('player-books', Scratch.games.GoFish.socketFunctions.playerBooks);
   };
 
   Scratch.games.GoFish.socketFunctions.unhook = function() {
     socket.removeListener('status', Scratch.games.GoFish.socketFunctions.status);
-    socket.removeListener('user-joined', Scratch.games.GoFish.socketFunctions.user-joined);
-    socket.removeListener('user-left', Scratch.games.GoFish.socketFunctions.user-left);
-    socket.removeListener('game-state', Scratch.games.GoFish.socketFunctions.game-state);
-    socket.removeListener('players-turn', Scratch.games.GoFish.socketFunctions.players-turn);
-    socket.removeListener('game-info', Scratch.games.GoFish.socketFunctions.game-info);
-    socket.removeListener('player-books', Scratch.games.GoFish.socketFunctions.player-books);
+    socket.removeListener('user-joined', Scratch.games.GoFish.socketFunctions.userJoined);
+    socket.removeListener('user-left', Scratch.games.GoFish.socketFunctions.userLeft);
+    socket.removeListener('game-state', Scratch.games.GoFish.socketFunctions.gameState);
+    socket.removeListener('players-turn', Scratch.games.GoFish.socketFunctions.playersTurn);
+    socket.removeListener('game-info', Scratch.games.GoFish.socketFunctions.gameInfo);
+    socket.removeListener('player-books', Scratch.games.GoFish.socketFunctions.playerBooks);
   };
 
   Scratch.games.GoFish.socketFunctions.status = function(status) {
@@ -350,7 +350,7 @@ Scratch.games.GoFish = function() {};
     }
   };
 
-  Scratch.games.GoFish.socketFunctions.user-joined = function(join) {
+  Scratch.games.GoFish.socketFunctions.userJoined = function(join) {
     if (join.sid == socket.id) {
       goFish.updateMe(join);
     } 
@@ -359,17 +359,17 @@ Scratch.games.GoFish = function() {};
     }
   };
 
-  Scratch.games.GoFish.socketFunctions.user-left = function(left) {
+  Scratch.games.GoFish.socketFunctions.userLeft = function(left) {
     userLeft(left);
   };
 
-  Scratch.games.GoFish.socketFunctions.game-state = function(state) {
+  Scratch.games.GoFish.socketFunctions.gameState = function(state) {
     console.log(state);
     goFish.updateGameState(state);
     updateGame();
   };
 
-  Scratch.games.GoFish.socketFunctions.players-turn = function(pl) {
+  Scratch.games.GoFish.socketFunctions.playersTurn = function(pl) {
     if (firstTurn) {
       updateUsers();
       firstTurn = false;
@@ -388,7 +388,7 @@ Scratch.games.GoFish = function() {};
     }
   };
 
-  Scratch.games.GoFish.socketFunctions.game-info = function(res) {
+  Scratch.games.GoFish.socketFunctions.gameInfo = function(res) {
     if (res.player == goFish.me.uid) {
       let message = $('#my-messages');
       $('#my-messages').html(res.message);
@@ -409,8 +409,8 @@ Scratch.games.GoFish = function() {};
     }
   };
 
-  Scratch.games.GoFish.socketFunctions.player-books = function(books) {
-    // TODO it appears 'res' is not visible in this function
+  Scratch.games.GoFish.socketFunctions.playerBooks = function(books) {
+    // TODO it appears 'res' would not be visible in this function
     if (res.player == goFish.me.uid) {
       let message = $('#my-messages');
       $('#my-messages').html(stringBooks(books));
