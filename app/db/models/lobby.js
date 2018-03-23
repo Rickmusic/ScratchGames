@@ -18,7 +18,7 @@ let init = (sequelize, DataTypes) => {
       },
       game: {
         type: DataTypes.ENUM,
-        values: ['UNO', 'SomeGame'],
+        values: ['UNO', 'GoFish'],
         allowNull: false,
         defaultValue: 'UNO',
       },

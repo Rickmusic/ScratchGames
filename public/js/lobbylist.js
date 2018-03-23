@@ -1,7 +1,7 @@
 /* global Scratch */
-(function() {
-  Scratch.lobbylist = function() {};
+Scratch.lobbylist = function() {};
 
+(function() {
   let socket = Scratch.sockets.base; /* Links to app/socket/base.js */
 
   Scratch.lobbylist.init = function() {
@@ -9,7 +9,7 @@
       // TODO Replace callback with local error handling callback function
       Scratch.nav.goTo('createlobby', Scratch.nav.callback);
     });
- };
+  };
 
   Scratch.lobbylist.create = function() {};
 

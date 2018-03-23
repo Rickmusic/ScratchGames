@@ -100,7 +100,7 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'game',
           js: false,
-          call: false,
+          call: 'games',
         };
         break;
       case 'joincode':
@@ -150,6 +150,22 @@ let Scratch = function() {};
   };
 
   /*
+   * @param {string} location to switch to
+   * @param {array} arguments to use for call [optional]
+   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   */
+  Scratch.nav.loadGame = function(loc, args, callback) {
+    navigate(loc, args, { pushState: false }, callback);
+  };
+
+  /* Allow server to make nav calls */
+  Scratch.nav.socketNavigate = function(nav, callback) {
+    nav.opts = nav.opts || {};
+    if (nav.redirect) nav.opts.replaceState = true;
+    navigate(nav.loc, nav.args, nav.opts, callback);
+  };
+
+  /*
    * Page First Time Load or Page Reloaded
    * @param {function} function(err) where err can be a Scratch.error.* error, or null otherwise
    */
@@ -160,22 +176,9 @@ let Scratch = function() {};
         navigate(event.state.loc, { pushState: false }, Scratch.nav.callback);
     };
 
-    /* Allow server to make nav calls */
-    Scratch.sockets.base.on('navigate', function(data) {
-      data.opts = data.opts || {};
-      if (data.redirect) data.opts.replaceState = true;
-      navigate(data.loc, data.args, data.opts, serverNavigateCallback);
-    });
-
     /* Lookup which location to load */
     navigate(getCurrentLoc(), { pushState: false }, cb);
   };
-
-  function serverNavigateCallback(err) {
-    // TODO Determine how to deal with errors on server navigate
-    if (err) console.log(err);
-  }
-
 
   let currlocation;
   /*
@@ -218,6 +221,8 @@ let Scratch = function() {};
       })
       .catch(err => callback.call(Scratch.nav, err));
   }
+
+  Scratch.nav.func = function() {};
 
   function createHistory(loc, nav, opts) {
     opts = opts || {};
@@ -314,6 +319,61 @@ let Scratch = function() {};
 (function() {
   Scratch.sockets = function() {};
   Scratch.sockets.base = io();
+  Scratch.sockets.lobby = io('/lobby');
+
+  /* Join / Leave Lobby */
+
+  Scratch.sockets.base.on('join lobby', function(info) {
+    // Echo to Lobby Socket
+    Scratch.sockets.lobby.emit('join lobby', info);
+  });
+
+  Scratch.sockets.base.on('leave lobby', function(info) {
+    // Echo to Lobby Socket
+    Scratch.sockets.lobby.emit('leave lobby', info);
+  });
+
+  /* Server Navigate */
+
+  Scratch.sockets.base.on('navigate', function(nav) {
+    Scratch.nav.socketNavigate(nav, serverNavigateCallback);
+  });
+
+  Scratch.sockets.lobby.on('navigate', function(nav) {
+    Scratch.nav.socketNavigate(nav, serverNavigateCallback);
+  });
+
+  function serverNavigateCallback(err) {
+    // TODO Determine how to deal with errors on server navigate
+    if (err) console.log(err);
+  }
+})();
+
+/* 
+ * ----------------------------------------
+ * Scratch Games
+ * ---------------------------------------- 
+ */
+(function() {
+  Scratch.games = function(game, nsp) {
+    if (game === undefined) Scratch.nav.redirect('lobbylist', Scratch.nav.callback);
+    let path = '/games/' + game.toLowerCase(); 
+    Scratch.nav.loadGame(
+      {
+        loc: game,
+        nav: {
+          html: path + '.html',
+          modal: false,
+          js: path + '.js',
+          call: 'games.' + game + '.init',
+        },
+      },
+      [ nsp ],
+      function(err) {
+        if (err) console.log('At load game: ', err);
+      }
+    );
+  };
 })();
 
 /* 

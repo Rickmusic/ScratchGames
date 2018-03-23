@@ -6,7 +6,7 @@ let { Lobby } = db.models;
 
 const GameTypes = [
   { id: 'uno', display: 'UNO', maxPlayer: 4, minPlayer: 2 },
-  { id: 'other', display: 'Other Game', maxPlayer: 3, minPlayer: 2 },
+  { id: 'gofish', display: 'Go Fish', maxPlayer: 3, minPlayer: 2 },
 ];
 
 let init = function(io) {
@@ -25,7 +25,7 @@ let init = function(io) {
       let gametype; /* Value must mach DB Enum */
       switch (data.gametype) {
         case 'uno': gametype = 'UNO'; break;
-        case 'other': gametype = 'SomeGame'; break;
+        case 'gofish': gametype = 'GoFish'; break;
         default: break;
       }
       if (!gametype) // Hit default case
