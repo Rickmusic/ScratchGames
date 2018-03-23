@@ -222,8 +222,6 @@ let Scratch = function() {};
       .catch(err => callback.call(Scratch.nav, err));
   }
 
-  Scratch.nav.func = function() {};
-
   function createHistory(loc, nav, opts) {
     opts = opts || {};
     nav = nav || {};
