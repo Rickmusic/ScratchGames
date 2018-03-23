@@ -262,6 +262,14 @@ select {
   text-align: center;
 }
 
+.scrollDown{
+  position: absolute;
+  bottom: 0;
+  padding: 10px 10px;
+  color: seashell;
+  text-align: center;
+  margin: 0 auto;
+}
 
 .intro{
   height: 100%;
@@ -292,6 +300,22 @@ select {
   font-weight: 100;
 
 }
+.gameInfo{
+  text-align: center;
+}
+
+.developers li {
+  /*width:100px;*/
+  /*margin: 0 auto;*/
+  height: 25px;
+  margin: 0 5px;
+  display: inline;
+  /*margin-right: 0px;*/
+  border-right: 1px solid #aaa;
+  padding: 0 20px;
+  font-size: large ;
+}
+
 .btn{
   font-size: 135%;
   font-weight: 400;
