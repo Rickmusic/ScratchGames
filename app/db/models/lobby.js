@@ -53,7 +53,6 @@ let init = (sequelize, DataTypes) => {
   Lobby.beforeCreate('generateJoinCode', (instance, options) => {
     return generateJoinCode()
       .then(joincode => {
-        console.log(joincode);
         instance.joincode = joincode;
         return joincode;
       })
