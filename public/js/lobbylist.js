@@ -29,15 +29,18 @@ Scratch.lobbylist = function() {};
     });
 
     $('#createLobby select[name="gametype"]').change(function() {
+      $('#numPlay').prop('disabled', false);
       $('#createLobby select[name="numPlayers"] option:disabled').prop('selected', true);
       $('#createLobby select[name="numPlayers"] option:enabled').remove();
       let $opt = $(this).find('option:selected');
       for (let i = $opt.data('minPlay'); i <= $opt.data('maxPlay'); i++) {
         $('#createLobby select[name="numPlayers"]').append($('<option>').val(i).text(i));
       }
+
     });
 
     socket.on('game types', function(data) {
+     $('#createLobby select[name="gametype"]').empty().append('<option value="" disabled selected>Select</option>');
      for (let i = 0; i < data.GameTypes.length; i++) {
         let gametype = data.GameTypes[i];
         $('#createLobby select[name="gametype"]').append(

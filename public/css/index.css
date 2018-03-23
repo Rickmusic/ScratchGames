@@ -1,0 +1,132 @@
+/*Index.html CSS */
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    /*without height = 100% won't show background img for index.html landing page */
+    height: 100%;
+    background-color: #c4c2c2;
+
+}
+
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+/*Inner Body Home */
+.createbtn {
+    background-color: green;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 2em;
+    padding: 2%;
+    margin: 1em;
+    height: 2em;
+}
+
+
+.jumbotron {
+    width: 50%;
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    margin-top: 20%;
+}
+
+.jumboWord{
+    text-align: center;
+}
+
+.scrollDown{
+    position: absolute;
+    bottom: 0;
+    padding: 10px 10px;
+    color: seashell;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.intro{
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    background: url(https://static.pexels.com/photos/163828/poker-game-play-gambling-163828.jpeg) no-repeat 50% 50%;
+    display: table;
+    top: 0;
+    background-size: cover;
+}
+
+.intro .inner{
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    max-width: none;
+}
+
+.content{
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    /*Padding Bottom is where the "welcome Log In" show up */
+    padding-bottom: 30%;
+}
+.content h1{
+    font-size: 600%;
+    font-weight: 100;
+    color: orange;
+    font-family: 'Georgia';
+    display: inline;
+
+}
+.gameInfo{
+    text-align: center;
+}
+
+.developers li {
+    /*width:100px;*/
+    /*margin: 0 auto;*/
+    height: 25px;
+    margin: 0 5px;
+    display: inline;
+    /*margin-right: 0px;*/
+    border-right: 1px solid #aaa;
+    padding: 0 20px;
+    font-size: large ;
+}
+
+.btn{
+    font-size: 135%;
+    font-weight: 400;
+    color: #4c4f56;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: solid #4c4f56;
+    padding: 10px 20px;
+    border-radius: 9px;
+    background-color: white;
+
+
+}
+
+
+
+
+
+
+
+
+
+

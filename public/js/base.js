@@ -23,17 +23,7 @@ Scratch.base = function() {};
     });
 
     // Adding Accordian Handler to side accordians //
-    $('.accord')
-      .find('.accordbtn')
-      .click(function() {
-        $(this)
-          .next()
-          .slideToggle('fast');
-      });
 
-    $('#modalClose').click(function() {
-      $('#modal').hide();
-    });
   };
 
   Scratch.base.loadMain = function(html, callback) {
@@ -59,7 +49,7 @@ Scratch.base = function() {};
   };
 
   Scratch.base.hideModal = function() {
-    $('#modal').hide();
+    $('#myModal').modal("toggle");
   };
 
 })();
