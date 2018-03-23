@@ -5,6 +5,7 @@ let socketsession = require('./socketsession');
 let events = function(io) {
   require('./base')(io);
   require('./chat')(io);
+  require('./lobby')(io);
 };
 
 let init = function(app) {
@@ -15,6 +16,8 @@ let init = function(app) {
   //   Express available in events as socket.request.session
   //   Passport available in events as socket.request.user
   io.use(socketsession);
+
+  require('./namespaceManager').init(io);
 
   events(io);
 

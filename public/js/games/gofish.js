@@ -3,7 +3,7 @@ Scratch.games.GoFish = function() {};
 
 (function() {
 
-  let socket = Scratch.sockets.game; /* Links to app/socket/game.js */ 
+  var socket; /* Links to app/games/gofish/index.js */ 
   
   class GoFish {
     constructor() {
@@ -435,13 +435,15 @@ Scratch.games.GoFish = function() {};
   /* On HTML Ready */
 
   let cardsDealt = false;
-  Scratch.games.GoFish.init = function() {
+  Scratch.games.GoFish.init = function(nsp, lobby) {
     for (let i = 0; i < 52; i++) {
       $('#game-table').append("<div class='card-deck-card'></div>");
     }
     $('#ask-button').click(function() {
       askFor();
     });
+    socket = io(nsp);
+    socket.emit('join lobby', { lobby });
     Scratch.games.GoFish.socketFunctions.hook();
   };
 

@@ -3,7 +3,7 @@ CREATE TABLE `lobbies` (
     `id` CHAR(36) BINARY , 
     `name` VARCHAR(255), 
     `type` ENUM('public', 'private') NOT NULL DEFAULT 'public', 
-    `game` ENUM('UNO', 'SomeGame') NOT NULL DEFAULT 'UNO', 
+    `game` ENUM('UNO', 'GoFish') NOT NULL DEFAULT 'UNO', 
     `maxPlayers` INTEGER, 
     `maxSpectators` INTEGER, 
     `createdAt` DATETIME NOT NULL, 
