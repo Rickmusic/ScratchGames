@@ -11,7 +11,12 @@ let exists = function(identifier) {
 
 let create = function(identifier) {
   let id = (function recGen(io) {
-    let id = crypto.randomBytes(64).toString('base64');
+    let id = crypto
+      .randomBytes(64)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
     if (io.nsps[id]) return recGen(io);
     return id;
   })(io);

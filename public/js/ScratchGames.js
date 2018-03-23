@@ -354,7 +354,7 @@ let Scratch = function() {};
  * ---------------------------------------- 
  */
 (function() {
-  Scratch.games = function(game, nsp, lobby) {
+  Scratch.games = function(game, nsp) {
     if (game === undefined) Scratch.nav.redirect('lobbylist', Scratch.nav.callback);
     let path = '/games/' + game.toLowerCase(); 
     Scratch.nav.loadGame(
@@ -367,7 +367,7 @@ let Scratch = function() {};
           call: 'games.' + game + '.init',
         },
       },
-      [ nsp, lobby ],
+      [ nsp ],
       function(err) {
         if (err) console.log('At load game: ', err);
       }

@@ -7,10 +7,8 @@ let games = {};
 let init = function(io) {
   io.on('connection', function(socket) {
     socket.on('hello', function() {
-      socket.join(socket.request.user.lobby);
-
-      let game = games[socket.request.user.lobby];
-
+      socket.join(socket.request.user.lobbyId);
+      let game = games[socket.request.user.lobbyId];
       let userId = socket.request.user.id;
 
       game.playerJoined({
@@ -18,7 +16,7 @@ let init = function(io) {
         sid: socket.id,
       });
 
-      io.to(socket.request.user.lobby).emit('user-joined', {
+      io.to(socket.request.user.lobbyId).emit('user-joined', {
         uid: userId,
         sid: socket.id,
       });
@@ -27,22 +25,22 @@ let init = function(io) {
     });
 
     socket.on('start-game', function(abc) {
-      let game = games[socket.request.user.lobby];
+      let game = games[socket.request.user.lobbyId];
       game.startGame();
       for (let i in game.players) {
         let player = game.players[i];
         io.to(player.sid).emit('game-state', game.getStateFor(player.uid));
       }
-      io.to(socket.request.user.lobby).emit('players-turn', game.pTurn);
+      io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
     });
 
     socket.on('ask-for', function(ask) {
-      let game = games[socket.request.user.lobby];
+      let game = games[socket.request.user.lobbyId];
       let res = game.goFish(ask);
       let result = res['result'];
       let resultFrom = ask.asks;
-      io.to(socket.id).emit('game-state', game.getStateFor(ask.uid));
-      io.to(socket.request.user.lobby).emit('game-info', {
+      socket.emit('game-state', game.getStateFor(ask.uid));
+      io.to(socket.request.user.lobbyId).emit('game-info', {
         player: userId,
         message: ask.uid + ', do you have any ' + ask.asksFor + '\'s?',
       });
@@ -52,10 +50,10 @@ let init = function(io) {
           .to(game.players[ask.asks].sid)
           .emit('game-state', game.getStateFor(ask.asks));
       }
-      io.to(socket.request.user.lobby).emit('game-info', { player: ask.asks, message: result });
-      io.to(socket.request.user.lobby).emit('players-turn', game.pTurn);
+      io.to(socket.request.user.lobbyId).emit('game-info', { player: ask.asks, message: result });
+      io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
       if (res['books'].length != 0) {
-        io.to(socket.request.user.lobby).emit('player-books', { player: userId, gotBooks: res['books'] });
+        io.to(socket.request.user.lobbyId).emit('player-books', { player: userId, gotBooks: res['books'] });
       }
     });
   });

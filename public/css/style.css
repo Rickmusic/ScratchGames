@@ -54,19 +54,19 @@ body {
 }
 .card-suit-S {
 	color: black;
-	background-image: url("/images/Cards/Spades.png");
+	background-image: url("/Cards/Spades.png");
 }
 .card-suit-H {
 	color: red;
-	background-image: url("/images/Cards/Hearts.png");
+	background-image: url("/Cards/Hearts.png");
 }
 .card-suit-D {
 	color: red;
-	background-image: url("/images/Cards/Diamonds.png");
+	background-image: url("/Cards/Diamonds.png");
 }
 .card-suit-C {
 	color: black;
-	background-image: url("/images/Cards/Clubs.png");
+	background-image: url("/Cards/Clubs.png");
 }
 #card-deck {
 	position: absolute;
@@ -81,7 +81,7 @@ body {
 	height: 86px;
 	background-position: center;
 	background-size: cover;
-	background-image: url("/images/Cards/Back.png");
+	background-image: url("/Cards/Back.png");
 	position: absolute;
 	left: calc(50vw - 30px);
 	top: calc(50vh + 10px);
