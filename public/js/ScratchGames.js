@@ -109,8 +109,8 @@ let Scratch = function() {};
           modal: true,
           title: 'Scratch Games',
           path: 'joincode',
-          js: false,
-          call: false,
+          js: 'joincode.js',
+          call: 'joincode.init',
         };
         break;
       case 'lobbylist': // alias for home
@@ -156,7 +156,8 @@ let Scratch = function() {};
   Scratch.nav.init = function(cb) {
     // On Browser Nav (Back or Forward)
     window.onpopstate = function(event) {
-      navigate(event.state.loc, { pushState: false }, Scratch.nav.callback);
+      if (event.state)
+        navigate(event.state.loc, { pushState: false }, Scratch.nav.callback);
     };
 
     /* Allow server to make nav calls */

@@ -41,7 +41,7 @@ let init = function(io) {
         .then(lobby => {
           lobby.addPlayer(socket.request.user)
             .then(() => {
-              socket.emit('join lobby', {});
+              socket.emit('join lobby', { lobby: lobby.id, role: 'host' });
               socket.emit('navigate', { loc: 'lobby' });
             })
             .catch(err => dblogger.error('At Add Player to Lobby: ' + err));
