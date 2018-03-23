@@ -16,8 +16,9 @@ CREATE TABLE `lobbies` (
 CREATE TABLE `users` (
     `id` CHAR(36) BINARY , 
     `displayName` VARCHAR(255), 
-    `status` ENUM('active', 'pending', 'limited', 'deleted') NOT NULL DEFAULT 'limited', 
+    `status` ENUM('online', 'offline') NOT NULL DEFAULT 'online', 
     `role` ENUM('host', 'player', 'spectator'), 
+    `accountStatus` ENUM('active', 'pending', 'limited', 'deleted') NOT NULL DEFAULT 'limited', 
     `createdAt` DATETIME NOT NULL, 
     `updatedAt` DATETIME NOT NULL, 
     `lobbyId` CHAR(36) BINARY, 

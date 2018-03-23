@@ -146,21 +146,18 @@ let Scratch = function() {};
    * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
    */
   Scratch.nav.redirect = function(loc, args, callback) {
-    if (typeof args === 'function') {
-      callback = args;
-      args = undefined;
-    }
     navigate(loc, args, { replaceState: true }, callback);
   };
 
   /*
    * Page First Time Load or Page Reloaded
-   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   * @param {function} function(err) where err can be a Scratch.error.* error, or null otherwise
    */
   Scratch.nav.init = function(cb) {
     // On Browser Nav (Back or Forward)
     window.onpopstate = function(event) {
-      navigate(event.state.loc, { pushState: false }, Scratch.nav.callback);
+      if (event.state)
+        navigate(event.state.loc, { pushState: false }, Scratch.nav.callback);
     };
 
     /* Allow server to make nav calls */
@@ -185,10 +182,10 @@ let Scratch = function() {};
    * -------------------------------------------------------------------
    * Internal Navigate
    * -------------------------------------------------------------------
-   * @param {string} location requested to be loaded or {object} location object
+   * @param {string} location requested to be loaded or {object} location object created by another Scratch.nav function
    * @param {array} arguments to nav.call [optional]
    * @param {object} options (should be provided only by other Scratch.nav functions) [optional]
-   * @param {function} function(err) which can have Scratch.error.* errors, null otherwise
+   * @param {function} function(err) where err can be a Scratch.error.* error, or null otherwise
    */
   function navigate(newloc, args, opts, callback) {
     if (typeof newloc === 'string')
@@ -212,9 +209,14 @@ let Scratch = function() {};
     if (currloc.nav.modal) Scratch.base.hideModal();
     currlocation = newloc;
 
-    newloc.nav.args = args; /* stick args in nav so we have fewer args to internal function */
     createHistory(newloc.loc, newloc.nav, opts);
-    loadHTML(newloc.nav, callback);
+    Promise.all([loadHTML(newloc.nav), loadJS(newloc.nav)])
+      .then(() => {
+        makeFunctionCall(newloc.nav, args)
+          .then(() => callback.call(Scratch.nav, null))
+          .catch(err => callback.call(Scratch.nav, err));
+      })
+      .catch(err => callback.call(Scratch.nav, err));
   }
 
   function createHistory(loc, nav, opts) {
@@ -239,41 +241,47 @@ let Scratch = function() {};
     return;
   }
 
-  function loadHTML(nav, cb) {
-    if (!nav.html) return loadJS(nav, cb);
-    if (nav.modal)
-      Scratch.base.loadModal(nav.html, err => {
-        if (err) return cb.call(Scratch.nav, err);
-        loadJS(nav, cb);
-      });
-    else
-      Scratch.base.loadMain(nav.html, err => {
-        if (err) return cb.call(Scratch.nav, err);
-        loadJS(nav, cb);
-      });
-  }
-
-  function loadJS(nav, cb) {
-    if (!nav.js) return makeFunctionCall(nav, cb);
-    $.loadScript(nav.js, err => {
-      if (err) return cb.call(Scratch.nav, err);
-      makeFunctionCall(nav, cb);
+  function loadHTML(nav) {
+    return new Promise((fulfill, reject) => {
+      if (!nav.html) return fulfill();
+      if (nav.modal)
+        Scratch.base.loadModal(nav.html, err => {
+          if (err) return reject(err);
+          fulfill();
+        });
+      else
+        Scratch.base.loadMain(nav.html, err => {
+          if (err) return reject(err);
+          fulfill();
+        });
     });
   }
 
-  function makeFunctionCall(nav, cb) {
-    if (!nav.call) return cb.call(Scratch.nav, null);
-    if (!nav.args) nav.args = [];
-    let namespaces = nav.call.split('.');
-    let func = namespaces.pop();
-    let context = Scratch;
-    for (let i = 0; i < namespaces.length; i++) {
-      if (!(typeof context[namespaces[i]] !== 'undefined')) return cb.call(Scratch.nav, new Scratch.error.varUndefined(context, namespaces[i]));
-      context = context[namespaces[i]];
-    }
-    if (typeof context[func] !== 'function') return cb.call(Scratch.nav, new Scratch.error.notAFunction(context, func));
-    context[func].apply(Scratch.nav, nav.args);
-    cb.call(Scratch.nav, null);
+  function loadJS(nav) {
+    return new Promise((fulfill, reject) => {
+      if (!nav.js) return fulfill();
+      $.loadScript(nav.js, err => {
+        if (err) return reject(err);
+        fulfill();
+      });
+    });
+  }
+
+  function makeFunctionCall(nav, args) {
+    return new Promise((fulfill, reject) => {
+      if (!nav.call) return fulfill();
+      if (!args) args = [];
+      let namespaces = nav.call.split('.');
+      let func = namespaces.pop();
+      let context = Scratch;
+      for (let i = 0; i < namespaces.length; i++) {
+        if (!(typeof context[namespaces[i]] !== 'undefined')) return reject(new Scratch.error.varUndefined(context, namespaces[i]));
+        context = context[namespaces[i]];
+      }
+      if (typeof context[func] !== 'function') return reject(new Scratch.error.notAFunction(context, func));
+      context[func].apply(Scratch.nav, args);
+      fulfill();
+    });
   }
   
   function getCurrentLoc() {
@@ -282,7 +290,7 @@ let Scratch = function() {};
     let loc = getURLLoc();
     let nav = Scratch.nav(loc);
     createHistory(loc, nav, { replaceState: true });
-    return { loc: loc, nav: nav };
+    return { loc, nav };
   }
 
   function getURLLoc() {
