@@ -22,8 +22,6 @@ let init = (sequelize, DataTypes) => {
       message: { type: DataTypes.STRING },
     },
     {
-      getterMethods: {},
-      setterMethods: {},
       tableName: 'messages',
     }
   );
