@@ -41,7 +41,7 @@ let init = function(io) {
       let resultFrom = ask.asks;
       socket.emit('game-state', game.getStateFor(ask.uid));
       io.to(socket.request.user.lobbyId).emit('game-info', {
-        player: userId,
+        player: socket.request.user.id,
         message: ask.uid + ', do you have any ' + ask.asksFor + '\'s?',
       });
       if (result != 'Go Fish') {
