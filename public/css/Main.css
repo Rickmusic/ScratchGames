@@ -22,10 +22,23 @@ html, body {
   padding: 0px;
 }
 
+/* Utillities */
+
 .center{
     text-align: center;
 }
-
+.b-bottom{
+     border-bottom: black solid 2px;
+ }
+.scroll{
+    overflow-y: auto;
+}
+.pad{
+    padding: 1em;
+}
+.b-space{
+    margin-bottom: 1em;
+}
 /* New Bootstrap things */
 #navbarText > .navbar-nav {
   float:none;
@@ -81,10 +94,6 @@ h2{
   background-color: darkorange;
 }
 
-.scroll{
-    overflow-y: auto;
-}
-
 #scratchLogo{
    padding-bottom: 1em;
 }
@@ -100,19 +109,25 @@ table{
 }
 
 .top{
-    height: 15%;
-    border-bottom: black solid 2px;
+    height: 10%;
 }
 .fill{
-    height: 85%;
-    border-bottom: black solid 2px;
+     height: 90%;
+     border-bottom: black solid 2px;
 }
+
 #main{
     height: 100%;
 }
 .container{
     height: 100%;
+    max-width: none;
 }
 .voidPad{
     padding: 0;
 }
+.danger{
+    background: #e00f1f;
+    margin-bottom: 1em;
+}
+
