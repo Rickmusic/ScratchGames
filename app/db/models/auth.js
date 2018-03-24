@@ -30,8 +30,6 @@ let init = (sequelize, DataTypes) => {
       googleName: { type: DataTypes.STRING },
     },
     {
-      getterMethods: {},
-      setterMethods: {},
       tableName: 'authorization',
     }
   );
