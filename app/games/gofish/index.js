@@ -56,6 +56,10 @@ let init = function(io) {
         io.to(socket.request.user.lobbyId).emit('player-books', { player: userId, gotBooks: res['books'] });
       }
     });
+
+    socket.on('leave', function() {
+      socket.disconnect(); // Manually remove client from the game namespace.
+    });
   });
 };
 
