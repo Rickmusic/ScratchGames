@@ -30,6 +30,11 @@ let init = (sequelize, DataTypes) => {
       },
       maxPlayers: { type: DataTypes.INTEGER },
       maxSpectators: { type: DataTypes.INTEGER },
+      inGame: { 
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: '0',
+      },
     },
     {
       tableName: 'lobbies',

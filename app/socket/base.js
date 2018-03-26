@@ -75,6 +75,15 @@ let init = function(io) {
         })
         .catch(err => dblogger.error('At Lobby Find By Code: ' + err));
     });
+    
+    /* Pass on join/leave initiated by other namespaces
+     * As everything hooks into the global join/leave emit */
+    socket.on('join lobby', function(info) {
+      socket.emit('join lobby', info);
+    });
+    socket.on('leave lobby', function(info) {
+      socket.emit('leave lobby', info);
+    });
   });
 };
 
