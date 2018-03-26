@@ -359,7 +359,7 @@ let Scratch = function() {};
     if (game === undefined) return Scratch.nav.redirect('lobbylist', Scratch.nav.callback);
     if (currgame) Scratch.games.leave();
     currgame = game;
-    let path = '/games/' + game.toLowerCase(); 
+    let path = '/games/' + game; 
     Scratch.nav.loadGame(
       {
         loc: 'game',

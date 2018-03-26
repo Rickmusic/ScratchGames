@@ -6,6 +6,7 @@ let games = {};
 
 let init = function(io) {
   io.on('connection', function(socket) {
+    socket.emit('hello', {});
     socket.on('hello', function() {
       socket.join(socket.request.user.lobbyId);
       let game = games[socket.request.user.lobbyId];
