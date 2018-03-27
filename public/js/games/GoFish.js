@@ -3,7 +3,7 @@ Scratch.games.GoFish = function() {};
 
 (function() {
 
-  var socket; /* Links to app/games/gofish/index.js */ 
+  let socket; /* Links to app/games/gofish/index.js */ 
   
   class GoFish {
     constructor() {
@@ -71,7 +71,7 @@ Scratch.games.GoFish = function() {};
         (xLoc + 20) +
         '%; top: ' +
         yLoc +
-        "%;' hidden></div>";
+        "%; display: none;'></div>";
       let curUser =
         "<div class='player-spot' id='player-" +
         us['uid'] +
@@ -85,7 +85,7 @@ Scratch.games.GoFish = function() {};
       curUser +=
         "<button id='choose-player-" +
         us['uid'] +
-        "' class='choose-player-button' hidden>Choose</button>";
+        "' class='choose-player-button' style='display: none;'>Choose</button>";
       curUser += "<div class='cards-in-hand'></div>";
       curUser += '</div>';
 
@@ -303,31 +303,41 @@ Scratch.games.GoFish = function() {};
   }
 
 
+  Scratch.games.GoFish.leave = function() {
+    Scratch.games.GoFish.socket.disconnect();
+  };
+
+
   /* Socket Functions */
 
-  Scratch.games.GoFish.socketFunctions = function() {};
-
-  Scratch.games.GoFish.socketFunctions.hook = function() {
-    socket.on('status', Scratch.games.GoFish.socketFunctions.status);
-    socket.on('user-joined', Scratch.games.GoFish.socketFunctions.userJoined);
-    socket.on('user-left', Scratch.games.GoFish.socketFunctions.userLeft);
-    socket.on('game-state', Scratch.games.GoFish.socketFunctions.gameState);
-    socket.on('players-turn', Scratch.games.GoFish.socketFunctions.playersTurn);
-    socket.on('game-info', Scratch.games.GoFish.socketFunctions.gameInfo);
-    socket.on('player-books', Scratch.games.GoFish.socketFunctions.playerBooks);
+  Scratch.games.GoFish.socket = function() {};
+  
+  Scratch.games.GoFish.socket.disconnect = function() {
+    Scratch.games.GoFish.socket.unhook();
+    socket.emit('leave', {});
   };
 
-  Scratch.games.GoFish.socketFunctions.unhook = function() {
-    socket.removeListener('status', Scratch.games.GoFish.socketFunctions.status);
-    socket.removeListener('user-joined', Scratch.games.GoFish.socketFunctions.userJoined);
-    socket.removeListener('user-left', Scratch.games.GoFish.socketFunctions.userLeft);
-    socket.removeListener('game-state', Scratch.games.GoFish.socketFunctions.gameState);
-    socket.removeListener('players-turn', Scratch.games.GoFish.socketFunctions.playersTurn);
-    socket.removeListener('game-info', Scratch.games.GoFish.socketFunctions.gameInfo);
-    socket.removeListener('player-books', Scratch.games.GoFish.socketFunctions.playerBooks);
+  Scratch.games.GoFish.socket.hook = function() {
+    socket.on('status', Scratch.games.GoFish.socket.status);
+    socket.on('user-joined', Scratch.games.GoFish.socket.userJoined);
+    socket.on('user-left', Scratch.games.GoFish.socket.userLeft);
+    socket.on('game-state', Scratch.games.GoFish.socket.gameState);
+    socket.on('players-turn', Scratch.games.GoFish.socket.playersTurn);
+    socket.on('game-info', Scratch.games.GoFish.socket.gameInfo);
+    socket.on('player-books', Scratch.games.GoFish.socket.playerBooks);
   };
 
-  Scratch.games.GoFish.socketFunctions.status = function(status) {
+  Scratch.games.GoFish.socket.unhook = function() {
+    socket.removeListener('status', Scratch.games.GoFish.socket.status);
+    socket.removeListener('user-joined', Scratch.games.GoFish.socket.userJoined);
+    socket.removeListener('user-left', Scratch.games.GoFish.socket.userLeft);
+    socket.removeListener('game-state', Scratch.games.GoFish.socket.gameState);
+    socket.removeListener('players-turn', Scratch.games.GoFish.socket.playersTurn);
+    socket.removeListener('game-info', Scratch.games.GoFish.socket.gameInfo);
+    socket.removeListener('player-books', Scratch.games.GoFish.socket.playerBooks);
+  };
+
+  Scratch.games.GoFish.socket.status = function(status) {
     console.log(status);
     for (let i in status['players']) {
       let join = status['players'][i];
@@ -350,7 +360,7 @@ Scratch.games.GoFish = function() {};
     }
   };
 
-  Scratch.games.GoFish.socketFunctions.userJoined = function(join) {
+  Scratch.games.GoFish.socket.userJoined = function(join) {
     if (join.sid == socket.id) {
       goFish.updateMe(join);
     } 
@@ -359,17 +369,17 @@ Scratch.games.GoFish = function() {};
     }
   };
 
-  Scratch.games.GoFish.socketFunctions.userLeft = function(left) {
+  Scratch.games.GoFish.socket.userLeft = function(left) {
     userLeft(left);
   };
 
-  Scratch.games.GoFish.socketFunctions.gameState = function(state) {
+  Scratch.games.GoFish.socket.gameState = function(state) {
     console.log(state);
     goFish.updateGameState(state);
     updateGame();
   };
 
-  Scratch.games.GoFish.socketFunctions.playersTurn = function(pl) {
+  Scratch.games.GoFish.socket.playersTurn = function(pl) {
     if (firstTurn) {
       updateUsers();
       firstTurn = false;
@@ -388,7 +398,7 @@ Scratch.games.GoFish = function() {};
     }
   };
 
-  Scratch.games.GoFish.socketFunctions.gameInfo = function(res) {
+  Scratch.games.GoFish.socket.gameInfo = function(res) {
     if (res.player == goFish.me.uid) {
       let message = $('#my-messages');
       $('#my-messages').html(res.message);
@@ -409,7 +419,7 @@ Scratch.games.GoFish = function() {};
     }
   };
 
-  Scratch.games.GoFish.socketFunctions.playerBooks = function(books) {
+  Scratch.games.GoFish.socket.playerBooks = function(books) {
     // TODO it appears 'res' would not be visible in this function
     if (res.player == goFish.me.uid) {
       let message = $('#my-messages');
@@ -444,8 +454,8 @@ Scratch.games.GoFish = function() {};
     });
     console.log('Go Fish Init', nsp);
     socket = io(nsp);
-    socket.emit('hello', {});
-    Scratch.games.GoFish.socketFunctions.hook();
+    socket.on('hello', () => socket.emit('hello', {}));
+    Scratch.games.GoFish.socket.hook();
   };
 
 })();

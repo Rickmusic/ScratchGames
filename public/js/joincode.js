@@ -14,9 +14,18 @@
             e.preventDefault();
             e.stopImmediatePropagation();
 
-            // Form values are "player" and "spec" //
+            let form = $(this).closest('form').serializeJSON();
 
-        }).validate();
+            // serializeJSON() does not include submit buttons
+            let $submitMethod = $(this).find('[type=submit]:focus');
+            if ($submitMethod.length !== 0) 
+              form.joinrole = $submitMethod.val();
+            else 
+              form.joinrole = 'spec'; // Submitted via 'Enter' keypress or similar
+
+            socket.emit('join via code', form);
+
+        });
     };
 
     /* Please Keep all code within this function, it will avoid polluting global space,
