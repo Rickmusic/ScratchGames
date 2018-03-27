@@ -6,7 +6,7 @@ body {
     padding: 0;
     /*without height = 100% won't show background img for index.html landing page */
     height: 100%;
-    background-color: #c4c2c2;
+    background-color: #6c8ba3;
 
 }
 
@@ -15,6 +15,14 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
+}
+.content h1{
+    font-size: 900%;
+    font-weight: 100;
+    color: #000000;
+    font-family: 'Georgia', sans-serif;
+    display: inline;
+
 }
 
 h2 {
@@ -82,32 +90,36 @@ h2 {
 
 
 .intro .inner{
-    display: table-cell;
+    /*display: table-cell;*/
     vertical-align: middle;
     margin: 0 auto;
     text-align: center;
     display: inline-block;
-    padding-top: 5%;
+    padding-top: 2.5%;
 
 }
 
 .content{
     max-width: 600px;
     margin: 0 auto;
-    text-align: center;
     /*Padding Bottom is where the "welcome Log In" show up */
     padding-bottom: 30%;
+   /* position: fixed;*/
+    right: 0;
 }
-.content h1{
-    font-size: 600%;
-    font-weight: 100;
-    color: orange;
-    font-family: 'Georgia';
-    display: inline;
 
-}
 .gameInfo{
     text-align: center;
+    /*font-size: 135%;
+    font-weight: 400;*/
+    color: #4c4f56;
+  /*  text-transform: uppercase;*/
+    text-decoration: none;
+    border: solid #4c4f56;
+    padding: 10px 20px;
+    border-radius: 9px;
+    background-color: white;
+    position:center ;
 }
 
 .developers li {
