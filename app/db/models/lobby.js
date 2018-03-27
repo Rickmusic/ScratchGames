@@ -1,5 +1,7 @@
 'use strict';
 
+let crypto = require('crypto');
+
 let init = (sequelize, DataTypes) => {
   let Lobby = sequelize.define(
     'lobby',
@@ -22,15 +24,52 @@ let init = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'UNO',
       },
+      joincode: { 
+        type: DataTypes.INTEGER,
+        unique: true,
+      },
       maxPlayers: { type: DataTypes.INTEGER },
       maxSpectators: { type: DataTypes.INTEGER },
     },
     {
-      getterMethods: {},
-      setterMethods: {},
       tableName: 'lobbies',
     }
   );
+
+  let generateJoinCode = function generateJoinCode() {
+    return new Promise((fulfill, reject) => {
+      let joincode = parseInt('0x' + crypto.randomBytes(3).toString('hex'));
+      Lobby.findAndCountAll({ where: { joincode: joincode } })
+        .then(result => {
+          if (result.count === 0) return fulfill(joincode);
+          generateJoinCode()
+            .then(joincode => fulfill(joincode))
+            .catch(err => reject(err));
+        })
+        .catch(err => reject(err));
+    });
+  };
+
+  Lobby.beforeCreate('generateJoinCode', (instance, options) => {
+    return generateJoinCode()
+      .then(joincode => {
+        instance.joincode = joincode;
+        return joincode;
+      })
+      .catch(err => console.log('At create gen joincode ', err));
+  });
+
+  Lobby.prototype.generateNewJoinCode = function() {
+    return new Promise((fulfill, reject) => {
+      generateJoinCode()
+        .then(joincode => {
+          this.update({ joincode })
+            .then(() => fulfill(this.joincode))
+            .catch(err => reject(err));
+        })
+        .catch(err => reject(err));
+    });
+  };
 
   Lobby.prototype.addPlayer = function(user, callback) {
     if (callback) {

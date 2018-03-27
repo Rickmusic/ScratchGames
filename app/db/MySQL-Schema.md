@@ -4,6 +4,7 @@ CREATE TABLE `lobbies` (
     `name` VARCHAR(255), 
     `type` ENUM('public', 'private') NOT NULL DEFAULT 'public', 
     `game` ENUM('UNO', 'GoFish') NOT NULL DEFAULT 'UNO', 
+    `joincode` INTEGER UNIQUE, 
     `maxPlayers` INTEGER, 
     `maxSpectators` INTEGER, 
     `createdAt` DATETIME NOT NULL, 

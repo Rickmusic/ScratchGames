@@ -205,11 +205,12 @@ let Scratch = function() {};
       opts = args;
       args = undefined;
     }
-    if (typeof callback !== 'function') callback(); /* throw standard js error for not a function */
+    if (typeof callback !== 'function') throw new Error('Navigate Callback is not a function');
 
     let currloc = currlocation || { nav: {} };
     if (typeof newloc.nav === 'undefined') return callback(new Scratch.error.navUknownLocation(newloc.loc));
     if (currloc.nav.modal) Scratch.base.hideModal();
+    if (currloc.game) Scratch.games.leave();
     currlocation = newloc;
 
     createHistory(newloc.loc, newloc.nav, opts);
@@ -221,8 +222,6 @@ let Scratch = function() {};
       })
       .catch(err => callback.call(Scratch.nav, err));
   }
-
-  Scratch.nav.func = function() {};
 
   function createHistory(loc, nav, opts) {
     opts = opts || {};
@@ -355,12 +354,16 @@ let Scratch = function() {};
  * ---------------------------------------- 
  */
 (function() {
+  let currgame;
   Scratch.games = function(game, nsp) {
-    if (game === undefined) Scratch.nav.redirect('lobbylist', Scratch.nav.callback);
-    let path = '/games/' + game.toLowerCase(); 
+    if (game === undefined) return Scratch.nav.redirect('lobbylist', Scratch.nav.callback);
+    if (currgame) Scratch.games.leave();
+    currgame = game;
+    let path = '/games/' + game; 
     Scratch.nav.loadGame(
       {
-        loc: game,
+        loc: 'game',
+        game: game,
         nav: {
           html: path + '.html',
           modal: false,
@@ -373,6 +376,12 @@ let Scratch = function() {};
         if (err) console.log('At load game: ', err);
       }
     );
+  };
+
+  Scratch.games.leave = function() {
+    if (!currgame) return;
+    Scratch.games[currgame].leave();
+    currgame = undefined;
   };
 })();
 

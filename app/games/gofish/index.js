@@ -6,6 +6,7 @@ let games = {};
 
 let init = function(io) {
   io.on('connection', function(socket) {
+    socket.emit('hello', {});
     socket.on('hello', function() {
       socket.join(socket.request.user.lobbyId);
       let game = games[socket.request.user.lobbyId];
@@ -41,7 +42,7 @@ let init = function(io) {
       let resultFrom = ask.asks;
       socket.emit('game-state', game.getStateFor(ask.uid));
       io.to(socket.request.user.lobbyId).emit('game-info', {
-        player: userId,
+        player: socket.request.user.id,
         message: ask.uid + ', do you have any ' + ask.asksFor + '\'s?',
       });
       if (result != 'Go Fish') {
@@ -55,6 +56,10 @@ let init = function(io) {
       if (res['books'].length != 0) {
         io.to(socket.request.user.lobbyId).emit('player-books', { player: userId, gotBooks: res['books'] });
       }
+    });
+
+    socket.on('leave', function() {
+      socket.disconnect(); // Manually remove client from the game namespace.
     });
   });
 };
