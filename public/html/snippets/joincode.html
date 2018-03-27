@@ -1,5 +1,20 @@
-<div>
-    <h1>Joincode</h1>
-    <br>
-    <p id="profile"></p>
+
+<div class="modal-header">
+    <h3>Enter Joincode</h3>
+</div>
+<div class="modal-body">
+
+    <form id="joincodeForm" data-toggle="validator" role="form">
+        <div class="form-group has-feedback">
+            <input type="number" class="form-control form-control-lg" name="joincode" required>
+        </div>
+        <div class="center">
+            <button id="lobby" name="submit" value="player" type="submit" class="btn btn-success btn-lg">Join Lobby</button>
+            <button id="spec" name="submit" value="spec" type="submit" class="btn btn-success btn-lg">Join Spectators</button>
+        </div>
+
+    </form>
+</div>
+<div class="modal-footer">
+
 </div>

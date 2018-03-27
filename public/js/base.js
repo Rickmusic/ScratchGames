@@ -1,8 +1,8 @@
 /* global Scratch */
+Scratch.base = function() {};
+
 /* Define Base Page Functions */
 (function() {
-  Scratch.base = function() {};
-
   let socket = Scratch.sockets.base; /* Links to app/socket/base.js */
 
   // Attaches handlers to the baze UI elements. //
@@ -23,17 +23,7 @@
     });
 
     // Adding Accordian Handler to side accordians //
-    $('.accord')
-      .find('.accordbtn')
-      .click(function() {
-        $(this)
-          .next()
-          .slideToggle('fast');
-      });
 
-    $('#modalClose').click(function() {
-      $('#modal').hide();
-    });
   };
 
   Scratch.base.loadMain = function(html, callback) {
@@ -52,13 +42,14 @@
         return callback(
           new Scratch.error.ajax('At loadModal', html, xhr.statusText)
         );
-      $('#modal').show();
+      $('#myModal').modal({ show: false})
+      $('#myModal').modal('show');
       callback(null);
     });
   };
 
   Scratch.base.hideModal = function() {
-    $('#modal').hide();
+    $('#myModal').modal("toggle");
   };
 
 })();

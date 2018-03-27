@@ -12,18 +12,22 @@ let init = (sequelize, DataTypes) => {
       displayName: { type: DataTypes.STRING },
       status: {
         type: DataTypes.ENUM,
-        values: ['active', 'pending', 'limited', 'deleted'],
+        values: ['online', 'offline'],
         allowNull: false,
-        defaultValue: 'limited',
+        defaultValue: 'online',
       },
       role: {
         type: DataTypes.ENUM,
         values: ['host', 'player', 'spectator'],
       },
+      accountStatus: {
+        type: DataTypes.ENUM,
+        values: ['active', 'pending', 'limited', 'deleted'],
+        allowNull: false,
+        defaultValue: 'limited',
+      },
     },
     {
-      getterMethods: {},
-      setterMethods: {},
       tableName: 'users',
     }
   );

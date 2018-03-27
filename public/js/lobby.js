@@ -1,7 +1,7 @@
 /* global Scratch */
-(function() {
-  Scratch.lobby = function() {};
+Scratch.lobby = function() {};
 
+(function() {
   Scratch.lobby.init = function() {
     // We also run this after a game has terminated // Can choose to start another game etc//
     function loadLobby() {
