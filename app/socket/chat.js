@@ -69,11 +69,15 @@ let init = function(global) {
       })
         .catch(err => dblogger.error('At Create Lobby Message: ' + err));
       if (socket.request.user.role === 'player' || socket.request.user.role === 'host') {
-        io.to(socket.request.user.lobbyId + 'player').emit('lobby player message', buildMessage(data));
-        io.to(socket.request.user.lobbyId + 'spectator').emit('lobby player message', buildMessage(data));
+        io
+          .to(socket.request.user.lobbyId + 'player')
+          .to(socket.request.user.lobbyId + 'spectator')
+          .emit('lobby player message', buildMessage(data));
       }
       else {
-        io.to(socket.request.user.lobbyId + 'spectator').emit('lobby spectator message', buildMessage(data));
+        io
+          .to(socket.request.user.lobbyId + 'spectator')
+          .emit('lobby spectator message', buildMessage(data));
       }
     });
 

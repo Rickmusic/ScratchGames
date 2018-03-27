@@ -28,8 +28,6 @@ let init = (sequelize, DataTypes) => {
       },
     },
     {
-      getterMethods: {},
-      setterMethods: {},
       tableName: 'users',
     }
   );
