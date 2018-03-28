@@ -9,10 +9,8 @@ let RememberMeStrategy = require('passport-remember-me-extended').Strategy;
 let config = require('../config');
 let logger = require('winston').loggers.get('auth');
 let db = require('../db');
-let Auth = db.models.auth;
-let User = db.models.user;
-let Token = db.models.token;
-let UserAuth = db.associations.userauth;
+let { Auth, Token, User } = db.models;
+let { UserAuth } = db.associations;
 
 let serializeUser = function(user, done) {
   done(null, user.id);
@@ -145,16 +143,20 @@ let facebook = new FacebookStrategy(
           User.create(
             {
               displayName: profile.displayName,
-              status: 'active',
+              accountStatus: 'active',
               auth: {
                 facebookId: profile.id,
-                facebookToken: accessToken,
                 facebookName: profile.displayName,
               },
             },
             { include: [UserAuth] }
           )
-            .then(user => done(null, user))
+            .then(user => {
+              user
+                .storeFacebookToken(accessToken)
+                .then(() => done(null, user))
+                .catch(err => done(err));
+            })
             .catch(err => done(err));
         })
         .catch(err => done(err));
@@ -184,16 +186,20 @@ let google = new GoogleStrategy(
           User.create(
             {
               displayName: profile.displayName,
-              status: 'active',
+              accountStatus: 'active',
               auth: {
                 googleId: profile.id,
-                googleToken: accessToken,
                 googleName: profile.displayName,
               },
             },
             { include: [UserAuth] }
           )
-            .then(user => done(null, user))
+            .then(user => {
+              user
+                .storeGoogleToken(accessToken)
+                .then(() => done(null, user))
+                .catch(err => done(err));
+            })
             .catch(err => done(err));
         })
         .catch(err => done(err));
@@ -220,4 +226,18 @@ let init = function() {
   return passport;
 };
 
-module.exports = init();
+let autosaveMiddleware = function(req, res, next) {
+  function afterResponse() {
+    res.removeListener('finish', afterResponse);
+    res.removeListener('close', afterResponse);
+    if (req.user && req.user.changed()) req.user.save();
+  }
+  res.on('finish', afterResponse);
+  res.on('close', afterResponse);
+  next();
+};
+
+module.exports = {
+  passport: init(),
+  passportAutosave: autosaveMiddleware,
+};

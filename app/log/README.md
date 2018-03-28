@@ -2,6 +2,7 @@
 
 Our system currently makes use of two loggers: [`morgan`](https://github.com/expressjs/morgan) and [`winston`](https://github.com/winstonjs/winston)
 
+
 Log files:
 -----------
 
@@ -12,6 +13,7 @@ Log files:
 
 Log files are configured with a max file size of 1MB.
 There may be up to two files per log (with the second having a number as a suffix); the file without a suffix is the newest. 
+
 
 Console Ouput:
 --------------

@@ -5,11 +5,11 @@ let router = express.Router();
 
 let path = require('path');
 
-let passport = require('../passport');
+let { passport } = require('../passport');
 let mailer = require('../mailer');
 let logger = require('winston').loggers.get('auth');
 let db = require('../db/');
-let Token = db.models.token;
+let { Token } = db.models;
 
 let rootdir = { root: path.join(__dirname, '../../') };
 
@@ -163,7 +163,7 @@ router.get('/verify', function(req, res, next) {
               return res.sendStatus(400);
             }
             user
-              .update({ status: 'active' })
+              .update({ accountStatus: 'active' })
               .then(() => res.redirect('/login'))
               .catch(err => next(err));
           })

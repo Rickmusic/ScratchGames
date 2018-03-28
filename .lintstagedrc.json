@@ -1,4 +1,4 @@
 {
-  "*.{json,css,md}": ["node_modules/.bin/prettier", "git add"],
+  "*.{json,css,md}": ["node_modules/.bin/prettier --write", "git add"],
   "*.js": ["node_modules/.bin/eslint --fix", "git add"]
 }

@@ -9,10 +9,18 @@ let init = (sequelize, DataTypes) => {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
       },
-      firstName: { type: DataTypes.STRING },
-      lastName: { type: DataTypes.STRING },
       displayName: { type: DataTypes.STRING },
       status: {
+        type: DataTypes.ENUM,
+        values: ['online', 'offline'],
+        allowNull: false,
+        defaultValue: 'online',
+      },
+      role: {
+        type: DataTypes.ENUM,
+        values: ['host', 'player', 'spectator'],
+      },
+      accountStatus: {
         type: DataTypes.ENUM,
         values: ['active', 'pending', 'limited', 'deleted'],
         allowNull: false,
@@ -20,12 +28,6 @@ let init = (sequelize, DataTypes) => {
       },
     },
     {
-      getterMethods: {
-        fullName() {
-          return this.firstname + ' ' + this.lastname;
-        },
-      },
-      setterMethods: {},
       tableName: 'users',
     }
   );
@@ -67,6 +69,50 @@ let init = (sequelize, DataTypes) => {
         .then(auth => {
           auth
             .updatePassword(password)
+            .then(() => fulfill())
+            .catch(err => reject(err));
+        })
+        .catch(err => reject(err));
+    });
+  };
+
+  User.prototype.storeFacebookToken = function(token, callback) {
+    let user = this;
+    if (callback) {
+      this.storeFacebookToken(token)
+        .then(() => callback(null))
+        .catch(err => callback(err));
+      return;
+    }
+
+    return new Promise((fulfill, reject) => {
+      user
+        .getAuth()
+        .then(auth => {
+          auth
+            .storeFacebookToken(token)
+            .then(() => fulfill())
+            .catch(err => reject(err));
+        })
+        .catch(err => reject(err));
+    });
+  };
+
+  User.prototype.storeGoogleToken = function(token, callback) {
+    let user = this;
+    if (callback) {
+      this.storeGoogleToken(token)
+        .then(() => callback(null))
+        .catch(err => callback(err));
+      return;
+    }
+
+    return new Promise((fulfill, reject) => {
+      user
+        .getAuth()
+        .then(auth => {
+          auth
+            .storeGoogleToken(token)
             .then(() => fulfill())
             .catch(err => reject(err));
         })

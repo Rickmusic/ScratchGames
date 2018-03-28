@@ -30,8 +30,6 @@ let init = (sequelize, DataTypes) => {
       googleName: { type: DataTypes.STRING },
     },
     {
-      getterMethods: {},
-      setterMethods: {},
       tableName: 'authorization',
     }
   );
@@ -67,6 +65,50 @@ let init = (sequelize, DataTypes) => {
         .then(hash => {
           auth
             .update({ password: hash })
+            .then(() => fulfill())
+            .catch(err => reject(err));
+        })
+        .catch(err => reject(err));
+    });
+  };
+
+  Auth.prototype.storeFacebookToken = function(token, callback) {
+    let auth = this;
+    if (callback) {
+      this.storeFacebookToken(token)
+        .then(() => callback(null))
+        .catch(err => callback(err));
+      return;
+    }
+
+    return new Promise((fulfill, reject) => {
+      bcrypt
+        .hash(token)
+        .then(hash => {
+          auth
+            .update({ facebookToken: hash })
+            .then(() => fulfill())
+            .catch(err => reject(err));
+        })
+        .catch(err => reject(err));
+    });
+  };
+
+  Auth.prototype.storeGoogleToken = function(token, callback) {
+    let auth = this;
+    if (callback) {
+      this.storeGoogleToken(token)
+        .then(() => callback(null))
+        .catch(err => callback(err));
+      return;
+    }
+
+    return new Promise((fulfill, reject) => {
+      bcrypt
+        .hash(token)
+        .then(hash => {
+          auth
+            .update({ googleToken: hash })
             .then(() => fulfill())
             .catch(err => reject(err));
         })

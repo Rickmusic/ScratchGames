@@ -5,7 +5,7 @@ let logger = require('winston').loggers.get('auth');
 
 let config = require('../config');
 let db = require('../db');
-let Token = db.models.token;
+let { Token } = db.models;
 
 let transport = nodemailer.createTransport({
   service: config.mailer.service,
@@ -28,10 +28,11 @@ let sendVerification = function(req, callback) {
     .then(promises => {
       let token = promises[0];
       let auth = promises[1];
-      let link =
-        req.get('X-Forwarded-Proto') + // Set by Nginx
+      let protocol = (req.get('X-Forwarded-Proto')) ? req.get('X-Forwarded-Proto') : req.protocol;
+      let link = 
+        protocol +
         '://' +
-        req.get('Host') + // Set by Nginx
+        req.get('Host') +
         '/verify?token=' +
         token;
 

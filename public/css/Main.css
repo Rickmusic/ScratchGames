@@ -1,114 +1,118 @@
+
 html, body {
+  margin: 0;
+  padding: 0 !important;
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: #c4c2c2;
+  max-height: 100%;
+  height: 100%;
+  overflow-y: hidden;
+}
+/* Chat Interface */
+
+#chat .name {
+    margin-right: 5px;
+}
+#chat .name:after {
+    content: ':'
+}
+#chat{
+  margin: 0px;
+  padding: 0px;
+}
+
+.center{
+    text-align: center;
+}
+
+/* New Bootstrap things */
+#navbarText > .navbar-nav {
+  float:none;
+  margin:0 auto;
+  display: block;
+  text-align: center;
+}
+
+#navbarText > .navbar-nav > li {
+  display: inline-block;
+  float:none;
+}
+
+#logout{
+  padding-right: 1em;
+}
+
+.sideTitle {
+   height: 2em;
+   vertical-align: middle;
+   text-align: center;
+   line-height: 2em;
+   border-bottom: black solid 2px;
+  background-color: #34589d;
+}
+
+h1 {
+      color: orange;
+      font-size: 2.5em;
+      font-family: 'Georgia';
+      display: inline;
+      margin: 0;
+}
+h2{
+    font-size: 1.5em;
     margin: 0;
     padding: 0;
 }
-body{
-    background-color: grey;
-}
-#logo{
-     width:5em;
-     padding-bottom: 1em;
-}
-.column{
-    margin: 0 auto;
-    width: 80%;
-    max-width: 800px;
-    background-color: white;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-}
-.row{
-    order: 1;
-    display: flex;
-    flex-direction: row;
+.col-2, .col-8{
+    padding: 0;
 }
 
-.left{
-    order: 1;
-    width: 46%;
-    border-right: lightgrey solid 0.2em;
-    text-align: left;
-    padding: 4%;
+#left {
+  padding-left: 15px;
+  border-right: black solid 2px;
 }
 .right{
-    order: 2;
-    width: 46%;
-    text-align: left;
-    padding: 4%;
-}
-.bottom{
-    order: 2;
-    background-color: lightgrey;
-    padding: 2em;
-}
-.top{
-    width: 100%;
-    text-align: center;
-}
-.createbtn{
-    background-color: black;
-    color: white;
-    cursor: pointer;
-    text-align: center;
-    padding: 2%;
-    margin: 2%;
-}
-.center{
-    text-align: center;
-    padding: 3%;
-}
-.leftbtn{
-    width: 50%;
-    order: 1;
-    margin: auto;
-    text-align: center;
-}
-.rightbtn{
-    order: 2;
-}
-#facebook{
-    background-color: darkblue;
-}
-#google{
-    background-color: firebrick;
-}
-#register{
-    padding-top: 1em;
-}
-#create{
-    display: none;
-}
-input[type=text]{
-    font-size: 1em;
-    width: 90%;
-    height: 2em;
-    padding-left: 1em;
-}
-input[type=password]{
-    font-size: 1em;
-    width: 90%;
-    height: 2em;
-    padding-left: 1em;
+    padding-right: 15px;
+    border-left: black solid 2px;
 }
 
-input[type=submit] {
-    font-size: 1em;
-    background-color: firebrick;
-    width: 95%;
-    height: 3em;
-    cursor: pointer;
-    color: white;
-    border: none;
+.navbar-light{
+  background-color: darkorange;
 }
-.OauthLogo{
-    height: 1.5em;
+
+.scroll{
+    overflow-y: auto;
 }
-h1{
-    color: orange;
-    font-size: 2em;
-    font-family: "Georgia";
+
+#scratchLogo{
+   padding-bottom: 1em;
 }
-a{
-    text-decoration: none;
+
+ul{
+  list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+table{
+    width: 100%;
+}
+
+.top{
+    height: 15%;
+    border-bottom: black solid 2px;
+}
+.fill{
+    height: 85%;
+    border-bottom: black solid 2px;
+}
+#main{
+    height: 100%;
+}
+.container{
+    height: 100%;
+}
+.voidPad{
+    padding: 0;
 }
