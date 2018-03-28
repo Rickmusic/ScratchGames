@@ -377,7 +377,7 @@ let Scratch = function() {};
     if (game === undefined) return Scratch.games.reload();
     if (currgame) Scratch.games.leave();
     currgame = game;
-    let path = '/games/' + game.toLowerCase(); 
+    let path = '/games/' + game; 
     Scratch.nav.loadGame(
       {
         loc: 'game',

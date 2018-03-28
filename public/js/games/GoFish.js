@@ -454,7 +454,7 @@ Scratch.games.GoFish = function() {};
     });
     console.log('Go Fish Init', nsp);
     socket = io(nsp);
-    socket.emit('hello', {});
+    socket.on('hello', () => socket.emit('hello', {}));
     Scratch.games.GoFish.socket.hook();
   };
 
