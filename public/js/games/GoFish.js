@@ -325,6 +325,7 @@ Scratch.games.GoFish = function() {};
     socket.on('players-turn', Scratch.games.GoFish.socket.playersTurn);
     socket.on('game-info', Scratch.games.GoFish.socket.gameInfo);
     socket.on('player-books', Scratch.games.GoFish.socket.playerBooks);
+    socket.on('game-over', Scratch.games.GoFish.socket.gameOver);
   };
 
   Scratch.games.GoFish.socket.unhook = function() {
@@ -335,6 +336,7 @@ Scratch.games.GoFish = function() {};
     socket.removeListener('players-turn', Scratch.games.GoFish.socket.playersTurn);
     socket.removeListener('game-info', Scratch.games.GoFish.socket.gameInfo);
     socket.removeListener('player-books', Scratch.games.GoFish.socket.playerBooks);
+    socket.removeListener('game-over', Scratch.games.GoFish.socket.gameOver);
   };
 
   Scratch.games.GoFish.socket.status = function(status) {
@@ -439,6 +441,10 @@ Scratch.games.GoFish = function() {};
         $('#user-message-' + res.player).hide();
       }, 5000);
     }
+  };
+  Scratch.games.GoFish.socket.gameOver = function(books) {
+	  // Winners is a array
+	  // TODO: How do we want to display this?
   };
 
 
