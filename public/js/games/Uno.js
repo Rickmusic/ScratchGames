@@ -377,7 +377,7 @@ Scratch.games.Uno = function() {};
         socket.emit('start-game', '');
       });
     }
-  });
+  };
 
   Scratch.games.Uno.socket.userJoined = function(join) {
     if (join.sid == socket.id) {
@@ -385,17 +385,17 @@ Scratch.games.Uno = function() {};
     } else {
       addUserToGame(join);
     }
-  });
+  };
 
   Scratch.games.Uno.socket.userLeft = function(left) {
     userLeft(left);
-  });
+  };
 
   Scratch.games.Uno.socket.gameState = function(state) {
     console.log(state);
     uno.updateGameState(state);
     updateGame();
-  });
+  };
 
   Scratch.games.Uno.socket.playersTurn = function(pl) {
     if (firstTurn) {
@@ -413,7 +413,7 @@ Scratch.games.Uno = function() {};
       $('#instructions-turn').html('It is ' + pl + "'s turn");
       $('#ask-button').hide();
     }
-  });
+  };
 
   Scratch.games.Uno.socket.gameInfo = function(res) {
     if (res.player == uno.me.uid) {
@@ -433,12 +433,12 @@ Scratch.games.Uno = function() {};
         $('#user-message-' + res.player).hide();
       }, 5000);
     }
-  });
+  };
 
   Scratch.games.Uno.socket.gameOver = function(winners) {
     // winners is array
     // TODO: what do we do here?
-  });
+  };
 
   /* On HTML Ready */
 
@@ -479,5 +479,5 @@ Scratch.games.Uno = function() {};
     socket = io(nsp);
     socket.on('hello', () => socket.emit('hello', {}));
     Scratch.games.Uno.socket.hook();
-  });
+  };
 })();
