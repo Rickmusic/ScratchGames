@@ -19,8 +19,7 @@ class Uno {
         this.me = player;
         console.log('NEW CARDS');
         console.log(this.me);
-      } 
-      else {
+      } else {
         this.loby[player['uid']] = player;
       }
     }

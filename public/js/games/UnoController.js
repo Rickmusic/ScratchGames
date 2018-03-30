@@ -10,7 +10,7 @@ function updateUsers(withButton = false) {
     let xLoc = 50 - (Math.cos(curAngle) * 40 + 10);
     let yLoc = 50 - (Math.sin(curAngle) * 40 + 10);
 
-    var us = uno.loby[i];
+    let us = uno.loby[i];
     userMessages +=
       "<div class='user-message' id='user-message-" +
       us['uid'] +
@@ -43,13 +43,12 @@ function updateUsers(withButton = false) {
   $('#user-messages').html(userMessages);
   if (withButton) {
     for (let i in uno.loby) {
-      var us = uno.loby[i];
+      let us = uno.loby[i];
       $('#choose-player-' + us['uid']).show();
     }
-  } 
-  else {
+  } else {
     for (let i in uno.loby) {
-      var us = uno.loby[i];
+      let us = uno.loby[i];
       $('#choose-player-' + us['uid']).hide();
     }
   }
@@ -358,8 +357,7 @@ $(function() {
       setTimeout(function() {
         $('#my-messages').hide();
       }, 5000);
-    } 
-    else {
+    } else {
       let message = $('#user-message-' + res.player);
       $('#user-message-' + res.player).html(res.message);
       $('#user-message-' + res.player).show();

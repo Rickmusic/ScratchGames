@@ -73,8 +73,7 @@ class Uno {
       let player = this.players[i];
       if (player.uid == uid) {
         returnData['players'][player.uid] = player;
-      }
-      else {
+      } else {
         returnData['players'][player.uid] = {
           uid: player.uid,
           sid: player.sid,
@@ -114,8 +113,7 @@ class Uno {
     let nextTurnNum;
     if (incTurnNum >= 0) {
       nextTurnNum = incTurnNum % this.numberPlayers;
-    }
-    else {
+    } else {
       nextTurnNum = this.numberPlayers + incTurnNum;
     }
     return playerIds[nextTurnNum];
@@ -140,7 +138,6 @@ class Uno {
   }
   placedCard(card, user, options) {
     let player = this.players[user];
-    var options;
     console.log(card);
     if (card == null) {
       player.giveCard(this.deck.pickOne());
@@ -150,30 +147,26 @@ class Uno {
       // Change suit + 4 cards for next player
       this.playedSuit = options['suit'];
       this.playedNum = null;
-      var next = this.nextPlayer;
+      let next = this.nextPlayer;
 
       this.giveCards(next, 4);
-    }
-    else if (card.num == 13) {
+    } else if (card.num == 13) {
       this.playedSuit = options['suit'];
       this.playedNum = null;
       // Change suit
-    }
-    else if (card.num == 12) {
+    } else if (card.num == 12) {
       // Give 2
-      var next = this.nextPlayer;
+      let next = this.nextPlayer;
       this.giveCards(next, 2);
       this.playedSuit = card.suit;
       this.playedNum = card.num;
-    }
-    else if (card.num == 11) {
+    } else if (card.num == 11) {
       // Skip or swap direction
       console.log(options);
       this.direction *= -1;
       this.playedSuit = card.suit;
       this.playedNum = card.num;
-    }
-    else {
+    } else {
       if (card.suit != this.playedSuit && card.num != this.playedNum) {
         return false;
       }
@@ -191,8 +184,7 @@ class Uno {
     for (let i in this.players) {
       if (this.players[i].books.length == maxBooks) {
         this.winners.push(this.players[i].uid);
-      }
-      else if (this.players[i].books.length > maxBooks) {
+      } else if (this.players[i].books.length > maxBooks) {
         this.winners = [this.players[i].uid];
       }
     }

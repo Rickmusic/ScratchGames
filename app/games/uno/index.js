@@ -35,8 +35,7 @@ module.exports = function(app, io) {
           io.to(player.sid).emit('game-state', game.getStateFor(player.uid));
         }
         io.emit('players-turn', game.pTurn);
-      }
-      else {
+      } else {
         // Display an error message
       }
       /*var result = res["result"];
