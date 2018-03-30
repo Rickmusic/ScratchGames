@@ -81,7 +81,7 @@ Scratch.games.Uno = function() {};
         (xLoc + 20) +
         '%; top: ' +
         yLoc +
-        "%;' hidden></div>";
+        "%; display: none;'></div>";
       let curUser =
         "<div class='player-spot' id='player-" +
         us['uid'] +
@@ -95,7 +95,7 @@ Scratch.games.Uno = function() {};
       curUser +=
         "<button id='choose-player-" +
         us['uid'] +
-        "' class='choose-player-button' hidden>Choose</button>";
+        "' class='choose-player-button' style='display: none;'>Choose</button>";
       curUser += "<div class='cards-in-hand'></div>";
       curUser += '</div>';
 
