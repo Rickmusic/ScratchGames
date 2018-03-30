@@ -1,3 +1,5 @@
+'use strict';
+
 let Deck = require('../deck');
 let Player = require('../player');
 class Uno {
