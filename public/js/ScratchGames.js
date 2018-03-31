@@ -218,6 +218,7 @@ let Scratch = function() {};
 
     let currloc = currlocation || { nav: {} };
     if (currloc.nav.modal) Scratch.base.hideModal();
+    if (currloc.loc === 'game') Scratch.games.leave();
 
     currlocation = newloc;
 
@@ -373,16 +374,22 @@ let Scratch = function() {};
      * navigation (reload, browser back/forward) as opposed to server nav.
      */
     if (game === undefined) return Scratch.games.reload();
+    if ($('iframe#game').attr('src') !== '') Scratch.games.leave();
+    $('iframe#game').hide();
     $('iframe#game').attr('src', '/games/' + game + '.html');
     $('iframe#game')[0].onload = function() {
       $('iframe#game').show();
-      $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ nsp }), '*');
+      $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ id: 'namespace', nsp }), '*');
       $('iframe#game')[0].onload = null;
     };
   };
 
   Scratch.games.reload = function() {
     Scratch.sockets.lobby.emit('game reload', {});
+  };
+
+  Scratch.games.leave = function() {
+    $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ id: 'leave' }), '*');
   };
 
 })();

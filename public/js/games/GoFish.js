@@ -304,6 +304,13 @@
   /* Socket Functions */
 
   socketFunctions = function() {};
+
+  socketFunctions.init = function(nsp) {
+    console.log('Go Fish Socket Init', nsp);
+    socket = io(nsp);
+    socket.on('hello', () => socket.emit('hello', {}));
+    socketFunctions.hook();
+  };
   
   socketFunctions.disconnect = function() {
     socketFunctions.unhook();
@@ -440,32 +447,33 @@
 	  // TODO: How do we want to display this?
   };
 
-  /* On Window Message */
+  /* Recieve Calls From Rest of App */
 
   window.addEventListener('message', function(e) {
-    /* if (e.origin != 'http://localhost') {
-      return;
-    } */
-
     let json;
     try {
       json = JSON.parse(e.data);
     } catch (err) {
       return console.error('Invalid json: %o', err);
     }
-    
-    console.log('GoFish Init', json.nsp);
-    socket = io(json.nsp);
-    socket.on('hello', () => socket.emit('hello', {}));
-    socketFunctions.hook();
+
+    switch(json.id) {
+      case 'namespace': 
+        socketFunctions.init(json.nsp);
+        break;
+      case 'leave':
+        socketFunctions.disconnect();
+        break;
+      default:
+        console.error('Recieved Unkown JSON Message: %o', json);
+    }  
   },
   false);
-
 
   /* On HTML Ready */
 
   let cardsDealt = false;
-  $(function(nsp) {
+  $(function() {
     for (let i = 0; i < 52; i++) {
       $('#game-table').append("<div class='card-deck-card'></div>");
     }
