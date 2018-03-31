@@ -4,11 +4,85 @@ html, body {
   padding: 0 !important;
   max-width: 100%;
   overflow-x: hidden;
-  background-color: #c4c2c2;
+/*  background-color: #c4c2c2;*/
+  background-color: #B2D6FF;
   max-height: 100%;
   height: 100%;
   overflow-y: hidden;
 }
+
+/* Mobile Styles */
+@media only screen and (max-width: 400px) {
+    body{
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+
+    .mainItems{
+        display: table-header-group;
+    }
+    .onlinePlayers{
+        display: table-footer-group;
+
+    }
+    .onlineChat{
+        display: table-footer-group;
+    }
+
+    .fill{
+        display: table;
+        text-align: center;
+        margin: 0 auto;
+        height: auto;
+
+    }
+    .centerItems{
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+}
+
+/* Tablet Styles */
+@media only screen and (min-width: 401px) and (max-width: 960px) {
+
+
+    .mainItems{
+        display: table-header-group;
+    }
+    .onlinePlayers{
+        display: table-footer-group;
+
+    }
+    .onlineChat{
+        display: table-footer-group;
+    }
+
+    .fill{
+        display: table;
+        text-align: center;
+        margin: 0 auto;
+        height: auto;
+
+    }
+    .centerItems{
+        margin: 0 auto;
+    }
+    .col-2, .col-8{
+        margin: 15px 15px;
+    }
+
+
+
+}
+
+/* Desktop Styles */
+@media only screen and (min-width: 961px) {
+
+}
+
 /* Chat Interface */
 
 #chat .name {
@@ -55,7 +129,7 @@ html, body {
 h1 {
       color: orange;
       font-size: 2.5em;
-      font-family: 'Georgia';
+      font-family: 'Georgia', sans-serif;
       display: inline;
       margin: 0;
 }
@@ -116,3 +190,4 @@ table{
 .voidPad{
     padding: 0;
 }
+
