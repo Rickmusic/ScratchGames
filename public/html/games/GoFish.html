@@ -1,32 +1,40 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Hello World 2.0</title>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
-	  
-    <div id="game-table">
-	    <div id="other-players">
-	    </div>
-	    <div id="my-cards">
-	    </div>
-	    <div id="instructions">
-		    <label id="instructions-turn">Welcome To Go Fish</label><br>
-		    <label id="instructions-others"></label><br>
-		    <label id="instructions-wording"></label>
-		    <button id="ask-button" style="display: none;">Ask</button>
-	    </div>
-	    <div id="card-deck">
-		    
-	    </div>
-	    <div id="user-messages">
-	    </div>
-	    <div id="my-messages" class="user-message" style="display: none;">
-	    </div>
-    </div>
-    <button id="start-game" style="display: none;">Start Game</button>
-    
-  </body>
+    <head>
+        <title>Scratch Games - Go Fish</title>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" type="text/css" href="style.css">
+
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+        <!-- Socket.IO -->
+        <script src="/socket.io/socket.io.js"></script>
+        
+        <script src="GoFish.js"></script>
+    </head>
+    <body>
+          
+        <div id="game-table">
+            <div id="other-players">
+            </div>
+            <div id="my-cards">
+            </div>
+            <div id="instructions">
+                <label id="instructions-turn">Welcome To Go Fish</label><br>
+                <label id="instructions-others"></label><br>
+                <label id="instructions-wording"></label>
+                <button id="ask-button" style="display: none;">Ask</button>
+            </div>
+            <div id="card-deck">
+                
+            </div>
+            <div id="user-messages">
+            </div>
+            <div id="my-messages" class="user-message" style="display: none;">
+            </div>
+        </div>
+        <button id="start-game" style="display: none;">Start Game</button>
+        
+    </body>
 </html>

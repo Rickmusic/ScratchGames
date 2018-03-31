@@ -95,7 +95,7 @@ let Scratch = function() {};
         break;
       case 'game':
         nav = {
-          html: false,
+          html: 'snippets/game.html',
           modal: false,
           title: 'Scratch Games',
           path: 'game',
@@ -218,7 +218,6 @@ let Scratch = function() {};
 
     let currloc = currlocation || { nav: {} };
     if (currloc.nav.modal) Scratch.base.hideModal();
-    if (currloc.game) Scratch.games.leave();
 
     currlocation = newloc;
 
@@ -369,42 +368,23 @@ let Scratch = function() {};
  * ---------------------------------------- 
  */
 (function() {
-  let currgame;
   Scratch.games = function(game, nsp) {
     /* If no args, then function must have been called by user 
      * navigation (reload, browser back/forward) as opposed to server nav.
      */
     if (game === undefined) return Scratch.games.reload();
-    if (currgame) Scratch.games.leave();
-    currgame = game;
-    let path = '/games/' + game; 
-    Scratch.nav.loadGame(
-      {
-        loc: 'game',
-        game: game,
-        nav: {
-          html: path + '.html',
-          modal: false,
-          js: path + '.js',
-          call: 'games.' + game + '.init',
-        },
-      },
-      [ nsp ],
-      function(err) {
-        if (err) console.log('At load game: ', err);
-      }
-    );
+    $('iframe#game').attr('src', '/games/' + game + '.html');
+    $('iframe#game')[0].onload = function() {
+      $('iframe#game').show();
+      $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ nsp }), '*');
+      $('iframe#game')[0].onload = null;
+    };
   };
 
   Scratch.games.reload = function() {
     Scratch.sockets.lobby.emit('game reload', {});
   };
 
-  Scratch.games.leave = function() {
-    if (!currgame) return;
-    Scratch.games[currgame].leave();
-    currgame = undefined;
-  };
 })();
 
 /* 
