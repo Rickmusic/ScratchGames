@@ -473,7 +473,7 @@
   /* On HTML Ready */
 
   let cardsDealt = false;
-  $(function(nsp) {
+  $(function() {
     for (let i = 0; i < 52; i++) {
       $('#game-table').append("<div class='card-deck-card'></div>");
     }
