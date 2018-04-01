@@ -66,33 +66,53 @@ class GoFish {
     return returnData;
   }
   nextTurn() {
-    console.log('Turn');
-    let curTurnNum = Object.keys(this.players).indexOf(this.pTurn);
-    console.log(curTurnNum);
-    let playerIds = Object.keys(this.players);
-    let nextTurnNum = (curTurnNum + 1) % this.numberPlayers;
-    console.log(nextTurnNum);
-    this.pTurn = playerIds[nextTurnNum];
+    for (var i in this.players) {
+		console.log("Turn");
+		var curTurnNum = Object.keys(this.players).indexOf(this.pTurn);
+		console.log(curTurnNum);
+		var playerIds = Object.keys(this.players);
+		var nextTurnNum = (curTurnNum+1)%this.numberPlayers;
+		console.log(nextTurnNum);
+		this.pTurn = playerIds[nextTurnNum];
+		if (this.players[this.pTurn].hand.length > 0 || this.deck.cardsAvailable.length > 0) {
+			return false;
+		}
+	}
+	// There are no cards in the deck, and no players with cards
+	return true;
   }
   goFish(ask) {
-    let to = this.players[ask.uid];
-    let fr = this.players[ask.asks];
-    let card = ask.asksFor;
-    let takeCards = fr.takeCard(card);
-    console.log(takeCards);
-    let books = to.giveCards(takeCards);
-
-    this.nextTurn();
-    if (takeCards.length == 0) {
-      let draw = this.deck.pickOne();
-      books = to.giveCard(draw);
-      return { result: 'Go Fish', books: books };
-    }
-
-    return {
-      result: 'I have ' + takeCards.length + ' ' + card + "'s",
-      books: books,
-    };
+    var to = this.players[ask.uid];
+	var fr = this.players[ask.asks];
+	var card = ask.asksFor;
+	var takeCards = fr.takeCard(card);
+	console.log(takeCards);
+	var books = to.giveCards(takeCards);
+	
+	var isGameOver = this.nextTurn();
+	if (isGameOver) {
+		return {result: "Game Over"};
+	}
+	if (takeCards.length == 0) {
+		var draw = this.deck.pickOne();
+		books = to.giveCard(draw);
+		return {result: "Go Fish", books: books};
+	}
+	return {result: "I have "+takeCards.length+" "+card+"'s", books: books}
+	
+  }
+  getWinner() {
+		var maxBooks = 0;
+		var winners = [];
+		for (var i in this.players) {
+			if (this.players[i].books.length == maxBooks) {
+				this.winners.push(this.players[i].uid);
+			}
+			else if (this.players[i].books.length > maxBooks) {
+				this.winners = [this.players[i].uid];
+			}
+		}
+		return winners;
   }
 }
 module.exports = GoFish;

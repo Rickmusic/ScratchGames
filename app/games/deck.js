@@ -30,6 +30,9 @@ class Deck {
     return players;
   }
   pickOne() {
+    if (this.cardsAvailable.length == 0) {
+      return null;
+    }
     let index = Math.floor(Math.random() * this.cardsAvailable.length);
     let card = this.cardsAvailable[index];
     this.cardsAvailable.splice(index, 1);

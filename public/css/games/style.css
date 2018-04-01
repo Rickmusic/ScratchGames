@@ -1,12 +1,13 @@
+html, body {
+    width: 100%;
+    height: 100%;
+}
 #start-game {
 	position: fixed;
-	left: 40vw;
-	width: 20vw;
-	height: 10vh;
-	top: 45vh;
-}
-body {
-	height: 100vh;
+	left: 40%;
+	width: 20%;
+	height: 10%;
+	top: 45%;
 }
 #game-table {
 	background-color: #4a8939;
@@ -24,25 +25,33 @@ body {
 	
 }
 #other-players {
-	height: 80vh;
+	height: 80%;
 }
 #my-cards {
-	height: 20vh;
+	height: 20%;
 	display: inline-block;
-	width: 100vw;
+	width: 100%;
 }
 .card {
 	display: inline-block;
 	width: 60px;
 	height: 86px;
 	background-color: white;
-	border-radius: 1vh;
+	border-radius: 1%;
 	background-position: center;
 	background-size: cover;
 	line-height: 86px;
 	text-align: center;
 	transform: rotateX(180deg);
 	backface-visibility: hidden;
+}
+#last-played {
+	position: absolute;
+	width: 60px;
+	left: calc(50vw + 35px);
+	height: 86px;
+	top: calc(50vh + 10px);
+	border: 1px dotted white;
 }
 .card-flip {
 	
@@ -71,9 +80,9 @@ body {
 #card-deck {
 	position: absolute;
 	width: 60px;
-	left: calc(50vw - 30px);
+	left: calc(50% - 30px);
 	height: 86px;
-	top: calc(50vh + 10px);
+	top: calc(50% + 10px);
 	border: 1px dotted white;
 }
 .card-deck-card {
@@ -83,8 +92,8 @@ body {
 	background-size: cover;
 	background-image: url("/Cards/Back.png");
 	position: absolute;
-	left: calc(50vw - 30px);
-	top: calc(50vh + 10px);
+	left: calc(50% - 30px);
+	top: calc(50% + 10px);
 }
 @keyframes flip-card-rev {
 	from {
@@ -111,13 +120,13 @@ body {
 
 #instructions {
 	border: 1px dashed white;
-	border-radius: 8vh;
+	border-radius: 8px;
 	
 	position: absolute;
-	left: 25vw;
-	width: 50vw;
-	top: 35vh;
-	height: 15vh;
+	left: 25%;
+	width: 50%;
+	top: 35%;
+	height: 15%;
 	color: white;
 	text-align: center;
 }
@@ -130,7 +139,29 @@ body {
 	
 }
 #my-messages {
-	left: 40vw;
-	bottom: 20vw;
+	left: 40%;
+	bottom: 20%;
 	
 }
+
+
+#select-suit {
+	position: fixed;
+	background-color: white;
+	left: 30%;
+	width: 40%;
+	height: 40%;
+	top: 30%;
+}
+#select-swap-or-skip {
+	position: fixed;
+	background-color: white;
+	left: 30%;
+	width: 40%;
+	height: 40%;
+	top: 30%;
+}
+.disabled-card {
+	background-color: #d0d0d0 !important;
+	box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+} 
