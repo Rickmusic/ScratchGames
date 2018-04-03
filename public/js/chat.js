@@ -48,14 +48,17 @@ $(function() {
 
   socket.on('global message', function(msg) {
     $('#global-chat ul').append(buildDisplayedMessage(msg));
+    $("#GlobalChatWindow").scrollTop($("#GlobalChatWindow")[0].scrollHeight);
   });
 
   socket.on('lobby player message', function(msg) {
     $('#lobby-chat ul').append(buildDisplayedMessage(msg));
+    $("#LobbyChatWindow").scrollTop($("#LobbyChatWindow")[0].scrollHeight);
   });
 
   socket.on('lobby spectator message', function(msg) {
     $('#lobby-chat ul').append(buildDisplayedMessage(msg));
+    $("#LobbyChatWindow").scrollTop($("#LobbyChatWindow")[0].scrollHeight);
   });
 
 
