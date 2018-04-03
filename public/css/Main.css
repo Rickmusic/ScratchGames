@@ -11,7 +11,6 @@ html, body {
   overflow-y: scroll;
 }
 
-
 /* Chat Interface */
 
 #chat .name {
@@ -71,6 +70,7 @@ h2{
 }
 .col-2, .col-8{
     padding: 0;
+    border-top: black solid 2px;
 }
 
 #left {
@@ -110,7 +110,6 @@ table{
 
 .top{
     height: 15%;
-    border-bottom: black solid 2px;
 }
 .fill{
     height: 95%;
@@ -122,6 +121,9 @@ table{
 }
 .container{
     height: 100%;
+}
+.container-fluid{
+    height: 85%;
 }
 .voidPad{
     padding: 0;
