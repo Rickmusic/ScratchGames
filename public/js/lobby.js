@@ -21,7 +21,7 @@ Scratch.lobby = function() {};
       let lobbyName = 'Pizza';
       let joincode = '75843';
       let members = []; // Everybody who is in the lobby including ones self? including state if ready etc.
-      let role = 'host';
+      let role = 'player';
 
       Scratch.lobby.loadTop(gameType, lobbyName, joincode);
       //TODO load member lists //
