@@ -11,105 +11,6 @@ html, body {
   overflow-y: hidden;
 }
 
-/* Mobile Styles */
-@media only screen and (max-width: 400px) {
-    body{
-        margin: 0;
-        padding: 0;
-        text-align: center;
-    }
-
-
-    .mainItems{
-        display: table-header-group;
-    }
-    .onlinePlayers{
-        display: table-footer-group;
-
-    }
-    .onlineChat{
-        display: table-footer-group;
-    }
-
-    .fill{
-        display: table;
-        text-align: center;
-        margin: 0 auto;
-        height: auto;
-
-    }
-    .centerItems{
-        margin-left: auto;
-        margin-right: auto;
-
-    }
-
-    .modal-content{
-        margin: 0 auto;
-        text-align: center;
-    }
-    .nav-item{
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-}
-
-/* Tablet Styles */
-@media only screen and (min-width: 401px) and (max-width: 960px) {
-
-
-    .mainItems{
-        display: table-header-group;
-    }
-    .onlinePlayers{
-        display: table-footer-group;
-
-    }
-    .onlineChat{
-        display: table-footer-group;
-    }
-
-    .fill{
-        display: table;
-        text-align: center;
-        margin: 0 auto;
-        height: auto;
-
-    }
-    .centerItems{
-        margin: 0 auto;
-        padding-bottom: 10px;
-    }
-    .col-2, .col-8{
-        margin: 15px 15px;
-    }
-    .form-group{
-        font-size: 1.3em;
-    }
-
-    .form-control{
-        font-size: 0.8em;
-    }
-
-
-
-
-}
-
-/* Desktop Styles */
-@media only screen and (min-width: 961px) {
-    .modal-content{
-        text-align: center;
-    }
-    .form-group{
-        font-size: 1.3em;
-    }
-    .form-control{
-        font-size: 0.8em;
-    }
-
-}
 
 /* Chat Interface */
 
@@ -173,7 +74,6 @@ h2{
 }
 
 #left {
-  padding-left: 15px;
   border-right: black solid 2px;
 }
 .right{
@@ -234,4 +134,116 @@ table{
 }
 .navbar-collapse.collapse {
     display: block!important;
+}
+
+.pre-scrollable{
+    max-height: 400px;
+    min-height: 400px;
+}
+
+/* Mobile Styles */
+@media only screen and (max-width: 400px) {
+    body{
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+
+    .mainItems{
+        display: table-header-group;
+    }
+    .onlinePlayers{
+        display: table-footer-group;
+
+    }
+    .onlineChat{
+        display: table-footer-group;
+    }
+
+    .fill{
+        display: table;
+        text-align: center;
+        margin: 0 auto;
+        height: auto;
+
+    }
+    .centerItems{
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
+    .modal-content{
+        margin: 0 auto;
+        text-align: center;
+    }
+    .nav-item{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+	.pre-scrollable{
+        max-height: 100px;
+        min-height: 100px;
+    }
+
+}
+
+/* Tablet Styles */
+@media only screen and (min-width: 401px) and (max-width: 960px) {
+
+
+    .mainItems{
+        display: table-header-group;
+    }
+    .onlinePlayers{
+        display: table-footer-group;
+
+    }
+    .onlineChat{
+        display: table-footer-group;
+    }
+
+    .fill{
+        display: table;
+        text-align: center;
+        margin: 0 auto;
+        height: auto;
+
+    }
+    .centerItems{
+        margin: 0 auto;
+        padding-bottom: 10px;
+    }
+    .col-2, .col-8{
+        margin: 15px 15px;
+    }
+    .form-group{
+        font-size: 1.3em;
+    }
+
+    .form-control{
+        font-size: 0.8em;
+    }
+
+	.pre-scrollable{
+        max-height: 100px;
+        min-height: 100px;
+    }
+
+
+}
+
+/* Desktop Styles */
+@media only screen and (min-width: 961px) {
+    .modal-content{
+        text-align: center;
+    }
+    .form-group{
+        font-size: 1.3em;
+    }
+    .form-control{
+        font-size: 0.8em;
+    }
+
 }
