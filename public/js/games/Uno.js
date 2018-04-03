@@ -1,9 +1,9 @@
 /* global io */
 (function() {
 
-  let socket; /* Links to app/games/gofish/index.js */ 
-  
-  class GoFish {
+  let socket; /* Links to app/games/uno/index.js */ 
+
+  class Uno {
     constructor() {
       this.turn = null;
       this.loby = {};
@@ -11,22 +11,25 @@
       this.me = {};
       this.gameStarted = false;
       console.log('SETUP');
+      this.allowed = {};
+      this.lastCard;
     }
     get numberPlayers() {
       return Object.keys(this.loby).length;
     }
     updateGameState(state) {
-      for (let i in state) {
-        let player = state[i];
+      for (let i in state['players']) {
+        let player = state['players'][i];
         if (player['uid'] == this.me['uid']) {
           this.me = player;
           console.log('NEW CARDS');
           console.log(this.me);
-        } 
-        else {
+        } else {
           this.loby[player['uid']] = player;
         }
       }
+      this.allowed = state['allowed'];
+      this.lastCard = state['lastCard'];
     }
     updateMe(data) {
       this.me = data;
@@ -46,22 +49,29 @@
     startGame() {
       this.gameStarted = true;
     }
+    isAllowed(card) {
+      return (
+        card['num'] > 10 ||
+        card['num'] == 1 ||
+        card['num'] == this.allowed['num'] ||
+        card['suit'] == this.allowed['suit']
+      );
+    }
   }
 
-
-  let goFish = new GoFish();
+  let uno = new Uno();
   let buttonsActive = false;
 
   function updateUsers(withButton = false) {
     let otherPlayers = '';
-    let angleDif = Math.PI / (goFish.numberPlayers - 1);
+    let angleDif = Math.PI / (uno.numberPlayers - 1);
     let curAngle = 0;
     let userMessages = '';
-    for (let i in goFish.loby) {
+    for (let i in uno.loby) {
       let xLoc = 50 - (Math.cos(curAngle) * 40 + 10);
       let yLoc = 50 - (Math.sin(curAngle) * 40 + 10);
 
-      let us = goFish.loby[i];
+      let us = uno.loby[i];
       userMessages +=
         "<div class='user-message' id='user-message-" +
         us['uid'] +
@@ -93,126 +103,134 @@
     $('#other-players').html(otherPlayers);
     $('#user-messages').html(userMessages);
     if (withButton) {
-      for (let i in goFish.loby) {
-        let us = goFish.loby[i];
+      for (let i in uno.loby) {
+        let us = uno.loby[i];
         $('#choose-player-' + us['uid']).show();
       }
-    }
-    else {
-      for (let i in goFish.loby) {
-        let us = goFish.loby[i];
+    } else {
+      for (let i in uno.loby) {
+        let us = uno.loby[i];
         $('#choose-player-' + us['uid']).hide();
       }
     }
-
-    activateButtons();
   }
-  
   let firstTurn = true;
-  function showUserButtons() {
-    for (let i in goFish.loby) {
-      let us = goFish.loby[i];
-      console.log('SHOWING');
-      console.log(us);
-      $('#choose-player-' + us['uid']).show();
-    }
-  }
-
   function hideUserButtons() {
-    for (let i in goFish.loby) {
-      let us = goFish.loby[i];
+    for (let i in uno.loby) {
+      let us = uno.loby[i];
       $('#choose-player-' + us['uid']).hide();
     }
   }
-
-  function clickedUser() {
-    if (chosenPlayer != null) {
-      $('#choose-player-' + chosenPlayer).show();
-    }
-    if (selectedCard != null) {
-      $('#' + selectedCard).css({ width: '60px', height: '86px' });
-      selectedCard = null;
-    }
-    let chosenPlayerId = $(this)
-      .attr('id')
-      .replace('choose-player-', '');
-    chosenPlayer = chosenPlayerId;
-    $('#choose-player-' + chosenPlayer).hide();
-    myTurnPartTwo();
-    console.log('ABC');
-  }
-
-  function activateButtons() {
-    for (let i in goFish.loby) {
-      let us = goFish.loby[i];
-      console.log(us['uid']);
-      $('#choose-player-' + us['uid']).off(clickedUser);
-      $('#choose-player-' + us['uid']).click(clickedUser);
-    }
-  }
-
   function addUserToGame(user) {
-    goFish.addUser(user);
+    uno.addUser(user);
     updateUsers();
   }
-
   function userLeft(sid) {
     userLeft(sid);
     updateUsers();
   }
-
   function startGame() {
     console.log(socket);
   }
 
-  function askFor() {
-    socket.emit('ask-for', {
-      uid: goFish.me.uid,
-      asks: chosenPlayer,
-      asksFor: selectedCard.split('-of-')[0],
-    });
-  }
-
   let selectedCard;
-  let chosenPlayer;
-  function myTurnPartTwo(player) {
+  let selectedSuit;
+  let selectedChoice;
+  function askFor() {
+    $('#select-suit').hide();
+    $('#ask-button').hide();
+    $('#select-swap-or-skip').hide();
+    console.log(selectedCard);
+    socket.emit('placed-card', {
+      uid: uno.me.uid,
+      card: selectedCard,
+      options: { suit: selectedSuit, choice: selectedChoice },
+    });
+    selectedCard = null;
+    selectedSuit = null;
+    selectedChoice = null;
+  }
+  function suitChoice() {
+    $('#select-suit').show();
     $('#instructions-wording').html(
-      'Select a card to ask ' + chosenPlayer + 'for from your hand'
+      'Play the ' + selectedCard['num'] + ' of ' + selectedCard['suit'] + '?'
     );
-    for (let i in goFish.me.hand) {
-      let card = goFish.me.hand[i];
+    $('#ask-button').hide();
+  }
+  function swapOrSkip() {
+    $('#select-swap-or-skip').show();
+    $('#instructions-wording').html(
+      'Play the ' + selectedCard['num'] + ' of ' + selectedCard['suit'] + '?'
+    );
+    $('#ask-button').hide();
+  }
+  function myTurn() {
+    $('#instructions-wording').html('Its your turn. Choose a card to play');
+    let canPlay = false;
+    for (let i in uno.me.hand) {
+      let card = uno.me.hand[i];
       console.log(card);
-      $('#' + card['num'] + '-of-' + card['suit']).click(function() {
-        if (selectedCard != null) {
-          $('#' + selectedCard).css({ width: '60px', height: '86px' });
-        }
-        selectedCard = $(this).attr('id');
-        $(this).css({ width: '70px', height: '100px' });
-        let selectedNumber = selectedCard.split('-of-')[0];
-        $('#instructions-wording').html('Ask for the ' + selectedNumber + '?');
-        $('#ask-button').show();
-      });
+
+      if (uno.isAllowed(card)) {
+        canPlay = true;
+        $('#' + card['num'] + '-of-' + card['suit']).click(function() {
+          $('#select-suit').hide();
+          $('#select-swap-or-skip').hide();
+          if (selectedCard != null) {
+            $('#' + selectedCard['num'] + '-of-' + selectedCard['suit']).css({
+              width: '60px',
+              height: '86px',
+            });
+          }
+          let cardId = $(this).attr('id');
+          $(this).css({ width: '70px', height: '100px' });
+          let selectedNumber = cardId.split('-of-')[0];
+          let selectedSuit = cardId.split('-of-')[1];
+          selectedCard = { num: selectedNumber, suit: selectedSuit };
+          if (selectedNumber > 10 || selectedNumber == 1) {
+            // Special card
+            if (selectedNumber == 1) {
+              // Suit	choice
+              suitChoice();
+              return;
+            } else if (selectedNumber == 11) {
+              // Swap direction or skip?
+              swapOrSkip();
+              return;
+            } else if (card.num == 13) {
+              // Suit choice
+              suitChoice();
+              return;
+            }
+          }
+          $('#instructions-wording').html(
+            'Play the ' +
+              selectedCard['num'] +
+              ' of ' +
+              selectedCard['suit'] +
+              '?'
+          );
+          $('#ask-button').show();
+        });
+      }
+    }
+    if (!canPlay) {
+      $('#instructions-wording').html('Draw a new card?');
+      $('#ask-button').show();
     }
   }
-
-  function myTurn() {
-    $('#instructions-wording').html('Its your turn. Choose a player to ask');
-    showUserButtons();
-    //updateUsers(true);
-  }
-
   function updateGame() {
     if (!cardsDealt) {
       console.log('DEALING CARDS');
-      console.log(goFish.numberPlayers - 1);
-      let angleDif = Math.PI / (goFish.numberPlayers - 1);
+      console.log(uno.numberPlayers - 1);
+      let angleDif = Math.PI / (uno.numberPlayers - 1);
       let curAngle = 0;
       let counter = 0;
-      for (let i in goFish.loby) {
+      for (let i in uno.loby) {
         let xLoc = 50 - (Math.cos(curAngle) * 40 + 10) + 5;
         let yLoc = 50 - (Math.sin(curAngle) * 40 + 10) + 5;
         console.log(Math.cos(curAngle));
-        for (let x = 0; x < goFish.loby[i]['hand']; x++) {
+        for (let x = 0; x < uno.loby[i]['hand']; x++) {
           console.log('left: ' + xLoc + '%, top: ' + yLoc + '%');
           let card = $('.card-deck-card:nth-child(' + counter + ')');
           card.delay(counter * 500).animate(
@@ -227,11 +245,11 @@
         }
         curAngle += angleDif;
       }
-      console.log(goFish.me);
-      for (let x = 0; x < goFish.me['hand'].length; x++) {
+      console.log(uno.me);
+      for (let x = 0; x < uno.me['hand'].length; x++) {
         let card = $('.card-deck-card:nth-child(' + counter + ')');
-        card.attr('suit', goFish.me['hand'][x]['suit']);
-        card.attr('num', goFish.me['hand'][x]['num']);
+        card.attr('suit', uno.me['hand'][x]['suit']);
+        card.attr('num', uno.me['hand'][x]['num']);
         let xLoc = x * 60;
         card.delay(counter * 500).animate(
           {
@@ -253,10 +271,17 @@
         counter += 1;
       }
     }
+    $('#last-played').removeClass('card-suit-D');
+    $('#last-played').removeClass('card-suit-H');
+    $('#last-played').removeClass('card-suit-S');
+    $('#last-played').removeClass('card-suit-C');
+    console.log(uno.lastCard);
+    $('#last-played').addClass('card-suit-' + uno.lastCard['suit']);
+    $('#last-played').html(uno.lastCard['num']);
 
-    for (let i in goFish.loby) {
-      let player = goFish.loby[i];
-      if (goFish.me['uid'] != player['uid']) {
+    for (let i in uno.loby) {
+      let player = uno.loby[i];
+      if (uno.me['uid'] != player['uid']) {
         $('#player-' + player['uid'] + '>.cards-in-hand')
           .first()
           .html(player['hand']);
@@ -264,11 +289,10 @@
     }
     fillHand();
   }
-
   function fillHand() {
     let cards = '';
-    for (let i in goFish.me.hand) {
-      let card = goFish.me.hand[i];
+    for (let i in uno.me.hand) {
+      let card = uno.me.hand[i];
       cards += "<div class='card card-suit-" + card['suit'];
       if (cardsDealt) {
         cards += ' card-flipped';
@@ -286,27 +310,24 @@
     if (!cardsDealt) {
       cardsDealt = true;
     }
-  }
-
-  function stringBooks(books) {
-    let ret = '';
-    if (books.length > 0) {
-      ret = 'I made a book of ' + books[0];
-      let counter = 1;
-      while (counter < books.length) {
-        ret + ' and ' + books[counter];
+    console.log('MY hand');
+    for (let i in uno.me['hand']) {
+      let card = uno.me['hand'][i];
+      let cid = '#' + card['num'] + '-of-' + card['suit'];
+      if (uno.isAllowed(card)) {
+        $(cid).removeClass('disabled-card');
+      } else {
+        $(cid).addClass('disabled-card');
       }
     }
-    return ret;
   }
-
 
   /* Socket Functions */
 
   socketFunctions = function() {};
-
+  
   socketFunctions.init = function(nsp) {
-    console.log('Go Fish Socket Init', nsp);
+    console.log('Uno Socket Init', nsp);
     socket = io(nsp);
     socket.on('hello', () => socket.emit('hello', {}));
     socketFunctions.hook();
@@ -324,7 +345,6 @@
     socket.on('game-state', socketFunctions.gameState);
     socket.on('players-turn', socketFunctions.playersTurn);
     socket.on('game-info', socketFunctions.gameInfo);
-    socket.on('player-books', socketFunctions.playerBooks);
     socket.on('game-over', socketFunctions.gameOver);
   };
 
@@ -335,7 +355,6 @@
     socket.removeListener('game-state', socketFunctions.gameState);
     socket.removeListener('players-turn', socketFunctions.playersTurn);
     socket.removeListener('game-info', socketFunctions.gameInfo);
-    socket.removeListener('player-books', socketFunctions.playerBooks);
     socket.removeListener('game-over', socketFunctions.gameOver);
   };
 
@@ -344,18 +363,17 @@
     for (let i in status['players']) {
       let join = status['players'][i];
       if (join.sid == socket.id) {
-        goFish.updateMe(join);
-      } 
-      else {
+        uno.updateMe(join);
+      } else {
         addUserToGame(join);
       }
     }
-    goFish.setLeader(status['leader']);
-    if (goFish.amLeader()) {
+    uno.setLeader(status['leader']);
+    if (uno.amLeader()) {
       console.log('YOU ARE THE LEADER');
       $('#start-game').show();
       $('#start-game').click(function() {
-        goFish.startGame();
+        uno.startGame();
         $('#start-game').hide();
         socket.emit('start-game', '');
       });
@@ -364,9 +382,8 @@
 
   socketFunctions.userJoined = function(join) {
     if (join.sid == socket.id) {
-      goFish.updateMe(join);
-    } 
-    else {
+      uno.updateMe(join);
+    } else {
       addUserToGame(join);
     }
   };
@@ -377,7 +394,7 @@
 
   socketFunctions.gameState = function(state) {
     console.log(state);
-    goFish.updateGameState(state);
+    uno.updateGameState(state);
     updateGame();
   };
 
@@ -387,21 +404,20 @@
       firstTurn = false;
     }
     $('#instructions-wording').html('');
-    if (pl == goFish.me['uid']) {
+    if (pl == uno.me['uid']) {
       console.log('MY TURN');
       $('#instructions-turn').html('It is your turn');
       myTurn();
-    } 
-    else {
+    } else {
       hideUserButtons();
       //updateUsers();
-      $('#ask-button').hide();
       $('#instructions-turn').html('It is ' + pl + "'s turn");
+      $('#ask-button').hide();
     }
   };
 
   socketFunctions.gameInfo = function(res) {
-    if (res.player == goFish.me.uid) {
+    if (res.player == uno.me.uid) {
       let message = $('#my-messages');
       $('#my-messages').html(res.message);
       $('#my-messages').show();
@@ -409,8 +425,7 @@
       setTimeout(function() {
         $('#my-messages').hide();
       }, 5000);
-    } 
-    else {
+    } else {
       let message = $('#user-message-' + res.player);
       $('#user-message-' + res.player).html(res.message);
       $('#user-message-' + res.player).show();
@@ -421,30 +436,9 @@
     }
   };
 
-  socketFunctions.playerBooks = function(books) {
-    // TODO it appears 'res' would not be visible in this function
-    if (res.player == goFish.me.uid) {
-      let message = $('#my-messages');
-      $('#my-messages').html(stringBooks(books));
-      $('#my-messages').show();
-
-      setTimeout(function() {
-        $('#my-messages').hide();
-      }, 5000);
-    } 
-    else {
-      let message = $('#user-message-' + res.player);
-      $('#user-message-' + res.player).html(stringBooks(books));
-      $('#user-message-' + res.player).show();
-
-      setTimeout(function() {
-        $('#user-message-' + res.player).hide();
-      }, 5000);
-    }
-  };
-  socketFunctions.gameOver = function(books) {
-	  // Winners is a array
-	  // TODO: How do we want to display this?
+  socketFunctions.gameOver = function(winners) {
+    // winners is array
+    // TODO: what do we do here?
   };
 
   /* Recieve Calls From Rest of App */
@@ -474,12 +468,36 @@
 
   let cardsDealt = false;
   $(function() {
-    for (let i = 0; i < 52; i++) {
-      $('#game-table').append("<div class='card-deck-card'></div>");
-    }
+    $('#select-diamonds').click(function() {
+      selectedSuit = 'D';
+      askFor();
+    });
+    $('#select-clubs').click(function() {
+      selectedSuit = 'C';
+      askFor();
+    });
+    $('#select-spades').click(function() {
+      selectedSuit = 'S';
+      askFor();
+    });
+    $('#select-hearts').click(function() {
+      selectedSuit = 'H';
+      askFor();
+    });
+
+    $('#select-swap').click(function() {
+      selectedChoice = 'Swap';
+      askFor();
+    });
+    $('#select-skip').click(function() {
+      selectedChoice = 'Skip';
+      askFor();
+    });
     $('#ask-button').click(function() {
       askFor();
     });
+    for (let i = 0; i < 52; i++) {
+      $('#game-table').append("<div class='card-deck-card'></div>");
+    }
   });
-
 })();

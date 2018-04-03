@@ -24,10 +24,28 @@ html, body {
   padding: 0px;
 }
 
+/* Utillities */
+
 .center{
     text-align: center;
 }
+.b-bottom{
+     border-bottom: black solid 2px;
+ }
+.scroll{
+    overflow-y: auto;
+}
+.pad{
+    padding: 1em;
+}
+.b-space{
+    margin-bottom: 1em;
+}
 
+.danger{
+    background: #e00f1f;
+    margin-bottom: 1em;
+}
 /* New Bootstrap things */
 #navbarText > .navbar-nav {
   float:none;
@@ -114,13 +132,14 @@ table{
 .fill{
     height: 95%;
     border-bottom: black solid 2px;
-
 }
+
 #main{
     height: 100%;
 }
 .container{
     height: 100%;
+    max-width: none;
 }
 .container-fluid{
     height: 85%;
@@ -128,7 +147,6 @@ table{
 .voidPad{
     padding: 0;
 }
-
 
 .modal-header{
     text-align: center;
@@ -249,3 +267,4 @@ table{
     }
 
 }
+

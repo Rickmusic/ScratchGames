@@ -23,7 +23,6 @@ Scratch.base = function() {};
     });
 
     // Adding Accordian Handler to side accordians //
-
   };
 
   Scratch.base.loadMain = function(html, callback) {
@@ -42,16 +41,18 @@ Scratch.base = function() {};
         return callback(
           new Scratch.error.ajax('At loadModal', html, xhr.statusText)
         );
-      $('#myModal').modal({ show: false})
+      $('#myModal').modal({ show: false });
       $('#myModal').modal('show');
       callback(null);
     });
   };
 
   Scratch.base.hideModal = function() {
-    $('#myModal').modal("toggle");
+    $('#myModal').modal('toggle');
   };
-
+  /*Scratch.base.addChat = function(name){
+    console.log("adding chat " + name);
+  };*/
 })();
 
 // Onload Function //

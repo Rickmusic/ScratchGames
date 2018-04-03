@@ -7,6 +7,7 @@ CREATE TABLE `lobbies` (
     `joincode` INTEGER UNIQUE, 
     `maxPlayers` INTEGER, 
     `maxSpectators` INTEGER, 
+    `inGame` TINYINT(1) NOT NULL DEFAULT '0',
     `createdAt` DATETIME NOT NULL, 
     `updatedAt` DATETIME NOT NULL,
     `hostId` CHAR(36) BINARY,

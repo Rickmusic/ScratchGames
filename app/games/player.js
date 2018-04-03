@@ -52,11 +52,30 @@ class Player {
     this.hand = hand.sort(this.sortHand);
   }
   giveCard(card) {
-    console.log('GIVING ' + this.uid + ' card ' + card['num']);
-    this.hand.push(card);
-    this.hand.sort(this.sortHand);
+    if (card != null) {
+      this.hand.push(card);
+      this.hand.sort(this.sortHand);
+    }
     return this.anyBooks();
   }
+  takeCardOfSuit(card, suit) {
+    let cardsStolen = [];
+    let counter = 0;
+    while (counter < this.hand.length) {
+      if (this.hand[counter] == null) { 
+        break;
+      }
+      if (this.hand[counter]["num"] == card && this.hand[counter]["suit"] == suit) {
+        // Take the card
+        cardsStolen.push(this.hand[counter]);
+        this.hand.splice(counter, 1);
+      }
+      else {
+        counter += 1;
+      }
+    }
+    return cardsStolen;
+	}
   takeCard(card) {
     let cardsStolen = [];
     let counter = 0;
