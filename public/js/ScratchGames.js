@@ -95,7 +95,7 @@ let Scratch = function() {};
         break;
       case 'game':
         nav = {
-          html: false,
+          html: 'snippets/game.html',
           modal: false,
           title: 'Scratch Games',
           path: 'game',
@@ -207,10 +207,19 @@ let Scratch = function() {};
     }
     if (typeof callback !== 'function') throw new Error('Navigate Callback is not a function');
 
-    let currloc = currlocation || { nav: {} };
     if (typeof newloc.nav === 'undefined') return callback(new Scratch.error.navUknownLocation(newloc.loc));
+
+    if (!currlocation) { // If first load
+      currlocation = { nav: {} };
+      if (newloc.loc === 'lobby' || newloc.loc === 'game') {
+        return Scratch.sockets.lobby.emit('lobby reload', {});
+      }
+    }
+
+    let currloc = currlocation || { nav: {} };
     if (currloc.nav.modal) Scratch.base.hideModal();
-    if (currloc.game) Scratch.games.leave();
+    if (currloc.loc === 'game') Scratch.games.leave();
+
     currlocation = newloc;
 
     createHistory(newloc.loc, newloc.nav, opts);
@@ -322,14 +331,20 @@ let Scratch = function() {};
 
   /* Join / Leave Lobby */
 
+  // Pass from Base to Lobby
   Scratch.sockets.base.on('join lobby', function(info) {
-    // Echo to Lobby Socket
     Scratch.sockets.lobby.emit('join lobby', info);
   });
-
   Scratch.sockets.base.on('leave lobby', function(info) {
-    // Echo to Lobby Socket
     Scratch.sockets.lobby.emit('leave lobby', info);
+  });
+  
+  // Pass from Lobby to Base (aka allow Lobby to initiate)
+  Scratch.sockets.lobby.on('join lobby', function(info) {
+    Scratch.sockets.base.emit('join lobby', info);
+  });
+  Scratch.sockets.lobby.on('leave lobby', function(info) {
+    Scratch.sockets.base.emit('leave lobby', info);
   });
 
   /* Server Navigate */
@@ -354,35 +369,29 @@ let Scratch = function() {};
  * ---------------------------------------- 
  */
 (function() {
-  let currgame;
   Scratch.games = function(game, nsp) {
-    if (game === undefined) return Scratch.nav.redirect('lobbylist', Scratch.nav.callback);
-    if (currgame) Scratch.games.leave();
-    currgame = game;
-    let path = '/games/' + game; 
-    Scratch.nav.loadGame(
-      {
-        loc: 'game',
-        game: game,
-        nav: {
-          html: path + '.html',
-          modal: false,
-          js: path + '.js',
-          call: 'games.' + game + '.init',
-        },
-      },
-      [ nsp ],
-      function(err) {
-        if (err) console.log('At load game: ', err);
-      }
-    );
+    /* If no args, then function must have been called by user 
+     * navigation (reload, browser back/forward) as opposed to server nav.
+     */
+    if (game === undefined) return Scratch.games.reload();
+    if ($('iframe#game').attr('src') !== '') Scratch.games.leave();
+    $('iframe#game').hide();
+    $('iframe#game').attr('src', '/games/' + game + '.html');
+    $('iframe#game')[0].onload = function() {
+      $('iframe#game').show();
+      $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ id: 'namespace', nsp }), '*');
+      $('iframe#game')[0].onload = null;
+    };
+  };
+
+  Scratch.games.reload = function() {
+    Scratch.sockets.lobby.emit('game reload', {});
   };
 
   Scratch.games.leave = function() {
-    if (!currgame) return;
-    Scratch.games[currgame].leave();
-    currgame = undefined;
+    $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ id: 'leave' }), '*');
   };
+
 })();
 
 /* 

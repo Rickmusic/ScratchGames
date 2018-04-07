@@ -1,6 +1,4 @@
-/* global Scratch */
-Scratch.games.Uno = function() {};
-
+/* global io */
 (function() {
 
   let socket; /* Links to app/games/uno/index.js */ 
@@ -324,40 +322,43 @@ Scratch.games.Uno = function() {};
     }
   }
 
-  Scratch.games.Uno.leave = function() {
-    Scratch.games.Uno.socket.disconnect();
-  };
-
   /* Socket Functions */
 
-  Scratch.games.Uno.socket = function() {};
+  socketFunctions = function() {};
   
-  Scratch.games.Uno.socket.disconnect = function() {
-    Scratch.games.Uno.socket.unhook();
+  socketFunctions.init = function(nsp) {
+    console.log('Uno Socket Init', nsp);
+    socket = io(nsp);
+    socket.on('hello', () => socket.emit('hello', {}));
+    socketFunctions.hook();
+  };
+  
+  socketFunctions.disconnect = function() {
+    socketFunctions.unhook();
     socket.emit('leave', {});
   };
 
-  Scratch.games.Uno.socket.hook = function() {
-    socket.on('status', Scratch.games.Uno.socket.status);
-    socket.on('user-joined', Scratch.games.Uno.socket.userJoined);
-    socket.on('user-left', Scratch.games.Uno.socket.userLeft);
-    socket.on('game-state', Scratch.games.Uno.socket.gameState);
-    socket.on('players-turn', Scratch.games.Uno.socket.playersTurn);
-    socket.on('game-info', Scratch.games.Uno.socket.gameInfo);
-    socket.on('game-over', Scratch.games.Uno.socket.gameOver);
+  socketFunctions.hook = function() {
+    socket.on('status', socketFunctions.status);
+    socket.on('user-joined', socketFunctions.userJoined);
+    socket.on('user-left', socketFunctions.userLeft);
+    socket.on('game-state', socketFunctions.gameState);
+    socket.on('players-turn', socketFunctions.playersTurn);
+    socket.on('game-info', socketFunctions.gameInfo);
+    socket.on('game-over', socketFunctions.gameOver);
   };
 
-  Scratch.games.Uno.socket.unhook = function() {
-    socket.removeListener('status', Scratch.games.Uno.socket.status);
-    socket.removeListener('user-joined', Scratch.games.Uno.socket.userJoined);
-    socket.removeListener('user-left', Scratch.games.Uno.socket.userLeft);
-    socket.removeListener('game-state', Scratch.games.Uno.socket.gameState);
-    socket.removeListener('players-turn', Scratch.games.Uno.socket.playersTurn);
-    socket.removeListener('game-info', Scratch.games.Uno.socket.gameInfo);
-    socket.removeListener('game-over', Scratch.games.Uno.socket.gameOver);
+  socketFunctions.unhook = function() {
+    socket.removeListener('status', socketFunctions.status);
+    socket.removeListener('user-joined', socketFunctions.userJoined);
+    socket.removeListener('user-left', socketFunctions.userLeft);
+    socket.removeListener('game-state', socketFunctions.gameState);
+    socket.removeListener('players-turn', socketFunctions.playersTurn);
+    socket.removeListener('game-info', socketFunctions.gameInfo);
+    socket.removeListener('game-over', socketFunctions.gameOver);
   };
 
-  Scratch.games.Uno.socket.status = function(status) {
+  socketFunctions.status = function(status) {
     console.log(status);
     for (let i in status['players']) {
       let join = status['players'][i];
@@ -379,7 +380,7 @@ Scratch.games.Uno = function() {};
     }
   };
 
-  Scratch.games.Uno.socket.userJoined = function(join) {
+  socketFunctions.userJoined = function(join) {
     if (join.sid == socket.id) {
       uno.updateMe(join);
     } else {
@@ -387,17 +388,17 @@ Scratch.games.Uno = function() {};
     }
   };
 
-  Scratch.games.Uno.socket.userLeft = function(left) {
+  socketFunctions.userLeft = function(left) {
     userLeft(left);
   };
 
-  Scratch.games.Uno.socket.gameState = function(state) {
+  socketFunctions.gameState = function(state) {
     console.log(state);
     uno.updateGameState(state);
     updateGame();
   };
 
-  Scratch.games.Uno.socket.playersTurn = function(pl) {
+  socketFunctions.playersTurn = function(pl) {
     if (firstTurn) {
       updateUsers();
       firstTurn = false;
@@ -415,7 +416,7 @@ Scratch.games.Uno = function() {};
     }
   };
 
-  Scratch.games.Uno.socket.gameInfo = function(res) {
+  socketFunctions.gameInfo = function(res) {
     if (res.player == uno.me.uid) {
       let message = $('#my-messages');
       $('#my-messages').html(res.message);
@@ -435,15 +436,38 @@ Scratch.games.Uno = function() {};
     }
   };
 
-  Scratch.games.Uno.socket.gameOver = function(winners) {
+  socketFunctions.gameOver = function(winners) {
     // winners is array
     // TODO: what do we do here?
   };
 
+  /* Recieve Calls From Rest of App */
+
+  window.addEventListener('message', function(e) {
+    let json;
+    try {
+      json = JSON.parse(e.data);
+    } catch (err) {
+      return console.error('Invalid json: %o', err);
+    }
+
+    switch(json.id) {
+      case 'namespace': 
+        socketFunctions.init(json.nsp);
+        break;
+      case 'leave':
+        socketFunctions.disconnect();
+        break;
+      default:
+        console.error('Recieved Unkown JSON Message: %o', json);
+    }  
+  },
+  false);
+
   /* On HTML Ready */
 
   let cardsDealt = false;
-  Scratch.games.Uno.init = function(nsp) {
+  $(function() {
     $('#select-diamonds').click(function() {
       selectedSuit = 'D';
       askFor();
@@ -475,9 +499,5 @@ Scratch.games.Uno = function() {};
     for (let i = 0; i < 52; i++) {
       $('#game-table').append("<div class='card-deck-card'></div>");
     }
-    console.log('Uno Init', nsp);
-    socket = io(nsp);
-    socket.on('hello', () => socket.emit('hello', {}));
-    Scratch.games.Uno.socket.hook();
-  };
+  });
 })();

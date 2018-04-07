@@ -34,4 +34,8 @@ router.get('/lobby', isAuthenticated, function(req, res) {
   res.sendFile(path.join('public/html/base.html'), rootdir);
 });
 
+router.get('/game', isAuthenticated, function(req, res) {
+  res.sendFile(path.join('public/html/base.html'), rootdir);
+});
+
 module.exports = router;
