@@ -47,23 +47,32 @@ class Uno {
   }
   playerJoined(player) {
     let pl = new Player(player);
-    this.players[player.uid] = pl;
+	if (this.players[player.uid] == null) {
+		this.players[player.uid] = pl;
+	}
+	else {
+		this.players[player.uid].sid = player.sid;
+	}
+    
   }
-  getStatus(player) {
-    if (!this.gameStarted) {
+  getStatus(player, uid) {
+    //if (!this.gameStarted) {
       return {
         players: this.players,
         leader: this.leader,
         turn: this.pTurn,
+		uid: uid,
         allowed: { suit: this.playedSuit, num: this.playedNum },
         lastCard: this.lastCard,
       };
-    }
-    return null;
+   // }
+    //return null;
   }
   getStateFor(uid) {
+	  console.log(this.players);
     let returnData = {
       players: {},
+      uid: uid,
       allowed: {
         suit: this.playedSuit,
         num: this.playedNum,
@@ -79,6 +88,7 @@ class Uno {
         returnData['players'][player.uid] = {
           uid: player.uid,
           sid: player.sid,
+          name: player.name,
           hand: player.hand.length,
         };
       }
@@ -90,8 +100,7 @@ class Uno {
       this.pTurn = this.nextPlayerTurn();
       console.log(this.pTurn);
       if (
-        this.curPlayer.hand.length > 0 ||
-        this.deck.cardsAvailable.length > 0
+        this.curPlayer.hand.length > 0
       ) {
         return false;
       }
@@ -111,6 +120,9 @@ class Uno {
     let curTurnNum = Object.keys(this.players).indexOf(this.pTurn);
     let playerIds = Object.keys(this.players);
     let incTurnNum = curTurnNum + this.direction;
+    if (this.direction == 2 || this.direction == -2) {
+	    this.direction = this.direction/2;
+    }
     console.log(incTurnNum);
     let nextTurnNum;
     if (incTurnNum >= 0) {
@@ -164,8 +176,15 @@ class Uno {
       this.playedNum = card.num;
     } else if (card.num == 11) {
       // Skip or swap direction
+      console.log("OPTIONS");
       console.log(options);
-      this.direction *= -1;
+      if (options.choice == "Swap") {
+	      this.direction *= -1;
+      }
+      else {
+	      this.direction *= 2;
+      }
+      
       this.playedSuit = card.suit;
       this.playedNum = card.num;
     } else {

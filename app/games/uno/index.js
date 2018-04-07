@@ -6,6 +6,8 @@ let games = {};
 
 let init = function(io) {
   io.on('connection', function(socket) {
+	
+	
     socket.emit('hello', {});
     socket.on('hello', function() {
       socket.join(socket.request.user.lobbyId);
@@ -14,15 +16,22 @@ let init = function(io) {
 
       game.playerJoined({
         uid: userId,
+        name: socket.request.user.displayName,
         sid: socket.id,
       });
-
+	  
+	
       io.to(socket.request.user.lobbyId).emit('user-joined', {
         uid: userId,
+        name: socket.request.user.displayName,
         sid: socket.id,
       });
+      if (game.gameStarted){
+		io.to(socket.id).emit('game-state', game.getStateFor(userId));
+		io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
+	  }
 
-      socket.emit('status', game.getStatus(userId));
+      socket.emit('status', game.getStatus(userId, userId));
     });
 
     socket.on('start-game', function(abc) {
