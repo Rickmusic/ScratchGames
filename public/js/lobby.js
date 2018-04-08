@@ -66,6 +66,15 @@ Scratch.lobby = function() {};
     } else {
       $('#startBtn').prop('disabled', true);
     }
+
+    $('#gameSet').change(function() {
+      socket.emit('settings change', $(this).closest('form').serializeJSON());
+    });
+
+    socket.on('settings change', function(change) {
+      // TODO what comes in the change obj
+      // TODO what extra checks/changes occur when changing game settings for non-host
+    });
   };
 
   //Adds single member to player lists
@@ -130,6 +139,16 @@ Scratch.lobby = function() {};
         );
       }
     });
+
+    $('#editLobby').change(function() {
+      socket.emit('danger change', $(this).closest('form').serializeJSON());
+    });
+
+    socket.on('danger change', function(change) {
+      // TODO what comes in the change obj
+      // TODO what extra checks/changes occur when changing danger settings for non-host
+    });
+
     $('#editLobby select[name="gametype"]').change(function() {
       $('#numPlay').prop('disabled', false);
       $('#confirm').prop('disabled', false);

@@ -114,6 +114,18 @@ let init = function(global) {
         })
         .catch(err => dblogger.error('Lobbyland get lobby: ' + err));
     });
+
+    socket.on('member change', function(change) {
+      // change.member, change.role
+    });
+
+    socket.on('settings change', function(change) {
+      // game specific setting something
+    });
+
+    socket.on('danger change', function(change) {
+      // Update DB lobby info
+    });
   });
 };
 
