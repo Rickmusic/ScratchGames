@@ -2,54 +2,40 @@
 Scratch.lobby = function() {};
 
 (function() {
-  let socket = Scratch.sockets.base; /* Links to app/socket/base.js */
+    let socket = Scratch.sockets.lobby;
+    /* Links to app/socket/lobby.js */
+    Scratch.lobby.init = function () {
+        socket.emit('lobbyLand', null);
+    };
 
-  Scratch.lobby.init = function() {
-    let promise;
-    promise = new Promise(function(resolve, reject) {
-      // We also run this after a game has terminated // Can choose to start another game etc//
-      // Organized top left down right loading...//
-      // Assume there is a call to server here to get //
-      // Lobby name
-      // Gametype
-      // Joincode
-      // If Im host, player or spec //
-      // What username I am //
+    socket.on('lobbyLand', function (everything) {
+        let gameType = everything.game; // String //
+        let accessibility = everything.type; // String private or public //
+        let lobbyName = everything.name; // String //
+        let joincode = everything.joincode; // Int //
+        let members = []; // List of objects with displayname, role, ID //
+        let role = 'host'; // Working on // Will be from member list.
+        let maxPlayers = everything.maxPlayers; // in progress
+        let maxSpec = everything.maxSpectators; // in progress
 
-      // TEMP VALUES TO WORK WITH //
-      let gameType = 'Go Fish';
-      let lobbyName = 'Pizza';
-      let joincode = '75843';
-      let members = []; // Everybody who is in the lobby including ones self? including state if ready etc.
-      let role = 'player';
-
-      Scratch.lobby.loadTop(gameType, lobbyName, joincode);
-      //TODO load member lists //
-      Scratch.lobby.loadGameSettings(gameType);
-      Scratch.lobby.loadDangerZone();
-      //Scratch.base.addChat("lobby");
-      /* Promise set on timeout which according to the limited tests Iv'e done runs post DOM manipulation to
-      add event handlers to the newly added item in the DOM. There's a better way to force this into a sync method but for now it's working
-       */
-      setTimeout(() => resolve(role), 100);
+        Scratch.lobby.loadTop(gameType, lobbyName, joincode);
+        //TODO load member lists //
+        Scratch.lobby.loadGameSettings(gameType)
+            .then(() => {
+                if (role !== 'host') {
+                    $('#gameSet :input').prop('disabled', true);
+                    $('#editLobby :input').prop('disabled', true);
+                    $('#startBtn').html('Ready Up');
+                } else {
+                    $('#startBtn').prop('disabled', true);
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            });
+        Scratch.lobby.loadDangerZone();
     });
-    promise.then(
-      function(role) {
-        // Do post load DOM handling here //
-        if (role != 'host') {
-          $('#gameSet :input').prop('disabled', true);
-          $('#editLobby :input').prop('disabled', true);
-          $('#startBtn').html('Ready Up');
-        } else {
-          $('#startBtn').prop('disabled', true);
-        }
-      },
-      function(error) {
-        console.log(error);
-        // TODO Handle Error //
-      }
-    );
-  };
+
   // Loads the top bar information ///
   Scratch.lobby.loadTop = function(gameType, lobbyName, joincode) {
     $('#gameType')
@@ -64,14 +50,23 @@ Scratch.lobby = function() {};
   };
   // Loads Game specific Settings HTML //
   Scratch.lobby.loadGameSettings = function(gameType) {
-    switch (gameType) {
-      case 'Go Fish':
-        $('#gameSettings').load('snippets/goFishSettings.html');
-        break;
-      case 'UNO':
-        $('#gameSettings').append('snippets/unoSetting.html');
-        break;
-    }
+    return new Promise((fulfill, reject) => {
+      let a;
+      switch (gameType) {
+        case 'GoFish':
+          a = 'snippets/goFishSettings.html';
+          break;
+        case 'Uno':
+          a= 'snippets/unoSettings.html';
+          break;
+        default:
+          reject("Game type Unknown: " + gameType);
+      }
+      $('#gameSettings').load(a, function (response, status, xhr) {
+        if (status === 'error') return reject(xhr.statusText);
+        fulfill();
+      });
+    });
   };
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {

@@ -9,74 +9,85 @@ let nsps = require('./namespaceManager');
 let init = function(global) {
   let io = global.of('/lobby');
   io.on('connection', function(socket) {
-
     socket.on('join lobby', function(data) {
       socket.join(data.lobby);
     });
 
     socket.on('leave lobby', function(data) {
       socket.leave(data.lobby);
-      if (socket.request.user.role === 'host') 
-        io.to(socket.request.user.lobbyId).emit('leave lobby', { lobby: socket.request.user.lobbyId });
+      if (socket.request.user.role === 'host')
+        io
+          .to(socket.request.user.lobbyId)
+          .emit('leave lobby', { lobby: socket.request.user.lobbyId });
       socket.request.user.update({ role: null, lobbyId: null });
       socket.emit('navigate', { loc: 'lobbylist' });
     });
 
     socket.on('start game', function(settings) {
-      socket.request.user.getLobby()
+      socket.request.user
+        .getLobby()
         .then(lobby => {
           // TODO store settings into lobby
           if (!nsps.exists(lobby.game))
             games[lobby.game].init(nsps.create(lobby.game));
           // TODO only pass game-specific settings to create
           games[lobby.game].create(settings, lobby.id, lobby.hostId);
-          io.to(lobby.id).emit('navigate', { 
-            loc: 'game', 
-            args: [
-              lobby.game,
-              nsps.get(lobby.game).name,
-            ],
+          io.to(lobby.id).emit('navigate', {
+            loc: 'game',
+            args: [lobby.game, nsps.get(lobby.game).name],
           });
-          lobby.update({ inGame: true })
+          lobby
+            .update({ inGame: true })
             .then(() => {})
             .catch(err => dblogger.error('At Lobby set inGame ' + err));
         })
         .catch(err => dblogger.error('At Player Get Lobby ' + err));
     });
 
-
     let reloadLocation = function() {
-      socket.request.user.getLobby()
+      socket.request.user
+        .getLobby()
         .then(lobby => {
-          if (!lobby) { // Check if lobby exists
-            return socket.emit('navigate', { 
-              loc: 'lobbylist', 
-              redirect: true, 
+          if (!lobby) {
+            // Check if lobby exists
+            return socket.emit('navigate', {
+              loc: 'lobbylist',
+              redirect: true,
             });
           }
-          if (Object.keys(socket.rooms).length === 1) { // If socket not in lobby room
-            socket.emit('join lobby', { lobby: lobby.id, role: socket.request.user.role }); 
-          }
-          if (!lobby.inGame) { // Check if lobby is playing a game
-            return socket.emit('navigate', { 
-              loc: 'lobby', 
-              redirect: true, 
+          if (Object.keys(socket.rooms).length === 1) {
+            // If socket not in lobby room
+            socket.emit('join lobby', {
+              lobby: lobby.id,
+              role: socket.request.user.role,
             });
           }
-          socket.emit('navigate', { 
-            loc: 'game', 
-            args: [
-              lobby.game,
-              nsps.get(lobby.game).name,
-            ],
+          if (!lobby.inGame) {
+            // Check if lobby is playing a game
+            return socket.emit('navigate', {
+              loc: 'lobby',
+              redirect: true,
+            });
+          }
+          socket.emit('navigate', {
+            loc: 'game',
+            args: [lobby.game, nsps.get(lobby.game).name],
             redirect: true,
           });
         })
-        .catch(err => dblogger.error('At Player Get Lobby ' + err)); 
+        .catch(err => dblogger.error('At Player Get Lobby ' + err));
     };
     socket.on('lobby reload', reloadLocation);
     socket.on('game reload', reloadLocation);
 
+    socket.on('lobbyLand', function(data) {
+      socket.request.user
+        .getLobby()
+        .then(lobby => {
+          socket.emit('lobbyLand', lobby);
+        })
+        .catch(err => dblogger.error('Lobby lookup failed' + err));
+    });
   });
 };
 
