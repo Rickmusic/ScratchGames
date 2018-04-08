@@ -39,6 +39,10 @@ let init = function(io) {
       let game = games[socket.request.user.lobbyId];
       let res = game.goFish(ask);
       let result = res['result'];
+      if (result == "Game Over") {
+	  	var winner = game.getWinner();
+	  	return io.emit("game-over", winner)
+	  }
       let resultFrom = ask.asks;
       socket.emit('game-state', game.getStateFor(ask.uid));
       io.to(socket.request.user.lobbyId).emit('game-info', {

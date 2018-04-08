@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Scratch Games - Go Fish</title>
+        <title>Scratch Games - Uno</title>
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -11,7 +11,7 @@
         <!-- Socket.IO -->
         <script src="/socket.io/socket.io.js"></script>
         
-        <script src="GoFish.js"></script>
+        <script src="Uno.js"></script>
     </head>
     <body>
           
@@ -21,7 +21,7 @@
             <div id="my-cards">
             </div>
             <div id="instructions">
-                <label id="instructions-turn">Welcome To Go Fish</label><br>
+                <label id="instructions-turn">Welcome To Uno</label><br>
                 <label id="instructions-others"></label><br>
                 <label id="instructions-wording"></label>
                 <button id="ask-button" style="display: none;">Ask</button>
@@ -29,9 +29,21 @@
             <div id="card-deck">
                 
             </div>
+            <div id="last-played" class="card card-flipped">
+            </div>
             <div id="user-messages">
             </div>
             <div id="my-messages" class="user-message" style="display: none;">
+            </div>
+            <div id="select-suit" style="display: none;">
+                <button id="select-diamonds">Diamonds</button>
+                <button id="select-clubs">Clubs</button>
+                <button id="select-hearts">Hearts</button>
+                <button id="select-spades">Spades</button>
+            </div>
+            <div id="select-swap-or-skip" style="display: none;">
+                <button id="select-swap">Swap directions</button>
+                <button id="select-skip">Skip player</button>
             </div>
         </div>
         <button id="start-game" style="display: none;">Start Game</button>
