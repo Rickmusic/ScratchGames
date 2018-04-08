@@ -3,6 +3,36 @@
 </div>
 <div class="container">
     <form id="gameSet" action="">
-        TODO UNO SETTINGS
+        <div class="form-group row">
+            <label class="col-6 col-form-label" for="type">Number of rounds: </label>
+            <div class="col-6">
+                <select class="form-control" name="rounds" id="type">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-6 col-form-label" for="numMatch">Number of cards to Match: </label>
+            <div class="col-6">
+                <select class="form-control" name="numCards" id="numMatch">
+                    <option value="2" selected>2</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-6 col-form-label" for="numSpec">Number of decks in play: </label>
+            <div class="col-6">
+                <select name="numSpec" class="form-control" id="numSpec">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+        </div>
     </form>
 </div>

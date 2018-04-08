@@ -2,42 +2,49 @@
 Scratch.lobby = function() {};
 
 (function() {
-    let socket = Scratch.sockets.lobby;
-    /* Links to app/socket/lobby.js */
-    Scratch.lobby.init = function () {
-        socket.emit('lobbyLand', null);
-    };
+  let socket = Scratch.sockets.lobby; /* Links to app/socket/lobby.js */
+  let global = Scratch.sockets.base; /* Links to app/socket/base.js */
+  Scratch.lobby.init = function() {
+    socket.emit('lobbyLand', null);
+  };
 
     socket.on('lobbyLand', function (everything) {
         let gameType = everything.game; // String //
-        let accessibility = everything.type; // String private or public //
+        let access = everything.type; // String private or public //
         let lobbyName = everything.name; // String //
         let joincode = everything.joincode; // Int //
         let members = everything.users; // List of objects with name(String), role(String), id(String), ready(Bool) //
         let role = 'host'; // Working on // Will be from member list.
-        let maxPlayers = everything.maxPlayers; // in progress
-        let maxSpec = everything.maxSpectators; // in progress
+        //let maxPlayers = everything.maxPlayers; // in progress
+        //let maxSpec = everything.maxSpectators; // in progress
+    Scratch.lobby.loadTop(gameType, lobbyName, joincode, access);
+    Scratch.lobby.members(members);
+    Scratch.lobby
+      .loadGameSettings(gameType)
+      .then(() => {
+        if (role !== 'host') {
+          $('#gameSet :input').prop('disabled', true);
+          $('#editLobby :input').prop('disabled', true);
+          $('#startBtn').html('Ready Up');
+        } else {
+          $('#startBtn').prop('disabled', true);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    Scratch.lobby.loadDangerZone();
+  });
 
-        Scratch.lobby.loadTop(gameType, lobbyName, joincode);
-        //TODO load member lists //
-        Scratch.lobby.loadGameSettings(gameType)
-            .then(() => {
-                if (role !== 'host') {
-                    $('#gameSet :input').prop('disabled', true);
-                    $('#editLobby :input').prop('disabled', true);
-                    $('#startBtn').html('Ready Up');
-                } else {
-                    $('#startBtn').prop('disabled', true);
-                }
-            })
-            .catch((err) => {
-                console.log(err)
-            });
-        Scratch.lobby.loadDangerZone();
-    });
+  socket.on('members', function(members) {
+    Scratch.lobby.members(members);
+  });
 
   // Loads the top bar information ///
-  Scratch.lobby.loadTop = function(gameType, lobbyName, joincode) {
+  Scratch.lobby.loadTop = function(gameType, lobbyName, joincode, access) {
+    $('#access')
+      .children()
+      .append(' ' + access);
     $('#gameType')
       .children()
       .append(' ' + gameType);
@@ -57,16 +64,20 @@ Scratch.lobby = function() {};
           a = 'snippets/goFishSettings.html';
           break;
         case 'Uno':
-          a= 'snippets/unoSettings.html';
+          a = 'snippets/unoSettings.html';
           break;
         default:
-          reject("Game type Unknown: " + gameType);
+          reject('Game type Unknown: ' + gameType);
       }
-      $('#gameSettings').load(a, function (response, status, xhr) {
+      $('#gameSettings').load(a, function(response, status, xhr) {
         if (status === 'error') return reject(xhr.statusText);
         fulfill();
       });
     });
+  };
+
+  Scratch.lobby.members = function(members) {
+    console.log(members);
   };
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {
@@ -91,9 +102,9 @@ Scratch.lobby = function() {};
         // Do nothing //
       }
     });
-    socket.emit('game types', {});
+    global.emit('game types', {});
 
-    socket.on('game types', function(data) {
+    global.on('game types', function(data) {
       $('#editLobby select[name="gametype"]')
         .empty()
         .append('<option value="" disabled selected>Select</option>');
