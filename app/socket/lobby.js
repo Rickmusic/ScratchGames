@@ -11,7 +11,7 @@ let init = function(global) {
   io.on('connection', function(socket) {
     socket.on('join lobby', function(data) {
       socket.join(data.lobby);
-      socket.broadcast.to(data.lobby).emit('members', {
+      socket.broadcast.to(data.lobby).emit('member', {
         id: socket.request.user.id,
         name: socket.request.user.displayName,
         role: socket.request.user.role,
