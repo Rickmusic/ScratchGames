@@ -70,7 +70,7 @@ Scratch.lobby = function() {};
 
   //Adds single member to player lists
   Scratch.lobby.member = function(mem) {
-    if (Scratch.me.id === members.id) Scratch.me.role = members.role;
+    if (Scratch.me.id === mem.id) Scratch.me.role = mem.role;
     $newRow = $('<div class="row" />');
     $newCol = $('<div class="col center">' + mem.name + '</div>');
     $newRow.append($newCol);
