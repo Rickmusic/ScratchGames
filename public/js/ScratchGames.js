@@ -365,6 +365,24 @@ let Scratch = function() {};
 
 /* 
  * ----------------------------------------
+ * Scratch Current User Info
+ * ---------------------------------------- 
+ */
+(function() {
+  Scratch.me = {};
+  Scratch.me.id = null;
+  Scratch.me.name = null;
+
+  Scratch.sockets.base.on('whoami', function(you) {
+    Scratch.me.id = you.id;
+    Scratch.me.name = you.name;
+  });
+
+  Scratch.sockets.base.emit('whoami', {});
+})();
+
+/* 
+ * ----------------------------------------
  * Scratch Games
  * ---------------------------------------- 
  */
