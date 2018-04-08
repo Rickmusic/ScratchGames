@@ -98,6 +98,20 @@ Scratch.lobby = function() {};
     $('#Players').append($newRow);
   };
 
+  $('#Players btn.leave-lobby, #Spectators btn.leave-lobby').click(function() {
+    // TODO player member lobby
+  });
+  $('#Players btn.kick-member, #Spectators btn.kick-member').click(function() {
+    // TODO host kicks member from lobby
+  });
+
+  $('#Players btn.switch-role').click(function() {
+    // TODO Player -> Spectator
+  });
+  $('#Spectators btn.switch-role').click(function() {
+    // TODO Spectator -> Player
+  });
+
 
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {
