@@ -14,25 +14,14 @@ Scratch.lobby = function() {};
         let lobbyName = everything.name; // String //
         let joincode = everything.joincode; // Int //
         let members = everything.users; // List of objects with name(String), role(String), id(String), ready(Bool) //
-        let role = 'host'; // Working on // Will be from member list.
         //let maxPlayers = everything.maxPlayers; // in progress
         //let maxSpec = everything.maxSpectators; // in progress
     Scratch.lobby.loadTop(gameType, lobbyName, joincode, access);
     Scratch.lobby.members(members);
     Scratch.lobby
       .loadGameSettings(gameType)
-      .then(() => {
-        if (role !== 'host') {
-          $('#gameSet :input').prop('disabled', true);
-          $('#editLobby :input').prop('disabled', true);
-          $('#startBtn').html('Ready Up');
-        } else {
-          $('#startBtn').prop('disabled', true);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      .then(() => hookGameSettings())
+      .catch(err => console.log(err));
     Scratch.lobby.loadDangerZone();
   });
 
@@ -65,7 +54,18 @@ Scratch.lobby = function() {};
     });
   };
 
+  function hookGameSettings() {
+    if (Scratch.me.role !== 'host') {
+      $('#gameSet :input').prop('disabled', true);
+      $('#editLobby :input').prop('disabled', true);
+      $('#startBtn').html('Ready Up');
+    } else {
+      $('#startBtn').prop('disabled', true);
+    }
+  };
+
   Scratch.lobby.members = function(members) {
+    if (Scratch.me.id === members.id) Scratch.me.role = members.role;
     console.log(members);
   };
   // Loading Danger Zone Settings //

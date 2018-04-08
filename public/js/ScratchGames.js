@@ -372,6 +372,7 @@ let Scratch = function() {};
   Scratch.me = {};
   Scratch.me.id = null;
   Scratch.me.name = null;
+  Scratch.me.role = null;
 
   Scratch.sockets.base.on('whoami', function(you) {
     Scratch.me.id = you.id;
