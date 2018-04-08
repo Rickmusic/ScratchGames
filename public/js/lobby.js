@@ -58,18 +58,7 @@ Scratch.lobby = function() {};
   // Loads Game specific Settings HTML //
   Scratch.lobby.loadGameSettings = function(gameType) {
     return new Promise((fulfill, reject) => {
-      let a;
-      switch (gameType) {
-        case 'GoFish':
-          a = 'snippets/goFishSettings.html';
-          break;
-        case 'Uno':
-          a = 'snippets/unoSettings.html';
-          break;
-        default:
-          reject('Game type Unknown: ' + gameType);
-      }
-      $('#gameSettings').load(a, function(response, status, xhr) {
+      $('#gameSettings').load('gamesettings/' + gameType + '.html', function(response, status, xhr) {
         if (status === 'error') return reject(xhr.statusText);
         fulfill();
       });
