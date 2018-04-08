@@ -125,10 +125,12 @@ Scratch.lobby = function() {};
       $newSpan = $('<span class="glyphicon glyphicon-ok">' + '</span>');
       $newCol = $('<div class="col center"></div>');
     }
-    $newCol.append($newSpan);
-    $newRow.append($newCol);
+    if(mem.role != 'spectator'){
+        $newCol.append($newSpan);
+        $newRow.append($newCol);
+    }
     if (mem.role === 'spectator') {
-      $('#Spectator').append($newRow);
+      $('#Spectators').append($newRow);
     } else {
       $('#Players').append($newRow);
     }
