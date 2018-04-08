@@ -20,6 +20,13 @@ let init = function(io) {
       socket.emit('game types', { GameTypes });
     });
 
+    socket.on('whoami', function(data) {
+      socket.emit('whoami', { 
+        id: socket.request.user.id,
+        name: socket.request.user.displayName,
+      });
+    });
+
     socket.on('create lobby', function(form) {
       // TODO Verify Settings and send feedback
       let gametype; /* Value must mach DB Enum */
