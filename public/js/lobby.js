@@ -8,17 +8,21 @@ Scratch.lobby = function() {};
     socket.emit('lobbyLand', null);
   };
 
-    socket.on('lobbyLand', function (everything) {
-        let gameType = everything.game; // String //
-        let access = everything.type; // String private or public //
-        let lobbyName = everything.name; // String //
-        let joincode = everything.joincode; // Int //
-        let members = everything.users; // List of objects with name(String), role(String), id(String), ready(Bool) //
-        let role = 'host'; // Working on // Will be from member list.
-        //let maxPlayers = everything.maxPlayers; // in progress
-        //let maxSpec = everything.maxSpectators; // in progress
+  socket.on('lobbyLand', function(everything) {
+    let gameType = everything.game; // String //
+    let access = everything.type; // String private or public //
+    let lobbyName = everything.name; // String //
+    let joincode = everything.joincode; // Int //
+    let members = everything.users; // List of objects with name(String), role(String), id(String), ready(Bool) //
+    let role = 'host'; // Working on // Will be from member list.
+    //let maxPlayers = everything.maxPlayers; // in progress
+    //let maxSpec = everything.maxSpectators; // in progress
+
     Scratch.lobby.loadTop(gameType, lobbyName, joincode, access);
-    Scratch.lobby.members(members);
+    for (let mem of members) {
+      Scratch.lobby.member(mem);
+    }
+
     Scratch.lobby
       .loadGameSettings(gameType)
       .then(() => {
@@ -36,8 +40,8 @@ Scratch.lobby = function() {};
     Scratch.lobby.loadDangerZone();
   });
 
-  socket.on('members', function(members) {
-    Scratch.lobby.members(members);
+  socket.on('member', function(mem) {
+    Scratch.lobby.member(mem);
   });
 
   // Loads the top bar information ///
@@ -76,9 +80,27 @@ Scratch.lobby = function() {};
     });
   };
 
-  Scratch.lobby.members = function(members) {
-    console.log(members);
+  //Adds single member to player lists
+  Scratch.lobby.member = function(mem) {
+    $newRow = $('<div class="row" />');
+    $newCol = $('<div class="col center">' + mem.name + '</div>');
+    $newRow.append($newCol);
+    if (mem.role === 'host') {
+      $newSpan = $('<span class="glyphicon glyphicon-tower">' + '</span>');
+      $newCol = $('<div class="col center"></div>');
+    } else if (mem.role === 'player' && mem.ready === false) {
+      $newSpan = $('<span class="glyphicon glyphicon-remove">' + '</span>');
+      $newCol = $('<div class="col center"></div>');
+    } else if (mem.role === 'player' && mem.ready === true) {
+      $newSpan = $('<span class="glyphicon glyphicon-ok">' + '</span>');
+      $newCol = $('<div class="col center"></div>');
+    }
+    $newCol.append($newSpan);
+    $newRow.append($newCol);
+    $('#Players').append($newRow);
   };
+
+
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {
     $('#editLobby').submit(function(e) {
