@@ -11,6 +11,12 @@ let init = function(global) {
   io.on('connection', function(socket) {
     socket.on('join lobby', function(data) {
       socket.join(data.lobby);
+      socket.broadcast.to(data.lobby).emit('members', {
+        id: socket.request.user.id,
+        name: socket.request.user.displayName,
+        role: socket.request.user.role,
+        ready: false,
+      });
     });
 
     socket.on('leave lobby', function(data) {
