@@ -84,9 +84,29 @@ let init = function(global) {
       socket.request.user
         .getLobby()
         .then(lobby => {
-          socket.emit('lobbyLand', lobby);
+          let ret = {};
+          ret.game = lobby.game;
+          ret.type = lobby.type;
+          ret.name = lobby.name;
+          ret.joincode = lobby.joincode;
+          ret.maxPlayers = lobby.maxPlayers;
+          ret.maxSpectators = lobby.maxSpectators;
+          lobby.getUsers()
+            .then(users => {
+              ret.users = [];
+              for (let user of users) {
+                ret.users.push({
+                  id: user.id,
+                  name: user.displayName,
+                  role: user.role,
+                  ready: false,
+                });
+              }
+              socket.emit('lobbyLand', ret);
+            })
+            .catch(err => dblogger.error('Lobbyland get lobby users: ' + err));
         })
-        .catch(err => dblogger.error('Lobby lookup failed' + err));
+        .catch(err => dblogger.error('Lobbyland get lobby: ' + err));
     });
   });
 };
