@@ -14,7 +14,6 @@ Scratch.lobby = function() {};
     let lobbyName = everything.name; // String //
     let joincode = everything.joincode; // Int //
     let members = everything.users; // List of objects with name(String), role(String), id(String), ready(Bool) //
-    let role = 'host'; // Working on // Will be from member list.
     //let maxPlayers = everything.maxPlayers; // in progress
     //let maxSpec = everything.maxSpectators; // in progress
 
@@ -25,18 +24,8 @@ Scratch.lobby = function() {};
 
     Scratch.lobby
       .loadGameSettings(gameType)
-      .then(() => {
-        if (role !== 'host') {
-          $('#gameSet :input').prop('disabled', true);
-          $('#editLobby :input').prop('disabled', true);
-          $('#startBtn').html('Ready Up');
-        } else {
-          $('#startBtn').prop('disabled', true);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+      .then(() => hookGameSettings())
+      .catch(err => console.log(err));
     Scratch.lobby.loadDangerZone();
   });
 
@@ -62,26 +51,26 @@ Scratch.lobby = function() {};
   // Loads Game specific Settings HTML //
   Scratch.lobby.loadGameSettings = function(gameType) {
     return new Promise((fulfill, reject) => {
-      let a;
-      switch (gameType) {
-        case 'GoFish':
-          a = 'snippets/goFishSettings.html';
-          break;
-        case 'Uno':
-          a = 'snippets/unoSettings.html';
-          break;
-        default:
-          reject('Game type Unknown: ' + gameType);
-      }
-      $('#gameSettings').load(a, function(response, status, xhr) {
+      $('#gameSettings').load('gamesettings/' + gameType + '.html', function(response, status, xhr) {
         if (status === 'error') return reject(xhr.statusText);
         fulfill();
       });
     });
   };
 
+  function hookGameSettings() {
+    if (Scratch.me.role !== 'host') {
+      $('#gameSet :input').prop('disabled', true);
+      $('#editLobby :input').prop('disabled', true);
+      $('#startBtn').html('Ready Up');
+    } else {
+      $('#startBtn').prop('disabled', true);
+    }
+  };
+
   //Adds single member to player lists
   Scratch.lobby.member = function(mem) {
+    if (Scratch.me.id === members.id) Scratch.me.role = members.role;
     $newRow = $('<div class="row" />');
     $newCol = $('<div class="col center">' + mem.name + '</div>');
     $newRow.append($newCol);
