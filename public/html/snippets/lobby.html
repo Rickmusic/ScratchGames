@@ -1,10 +1,15 @@
 <div class="container">
     <div class="row" style="border-top: black solid 2px; border-bottom: black solid 2px">
+        <div id ="lobbyName" class="col center">
+            <h2>Lobby Name:</h2>
+        </div>
+    </div>
+    <div class="row" style="border-top: black solid 2px; border-bottom: black solid 2px">
         <div id="gameType" class="col center">
             <h2>Game Type: </h2>
         </div>
-        <div id ="lobbyName" class="col center">
-            <h2>Lobby Name:</h2>
+        <div id ="access" class="col center">
+            <h2>Access: </h2>
         </div>
         <div id="joincode" class="col center">
             <h2>Joincode:</h2>
@@ -18,10 +23,18 @@
             <div class="table table-bordered">
                 <table id="Players" class="center">
                 <tbody>
-                <tr>
-                    <td>Austin</td>
-                    <td><button type="button" class="btn btn-success">Become Spectator</button></td>
-                </tr>
+                    <tr>
+                        <td>Austin</td>
+                        <td><button type="button" class="btn btn-success">Become Spectator</button></td>
+                        <td><button type="button" class="btn btn-danger">Kick from Lobby</button></td>
+                        <td><span class="glyphicon glyphicon-ok"></span></td>
+                    </tr>
+                    <tr>
+                        <td>Pizza</td>
+                        <td><button type="button" class="btn btn-success">Become Spectator</button></td>
+                        <td><button type="button" class="btn btn-danger">Kick from Lobby</button></td>
+                        <td><span class="glyphicon glyphicon-remove"></span></td>
+                    </tr>
                 </tbody>
                 </table>
             </div>
@@ -36,6 +49,7 @@
                     <tr>
                         <td>That guy again</td>
                         <td><button type="button" class="btn btn-success">Become player</button></td>
+                        <td><button type="button" class="btn btn-danger">Leave Lobby</button></td>
                     </tr>
                     </tbody>
                 </table>
