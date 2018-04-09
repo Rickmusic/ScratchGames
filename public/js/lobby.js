@@ -98,6 +98,33 @@ Scratch.lobby = function() {};
   };
 
 
+  socket.on('playerLeft', function(uid) {
+    let $dead =
+      $('#Players')
+        .find('div')
+        .filter(function() {
+          return $(this).data('uid') === uid;
+        }).length === 0;
+    $dead.remove();
+    $dead =
+      $('#Spectators')
+        .find('div')
+        .filter(function() {
+          return $(this).data('uid') === uid;
+        }).length === 0;
+    $dead.remove();
+  });
+
+  socket.on('playerReady', function(uid) {
+    let $ready =
+      $('#Players')
+        .find('div')
+        .filter(function() {
+          return $(this).data('uid') === uid;
+        }).length === 0;
+    $ready.find('span').attr('class', 'glyphicon glyphicon-ok');
+  });
+
   //Adds single member to player lists
   Scratch.lobby.member = function(mem) {
     $newRow = $('<div class="row" />');
@@ -117,10 +144,10 @@ Scratch.lobby = function() {};
           '<button type="button" class="btn btn-success switch-role">Become Player</button>'
         );
       }
-      if(mem.role != 'host'){
-          $newCol = $('<div class="col center">' + '</div>');
-          $newCol.append($newBtn);
-          $newRow.append($newCol);
+      if (mem.role != 'host') {
+        $newCol = $('<div class="col center">' + '</div>');
+        $newCol.append($newBtn);
+        $newRow.append($newCol);
       }
       // Adding leave lobby Button //
       if (mem.role != 'host') {
@@ -133,8 +160,16 @@ Scratch.lobby = function() {};
       }
     } else {
       if (Scratch.me.role === 'host') {
+        // Adding kick Button //
         $newBtn = $(
           '<button type="button" class="btn btn-danger kick-member">Kick From Lobby</button>'
+        );
+        $newCol = $('<div class="col center">' + '</div>');
+        $newCol.append($newBtn);
+        // Adding swap button //
+        $newRow.append($newCol);
+        $newBtn = $(
+          '<button type="button" class="btn btn-warning">Switch Role</button>'
         );
         $newCol = $('<div class="col center">' + '</div>');
         $newCol.append($newBtn);
@@ -151,13 +186,15 @@ Scratch.lobby = function() {};
       $newSpan = $('<span class="glyphicon glyphicon-ok">' + '</span>');
       $newCol = $('<div class="col center"></div>');
     }
-    if(mem.role != 'spectator'){
-        $newCol.append($newSpan);
-        $newRow.append($newCol);
+    if (mem.role != 'spectator') {
+      $newCol.append($newSpan);
+      $newRow.append($newCol);
     }
     if (mem.role === 'spectator') {
+      $newRow.data('uid', mem.id);
       $('#Spectators').append($newRow);
     } else {
+      $newRow.data('uid', mem.id);
       $('#Players').append($newRow);
     }
   };
