@@ -6,6 +6,22 @@ Scratch.lobby = function() {};
   let global = Scratch.sockets.base; /* Links to app/socket/base.js */
   Scratch.lobby.init = function() {
     socket.emit('lobbyLand', null);
+
+    $('#Players').on('click', 'button', function() {
+      if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
+      if ($(this).hasClass('switch-role-host')) return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
+        // TODO member leave
+      }
+    });
+
+    $('#Spectators').on('click', 'button', function() {
+      if ($(this).hasClass('switch-role')) return socket.emit('spec -> player', null);
+      if ($(this).hasClass('switch-role-host')) return socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
+        // TODO member leave
+      }
+    })
   };
 
   socket.on('lobbyLand', function(everything) {
@@ -70,7 +86,17 @@ Scratch.lobby = function() {};
     } else {
       $('#startBtn').prop('disabled', true);
     }
-  }
+
+    $('#gameSet').change(function() {
+      socket.emit('settings change', $(this).closest('form').serializeJSON());
+    });
+
+    socket.on('settings change', function(change) {
+      // TODO what comes in the change obj
+      // TODO what extra checks/changes occur when changing game settings for non-host
+    });
+  };
+
 
   socket.on('playerLeft', function(uid) {
     let $dead =
@@ -111,11 +137,11 @@ Scratch.lobby = function() {};
       // Adding Buttons to become player or spec //
       if (mem.role === 'player') {
         $newBtn = $(
-          '<button type="button" class="btn btn-success">Become Spectator</button>'
+          '<button type="button" class="btn btn-success switch-role">Become Spectator</button>'
         );
       } else {
         $newBtn = $(
-          '<button type="button" class="btn btn-success">Become Player</button>'
+          '<button type="button" class="btn btn-success switch-role">Become Player</button>'
         );
       }
       if (mem.role != 'host') {
@@ -126,7 +152,7 @@ Scratch.lobby = function() {};
       // Adding leave lobby Button //
       if (mem.role != 'host') {
         $newBtn = $(
-          '<button type="button" class="btn btn-danger">Leave Lobby</button>'
+          '<button type="button" class="btn btn-danger leave-lobby">Leave Lobby</button>'
         );
         $newCol = $('<div class="col center">' + '</div>');
         $newCol.append($newBtn);
@@ -136,7 +162,7 @@ Scratch.lobby = function() {};
       if (Scratch.me.role === 'host') {
         // Adding kick Button //
         $newBtn = $(
-          '<button type="button" class="btn btn-danger">Kick From Lobby</button>'
+          '<button type="button" class="btn btn-danger kick-member">Kick From Lobby</button>'
         );
         $newCol = $('<div class="col center">' + '</div>');
         $newCol.append($newBtn);
@@ -213,6 +239,16 @@ Scratch.lobby = function() {};
         );
       }
     });
+
+    $('#editLobby').change(function() {
+      socket.emit('danger change', $(this).closest('form').serializeJSON());
+    });
+
+    socket.on('danger change', function(change) {
+      // TODO what comes in the change obj
+      // TODO what extra checks/changes occur when changing danger settings for non-host
+    });
+
     $('#editLobby select[name="gametype"]').change(function() {
       $('#numPlay').prop('disabled', false);
       $('#confirm').prop('disabled', false);
