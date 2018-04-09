@@ -25,6 +25,7 @@ let init = function(global) {
     });
 
     socket.on('leave lobby', function(data) {
+      if (!data) return socket.emit('leave lobby', { lobby: socket.request.user.lobbyId });
       socket.leave(data.lobby);
       if (socket.request.user.role === 'host')
         io
@@ -32,6 +33,10 @@ let init = function(global) {
           .emit('leave lobby', { lobby: socket.request.user.lobbyId });
       socket.request.user.update({ role: null, lobbyId: null });
       socket.emit('navigate', { loc: 'lobbylist' });
+    });
+
+    socket.on('kick-member', function(uid) {
+      // TODO kick member
     });
 
     socket.on('start game', function(settings) {

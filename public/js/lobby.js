@@ -10,17 +10,15 @@ Scratch.lobby = function() {};
     $('#Players').on('click', 'button', function() {
       if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
       if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
-      if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
-        // TODO member leave
-      }
+      if ($(this).hasClass('leave-lobby')) return socket.emit('leave lobby', null);
+      if ($(this).hasClass('kick-member')) return socket.emit('kick member', $(this).closest('div.row').data('uid'));
     });
 
     $('#Spectators').on('click', 'button', function() {
       if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
       if ($(this).hasClass('switch-role')) return socket.emit('spec -> player', null);
-      if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
-        // TODO member leave
-      }
+      if ($(this).hasClass('leave-lobby')) return socket.emit('leave lobby', null);
+      if ($(this).hasClass('kick-member')) return socket.emit('kick member', $(this).closest('div.row').data('uid'));
     });
   };
 
@@ -201,11 +199,8 @@ Scratch.lobby = function() {};
 
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {
-    $('#abandon').on('click', function() {
-      socket.emit("disbandLobby", function(){});
-      socket.emit("disbandLobby", function(){});
-      Scratch.nav.goTo('lobbylist', Scratch.nav.callback);
-    });
+    $('#abandon').on('click', () => socket.emit("leave lobby", null));
+
     $('#editLobby').submit(function(e) {
       e.preventDefault();
 
