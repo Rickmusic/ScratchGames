@@ -10,6 +10,7 @@ Scratch.lobby = function() {};
     $('#startBtn').on('click', function() {
       if (Scratch.me.role === 'player') {
         socket.emit('playerReady', null);
+        $('#startBtn').prop('disabled', true);
       } else if (Scratch.me.role === 'host') {
         socket.emit('Start Game', {});
       }
@@ -26,7 +27,7 @@ Scratch.lobby = function() {};
       if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
       if ($(this).hasClass('switch-role')) return socket.emit('spec -> player', null);
       if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
-        // TODO member leave
+          // TODO member leave
       }
     });
   };
