@@ -6,6 +6,27 @@ Scratch.lobby = function() {};
   let global = Scratch.sockets.base; /* Links to app/socket/base.js */
   Scratch.lobby.init = function() {
     socket.emit('lobbyLand', null);
+
+    $('#Players btn.leave-lobby, #Spectators btn.leave-lobby').click(function() {
+      // TODO player member lobby
+    });
+    $('#Players btn.kick-member, #Spectators btn.kick-member').click(function() {
+      // TODO host kicks member from lobby
+    });
+
+    $('#Players btn.switch-role').click(function() {
+      socket.emit('player -> spec', null);
+    });
+    $('#Spectators btn.switch-role').click(function() {
+      socket.emit('spec -> player', null);
+    });
+
+    $('#Players btn.switch-role-host').click(function() {
+      socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
+    });
+    $('#Spectators btn.switch-role-host').click(function() {
+      socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
+    });
   };
 
   socket.on('lobbyLand', function(everything) {
@@ -97,20 +118,6 @@ Scratch.lobby = function() {};
     $newRow.append($newCol);
     $('#Players').append($newRow);
   };
-
-  $('#Players btn.leave-lobby, #Spectators btn.leave-lobby').click(function() {
-    // TODO player member lobby
-  });
-  $('#Players btn.kick-member, #Spectators btn.kick-member').click(function() {
-    // TODO host kicks member from lobby
-  });
-
-  $('#Players btn.switch-role').click(function() {
-    // TODO Player -> Spectator
-  });
-  $('#Spectators btn.switch-role').click(function() {
-    // TODO Spectator -> Player
-  });
 
 
   // Loading Danger Zone Settings //
