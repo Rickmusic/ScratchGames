@@ -16,16 +16,50 @@ let buildMember = function(user) {
 };
 
 
+let lobbies = {};
+/* Contains <lobbyid>: {<settings>} values with game specifice settings, player readyness, ect. */
+
+let createLobby = function(lobbyId, callback) {
+  lobbies[lobbyId] = {};
+  lobbies[lobbyId].gamesettings = {};
+  lobbies[lobbyId].dangersettings = {};
+  lobbies[lobbyId].ready = {};
+  Lobby.findById(lobbyId)
+    .then(lobby => {
+      lobbies[lobbyId].dangersettings.gametype = lobby.gametype;
+      lobbies[lobbyId].dangersettings.numPlayers = lobby.maxPlayers;
+      lobbies[lobbyId].dangersettings.numSpec = lobby.maxSpectators;
+      callback();
+    })
+    .catch(err => dblogger.error("Lobby create lobby object " + err));
+};
+
+let lobbyAddPlayer = function(user) {
+  lobbies[user.lobbyId].ready[user.id] = false;
+};
+
+let lobbyRemovePlayer = function(user) {
+  delete lobbies[user.lobbyId].ready[user.id];
+};
+
+let setPlayerReady = function(user) {
+  lobbies[user.lobbyId].ready[user.id] = true;
+};
+
+
 let init = function(global) {
   let io = global.of('/lobby');
   io.on('connection', function(socket) {
     socket.on('join lobby', function(data) {
       socket.join(data.lobby);
+      if (!lobbies[data.lobby]) createLobby(data.lobby, () => io.to(data.lobby).emit('danger change', lobbies[data.lobby].dangersettings));
+      if (socket.request.user.role === 'player') lobbyAddPlayer(socket.request.user);
       socket.broadcast.to(data.lobby).emit('member', buildMember(socket.request.user));
     });
 
     socket.on('leave lobby', function(data) {
       if (!data) return socket.emit('leave lobby', { lobby: socket.request.user.lobbyId });
+      lobbyRemovePlayer(socket.request.user);
       socket.leave(data.lobby);
       if (socket.request.user.role === 'host')
         io
@@ -37,27 +71,6 @@ let init = function(global) {
 
     socket.on('kick-member', function(uid) {
       // TODO kick member
-    });
-
-    socket.on('start game', function(settings) {
-      socket.request.user
-        .getLobby()
-        .then(lobby => {
-          // TODO store settings into lobby
-          if (!nsps.exists(lobby.game))
-            games[lobby.game].init(nsps.create(lobby.game));
-          // TODO only pass game-specific settings to create
-          games[lobby.game].create(settings, lobby.id, lobby.hostId);
-          io.to(lobby.id).emit('navigate', {
-            loc: 'game',
-            args: [lobby.game, nsps.get(lobby.game).name],
-          });
-          lobby
-            .update({ inGame: true })
-            .then(() => {})
-            .catch(err => dblogger.error('At Lobby set inGame ' + err));
-        })
-        .catch(err => dblogger.error('At Player Get Lobby ' + err));
     });
 
     let reloadLocation = function() {
@@ -102,6 +115,7 @@ let init = function(global) {
         .then(lobby => {
           let ret = {};
           ret.game = lobby.game;
+          ret.gamesettings = lobbies[lobby.id].gamesettings;
           ret.type = lobby.type;
           ret.name = lobby.name;
           ret.joincode = lobby.joincode;
@@ -121,6 +135,14 @@ let init = function(global) {
     });
 
     let changeRole = function(user, role) {
+      switch (role) {
+        case 'player': 
+          lobbyAddPlayer(user);
+          break;
+        case 'spectator': 
+          lobbyRemovePlayer(user);
+          break;
+      };
       user.update({ role })
         .then(() => io.to(socket.request.user.lobbyId).emit('member', buildMember(user)))
         .catch(err => dblogger.error('Lobby update user role ' + err));
@@ -152,13 +174,41 @@ let init = function(global) {
 
     socket.on('settings change', function(change) {
       socket.broadcast.to(socket.request.user.lobbyId).emit('settings change', change);
-      console.log('Settings change:\n' + JSON.stringify(change));
+      lobbies[socket.request.user.lobbyId].gamesettings = change;
     });
 
     socket.on('danger change', function(change) {
       socket.broadcast.to(socket.request.user.lobbyId).emit('danger change', change);
-      console.log('Danger change:\n' + JSON.stringify(change));
+      lobbies[socket.request.user.lobbyId].dangersettings = change;
     });
+
+    socket.on('playerReady', function() {
+      setPlayerReady(socket.request.user);
+      io.to(socket.request.user.lobbyId).emit('playerReady', socket.request.user.id);
+      // When all players have readied, emit 'lobyReady' to host
+    });
+
+    socket.on('start game', function(settings) {
+      socket.request.user
+        .getLobby()
+        .then(lobby => {
+          // TODO store settings into lobby
+          if (!nsps.exists(lobby.game))
+            games[lobby.game].init(nsps.create(lobby.game));
+          // TODO only pass game-specific settings to create
+          games[lobby.game].create(settings, lobby.id, lobby.hostId);
+          io.to(lobby.id).emit('navigate', {
+            loc: 'game',
+            args: [lobby.game, nsps.get(lobby.game).name],
+          });
+          lobby
+            .update({ inGame: true })
+            .then(() => {})
+            .catch(err => dblogger.error('At Lobby set inGame ' + err));
+        })
+        .catch(err => dblogger.error('At Player Get Lobby ' + err));
+    });
+
   });
 };
 
