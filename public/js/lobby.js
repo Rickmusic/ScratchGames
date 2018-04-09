@@ -67,6 +67,7 @@ Scratch.lobby = function() {};
       $('#gameSet :input').prop('disabled', true);
       $('#editLobby :input').prop('disabled', true);
       $('#startBtn').html('Ready Up');
+      $('#abandon').prop('disabled', true);
     } else {
       $('#startBtn').prop('disabled', true);
     }
@@ -98,7 +99,13 @@ Scratch.lobby = function() {};
         }).length === 0;
     $ready.find('span').attr('class', 'glyphicon glyphicon-ok');
   });
-
+  socket.on('lobbyReady', function() {
+    if (Scratch.me.role === 'host') {
+      $('#startBtn').prop('disabled', false);
+    } else {
+      //Do nothing
+    }
+  });
   //Adds single member to player lists
   Scratch.lobby.member = function(mem) {
     $newRow = $('<div class="row" />');
@@ -171,12 +178,18 @@ Scratch.lobby = function() {};
       $newRow.data('uid', mem.id);
       $('#Players').append($newRow);
     }
+    if (Scratch.me.role === 'spectator') {
+      $('#startBtn').hide();
+    } else {
+      $('#startBtn').show();
+    }
   };
 
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {
     $('#editLobby').submit(function(e) {
       e.preventDefault();
+
       e.stopImmediatePropagation();
       if (
         confirm(
