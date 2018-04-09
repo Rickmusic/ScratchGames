@@ -8,16 +8,16 @@ Scratch.lobby = function() {};
     socket.emit('lobbyLand', null);
 
     $('#Players').on('click', 'button', function() {
+      if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
       if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
-      if ($(this).hasClass('switch-role-host')) return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
       if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
         // TODO member leave
       }
     });
 
     $('#Spectators').on('click', 'button', function() {
+      if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
       if ($(this).hasClass('switch-role')) return socket.emit('spec -> player', null);
-      if ($(this).hasClass('switch-role-host')) return socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
       if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
         // TODO member leave
       }
@@ -99,34 +99,18 @@ Scratch.lobby = function() {};
 
 
   socket.on('playerLeft', function(uid) {
-    let $dead =
-      $('#Players')
-        .find('div')
-        .filter(function() {
-          return $(this).data('uid') === uid;
-        }).length === 0;
-    $dead.remove();
-    $dead =
-      $('#Spectators')
-        .find('div')
-        .filter(function() {
-          return $(this).data('uid') === uid;
-        }).length === 0;
-    $dead.remove();
+    $('#Players div.row, #Spectators div.row').filter(function() { return $(this).data('uid') === uid; }).remove();
   });
 
   socket.on('playerReady', function(uid) {
-    let $ready =
-      $('#Players')
-        .find('div')
-        .filter(function() {
-          return $(this).data('uid') === uid;
-        }).length === 0;
-    $ready.find('span').attr('class', 'glyphicon glyphicon-ok');
+    $('#Players div.row')
+        .filter(function() { return $(this).data('uid') === uid; })
+        .find('span').attr('class', 'glyphicon glyphicon-ok');
   });
 
   //Adds single member to player lists
   Scratch.lobby.member = function(mem) {
+    $('#Players div.row, #Spectators div.row').filter(function() { return $(this).data('uid') === mem.id; }).remove();
     $newRow = $('<div class="row" />');
     $newCol = $('<div class="col center">' + mem.name + '</div>');
     $newRow.append($newCol);
@@ -169,7 +153,7 @@ Scratch.lobby = function() {};
         // Adding swap button //
         $newRow.append($newCol);
         $newBtn = $(
-          '<button type="button" class="btn btn-warning">Switch Role</button>'
+          '<button type="button" class="btn btn-warning switch-role">Switch Role</button>'
         );
         $newCol = $('<div class="col center">' + '</div>');
         $newCol.append($newBtn);
