@@ -7,6 +7,13 @@ Scratch.lobby = function() {};
   Scratch.lobby.init = function() {
     socket.emit('lobbyLand', null);
 
+    $('#startBtn').on('click', function() {
+      if (Scratch.me.role === 'player') {
+        socket.emit('playerReady', null);
+      } else if (Scratch.me.role === 'host') {
+        socket.emit('Start Game', {});
+      }
+    });
     $('#Players').on('click', 'button', function() {
       if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
       if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
@@ -201,11 +208,11 @@ Scratch.lobby = function() {};
 
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {
+    // Disband Lobby Button //
     $('#abandon').on('click', function() {
-      socket.emit("disbandLobby", function(){});
-      socket.emit("disbandLobby", function(){});
-      Scratch.nav.goTo('lobbylist', Scratch.nav.callback);
+      global.emit('leave lobby', function() {});
     });
+
     $('#editLobby').submit(function(e) {
       e.preventDefault();
 
