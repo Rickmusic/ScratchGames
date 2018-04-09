@@ -27,9 +27,7 @@ let init = (sequelize, DataTypes) => {
         defaultValue: 'limited',
       },
     },
-    {
-      tableName: 'users',
-    }
+    { tableName: 'users' }
   );
 
   User.prototype.validatePassword = function(password, callback) {

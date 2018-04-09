@@ -43,13 +43,19 @@ let User = sequelize.import('user', require('./models/user'));
 let UserAuth = User.hasOne(Auth, { foreignKey: 'userId' });
 let TokenUser = Token.belongsTo(User, { foreignKey: 'userId' });
 let LobbyUser = Lobby.hasMany(User, { as: 'Users', foreignKey: 'lobbyId' });
-let UserLobby = User.belongsTo(Lobby, { foreignKey: 'lobbyId' })
-let MessageFrom = Message.belongsTo(User, { as: 'Sender', foreignKey: 'senderId' });
+let UserLobby = User.belongsTo(Lobby, { foreignKey: 'lobbyId' });
+let MessageFrom = Message.belongsTo(User, {
+  as: 'Sender',
+  foreignKey: 'senderId',
+});
 let MassageLobby = Message.belongsTo(Lobby, { foreignKey: 'lobbyId' });
-let MessageTo = Message.belongsTo(User, { as: 'Recipient', foreignKey: 'recipientId' });
+let MessageTo = Message.belongsTo(User, {
+  as: 'Recipient',
+  foreignKey: 'recipientId',
+});
 
 /* The following relationships are not foreignKey constrained on the DB */
-let LobbyHost = Lobby.belongsTo(User, { as: 'Host', foreignKey: 'hostId'}) 
+let LobbyHost = Lobby.belongsTo(User, { as: 'Host', foreignKey: 'hostId' });
 
 module.exports = {
   sequelize,
@@ -60,11 +66,12 @@ module.exports = {
     Token,
     User,
   },
-  associations: { 
-    UserAuth, 
+  associations: {
+    UserAuth,
     TokenUser,
     LobbyUser,
     UserLobby,
+    LobbyHost,
     MessageFrom,
     MassageLobby,
     MessageTo,

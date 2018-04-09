@@ -29,9 +29,7 @@ let init = (sequelize, DataTypes) => {
       googleToken: { type: DataTypes.STRING },
       googleName: { type: DataTypes.STRING },
     },
-    {
-      tableName: 'authorization',
-    }
+    { tableName: 'authorization' }
   );
 
   Auth.prototype.validatePassword = function(password, callback) {
