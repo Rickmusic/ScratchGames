@@ -26,6 +26,7 @@ Scratch.lobby = function() {};
 
   socket.on('lobbyLand', function(everything) {
     let gameType = everything.game; // String //
+    let gameSettings = everything.gamesettings; // Object //
     let access = everything.type; // String private or public //
     let lobbyName = everything.name; // String //
     let joincode = everything.joincode; // Int //
@@ -40,7 +41,7 @@ Scratch.lobby = function() {};
 
     Scratch.lobby
       .loadGameSettings(gameType)
-      .then(() => hookGameSettings())
+      .then(() => hookGameSettings(gameSettings))
       .catch(err => console.log(err));
     Scratch.lobby.loadDangerZone();
   });
@@ -78,7 +79,7 @@ Scratch.lobby = function() {};
     });
   };
 
-  function hookGameSettings() {
+  function hookGameSettings(gameSettings) {
     if (Scratch.me.role !== 'host') {
       $('#gameSet :input').prop('disabled', true);
       $('#editLobby :input').prop('disabled', true);
@@ -91,10 +92,8 @@ Scratch.lobby = function() {};
       socket.emit('settings change', $(this).closest('form').serializeJSON());
     });
 
-    socket.on('settings change', function(change) {
-      // TODO what comes in the change obj
-      // TODO what extra checks/changes occur when changing game settings for non-host
-    });
+    socket.on('settings change', changes => $('form#gameSet').updateForm(changes));
+    $('form#gameSet').updateForm(gameSettings);
   };
 
 
@@ -228,10 +227,7 @@ Scratch.lobby = function() {};
       socket.emit('danger change', $(this).closest('form').serializeJSON());
     });
 
-    socket.on('danger change', function(change) {
-      // TODO what comes in the change obj
-      // TODO what extra checks/changes occur when changing danger settings for non-host
-    });
+    socket.on('danger change', changes => $('form#editLobby').updateForm(changes));
 
     $('#editLobby select[name="gametype"]').change(function() {
       $('#numPlay').prop('disabled', false);

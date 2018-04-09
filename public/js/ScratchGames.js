@@ -22,6 +22,19 @@ let Scratch = function() {};
     });
   };
 
+  $.fn.updateForm = function(newSettings) {
+    for (let setting in newSettings) {
+      $setting = this.find('[name="' + setting + '"]');
+      if ($setting.length === 0) return console.log('Update setting "' + setting + '" failed: element not found');
+      switch ($setting.prop('nodeName')) {
+        case 'SELECT':
+          $setting.find('option[value="' + newSettings[setting] + '"]').prop('selected', true);
+          break;
+        default: console.log('Cannot update setting "' + setting + '" of unknow element type:', $setting.prop('nodeName'));
+      };
+    };
+  };
+
   $.fn.serializeJSON = function() {
     let arr = this.serializeArray();
     let obj = {};
