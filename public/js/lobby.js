@@ -21,7 +21,7 @@ Scratch.lobby = function() {};
       if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
         // TODO member leave
       }
-    })
+    });
   };
 
   socket.on('lobbyLand', function(everything) {
@@ -84,12 +84,18 @@ Scratch.lobby = function() {};
       $('#gameSet :input').prop('disabled', true);
       $('#editLobby :input').prop('disabled', true);
       $('#startBtn').html('Ready Up');
+      $('#abandon').prop('disabled', true);
     } else {
       $('#startBtn').prop('disabled', true);
     }
 
     $('#gameSet').change(function() {
-      socket.emit('settings change', $(this).closest('form').serializeJSON());
+      socket.emit(
+        'settings change',
+        $(this)
+          .closest('form')
+          .serializeJSON()
+      );
     });
 
     socket.on('settings change', changes => $('form#gameSet').updateForm(changes));
@@ -106,7 +112,13 @@ Scratch.lobby = function() {};
         .filter(function() { return $(this).data('uid') === uid; })
         .find('span').attr('class', 'glyphicon glyphicon-ok');
   });
-
+  socket.on('lobbyReady', function() {
+    if (Scratch.me.role === 'host') {
+      $('#startBtn').prop('disabled', false);
+    } else {
+      //Do nothing
+    }
+  });
   //Adds single member to player lists
   Scratch.lobby.member = function(mem) {
     $('#Players div.row, #Spectators div.row').filter(function() { return $(this).data('uid') === mem.id; }).remove();
@@ -180,12 +192,23 @@ Scratch.lobby = function() {};
       $newRow.data('uid', mem.id);
       $('#Players').append($newRow);
     }
+    if (Scratch.me.role === 'spectator') {
+      $('#startBtn').hide();
+    } else {
+      $('#startBtn').show();
+    }
   };
 
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {
+    $('#abandon').on('click', function() {
+      socket.emit("disbandLobby", function(){});
+      socket.emit("disbandLobby", function(){});
+      Scratch.nav.goTo('lobbylist', Scratch.nav.callback);
+    });
     $('#editLobby').submit(function(e) {
       e.preventDefault();
+
       e.stopImmediatePropagation();
       if (
         confirm(
@@ -224,7 +247,12 @@ Scratch.lobby = function() {};
     });
 
     $('#editLobby').change(function() {
-      socket.emit('danger change', $(this).closest('form').serializeJSON());
+      socket.emit(
+        'danger change',
+        $(this)
+          .closest('form')
+          .serializeJSON()
+      );
     });
 
     socket.on('danger change', changes => $('form#editLobby').updateForm(changes));
