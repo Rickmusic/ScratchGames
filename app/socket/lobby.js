@@ -133,7 +133,7 @@ let init = function(global) {
         .catch(err => dblogger.error('Lobby change to spectator ' + err));
     });
 
-    socket.on('spec -> player', function(user) {
+    socket.on('spec -> player', function(uid) {
       if (!uid) {
         return changeRole(socket.request.user, 'player');
       } 

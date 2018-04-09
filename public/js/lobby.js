@@ -7,26 +7,21 @@ Scratch.lobby = function() {};
   Scratch.lobby.init = function() {
     socket.emit('lobbyLand', null);
 
-    $('#Players btn.leave-lobby, #Spectators btn.leave-lobby').click(function() {
-      // TODO player member lobby
-    });
-    $('#Players btn.kick-member, #Spectators btn.kick-member').click(function() {
-      // TODO host kicks member from lobby
-    });
-
-    $('#Players btn.switch-role').click(function() {
-      socket.emit('player -> spec', null);
-    });
-    $('#Spectators btn.switch-role').click(function() {
-      socket.emit('spec -> player', null);
+    $('#Players').on('click', 'button', function() {
+      if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
+      if ($(this).hasClass('switch-role-host')) return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
+        // TODO member leave
+      }
     });
 
-    $('#Players btn.switch-role-host').click(function() {
-      socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
-    });
-    $('#Spectators btn.switch-role-host').click(function() {
-      socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
-    });
+    $('#Spectators').on('click', 'button', function() {
+      if ($(this).hasClass('switch-role')) return socket.emit('spec -> player', null);
+      if ($(this).hasClass('switch-role-host')) return socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
+        // TODO member leave
+      }
+    })
   };
 
   socket.on('lobbyLand', function(everything) {
@@ -115,11 +110,11 @@ Scratch.lobby = function() {};
       // Adding Buttons to become player or spec //
       if (mem.role === 'player') {
         $newBtn = $(
-          '<button type="button" class="btn btn-success">Become Spectator</button>'
+          '<button type="button" class="btn btn-success switch-role">Become Spectator</button>'
         );
       } else {
         $newBtn = $(
-          '<button type="button" class="btn btn-success">Become Player</button>'
+          '<button type="button" class="btn btn-success switch-role">Become Player</button>'
         );
       }
       if(mem.role != 'host'){
@@ -130,7 +125,7 @@ Scratch.lobby = function() {};
       // Adding leave lobby Button //
       if (mem.role != 'host') {
         $newBtn = $(
-          '<button type="button" class="btn btn-danger">Leave Lobby</button>'
+          '<button type="button" class="btn btn-danger leave-lobby">Leave Lobby</button>'
         );
         $newCol = $('<div class="col center">' + '</div>');
         $newCol.append($newBtn);
@@ -139,7 +134,7 @@ Scratch.lobby = function() {};
     } else {
       if (Scratch.me.role === 'host') {
         $newBtn = $(
-          '<button type="button" class="btn btn-danger">Kick From Lobby</button>'
+          '<button type="button" class="btn btn-danger kick-member">Kick From Lobby</button>'
         );
         $newCol = $('<div class="col center">' + '</div>');
         $newCol.append($newBtn);
