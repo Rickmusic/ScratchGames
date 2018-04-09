@@ -78,7 +78,6 @@ $(function() {
   /* 
    * Online User Lists 
    */
-
   let userListAdd = function(user, $ul) {
     // If user not already in list, add them
     if ($ul.find('li').filter(function() { return $(this).data('uid') === user.id; }).length === 0) {

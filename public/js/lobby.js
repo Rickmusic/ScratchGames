@@ -8,20 +8,34 @@ Scratch.lobby = function() {};
     socket.emit('lobbyLand', null);
 
     $('#Players').on('click', 'button', function() {
-      if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
-      if ($(this).hasClass('switch-role-host')) return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('switch-role'))
+        return socket.emit('player -> spec', null);
+      if ($(this).hasClass('switch-role-host'))
+        return socket.emit(
+          'player -> spec',
+          $(this)
+            .closest('div.row')
+            .data('uid')
+        );
       if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
         // TODO member leave
       }
     });
 
     $('#Spectators').on('click', 'button', function() {
-      if ($(this).hasClass('switch-role')) return socket.emit('spec -> player', null);
-      if ($(this).hasClass('switch-role-host')) return socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('switch-role'))
+        return socket.emit('spec -> player', null);
+      if ($(this).hasClass('switch-role-host'))
+        return socket.emit(
+          'spec -> player',
+          $(this)
+            .closest('div.row')
+            .data('uid')
+        );
       if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
         // TODO member leave
       }
-    })
+    });
   };
 
   socket.on('lobbyLand', function(everything) {
@@ -89,15 +103,19 @@ Scratch.lobby = function() {};
     }
 
     $('#gameSet').change(function() {
-      socket.emit('settings change', $(this).closest('form').serializeJSON());
+      socket.emit(
+        'settings change',
+        $(this)
+          .closest('form')
+          .serializeJSON()
+      );
     });
 
     socket.on('settings change', function(change) {
       // TODO what comes in the change obj
       // TODO what extra checks/changes occur when changing game settings for non-host
     });
-  };
-
+  }
 
   socket.on('playerLeft', function(uid) {
     let $dead =
@@ -213,6 +231,11 @@ Scratch.lobby = function() {};
 
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {
+    $('#abandon').on('click', function() {
+      socket.emit("disbandLobby", function(){});
+      socket.emit("disbandLobby", function(){});
+      Scratch.nav.goTo('lobbylist', Scratch.nav.callback);
+    });
     $('#editLobby').submit(function(e) {
       e.preventDefault();
 
@@ -254,7 +277,12 @@ Scratch.lobby = function() {};
     });
 
     $('#editLobby').change(function() {
-      socket.emit('danger change', $(this).closest('form').serializeJSON());
+      socket.emit(
+        'danger change',
+        $(this)
+          .closest('form')
+          .serializeJSON()
+      );
     });
 
     socket.on('danger change', function(change) {
