@@ -8,30 +8,16 @@ Scratch.lobby = function() {};
     socket.emit('lobbyLand', null);
 
     $('#Players').on('click', 'button', function() {
-      if ($(this).hasClass('switch-role'))
-        return socket.emit('player -> spec', null);
-      if ($(this).hasClass('switch-role-host'))
-        return socket.emit(
-          'player -> spec',
-          $(this)
-            .closest('div.row')
-            .data('uid')
-        );
+      if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
       if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
         // TODO member leave
       }
     });
 
     $('#Spectators').on('click', 'button', function() {
-      if ($(this).hasClass('switch-role'))
-        return socket.emit('spec -> player', null);
-      if ($(this).hasClass('switch-role-host'))
-        return socket.emit(
-          'spec -> player',
-          $(this)
-            .closest('div.row')
-            .data('uid')
-        );
+      if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('switch-role')) return socket.emit('spec -> player', null);
       if ($(this).hasClass('leave-lobby') || $(this).hasClass('kick-member')) {
         // TODO member leave
       }
@@ -40,6 +26,7 @@ Scratch.lobby = function() {};
 
   socket.on('lobbyLand', function(everything) {
     let gameType = everything.game; // String //
+    let gameSettings = everything.gamesettings; // Object //
     let access = everything.type; // String private or public //
     let lobbyName = everything.name; // String //
     let joincode = everything.joincode; // Int //
@@ -54,7 +41,7 @@ Scratch.lobby = function() {};
 
     Scratch.lobby
       .loadGameSettings(gameType)
-      .then(() => hookGameSettings())
+      .then(() => hookGameSettings(gameSettings))
       .catch(err => console.log(err));
     Scratch.lobby.loadDangerZone();
   });
@@ -92,7 +79,7 @@ Scratch.lobby = function() {};
     });
   };
 
-  function hookGameSettings() {
+  function hookGameSettings(gameSettings) {
     if (Scratch.me.role !== 'host') {
       $('#gameSet :input').prop('disabled', true);
       $('#editLobby :input').prop('disabled', true);
@@ -111,37 +98,19 @@ Scratch.lobby = function() {};
       );
     });
 
-    socket.on('settings change', function(change) {
-      // TODO what comes in the change obj
-      // TODO what extra checks/changes occur when changing game settings for non-host
-    });
-  }
+    socket.on('settings change', changes => $('form#gameSet').updateForm(changes));
+    $('form#gameSet').updateForm(gameSettings);
+  };
+
 
   socket.on('playerLeft', function(uid) {
-    let $dead =
-      $('#Players')
-        .find('div')
-        .filter(function() {
-          return $(this).data('uid') === uid;
-        }).length === 0;
-    $dead.remove();
-    $dead =
-      $('#Spectators')
-        .find('div')
-        .filter(function() {
-          return $(this).data('uid') === uid;
-        }).length === 0;
-    $dead.remove();
+    $('#Players div.row, #Spectators div.row').filter(function() { return $(this).data('uid') === uid; }).remove();
   });
 
   socket.on('playerReady', function(uid) {
-    let $ready =
-      $('#Players')
-        .find('div')
-        .filter(function() {
-          return $(this).data('uid') === uid;
-        }).length === 0;
-    $ready.find('span').attr('class', 'glyphicon glyphicon-ok');
+    $('#Players div.row')
+        .filter(function() { return $(this).data('uid') === uid; })
+        .find('span').attr('class', 'glyphicon glyphicon-ok');
   });
   socket.on('lobbyReady', function() {
     if (Scratch.me.role === 'host') {
@@ -152,6 +121,7 @@ Scratch.lobby = function() {};
   });
   //Adds single member to player lists
   Scratch.lobby.member = function(mem) {
+    $('#Players div.row, #Spectators div.row').filter(function() { return $(this).data('uid') === mem.id; }).remove();
     $newRow = $('<div class="row" />');
     $newCol = $('<div class="col center">' + mem.name + '</div>');
     $newRow.append($newCol);
@@ -194,7 +164,7 @@ Scratch.lobby = function() {};
         // Adding swap button //
         $newRow.append($newCol);
         $newBtn = $(
-          '<button type="button" class="btn btn-warning">Switch Role</button>'
+          '<button type="button" class="btn btn-warning switch-role">Switch Role</button>'
         );
         $newCol = $('<div class="col center">' + '</div>');
         $newCol.append($newBtn);
@@ -285,10 +255,7 @@ Scratch.lobby = function() {};
       );
     });
 
-    socket.on('danger change', function(change) {
-      // TODO what comes in the change obj
-      // TODO what extra checks/changes occur when changing danger settings for non-host
-    });
+    socket.on('danger change', changes => $('form#editLobby').updateForm(changes));
 
     $('#editLobby select[name="gametype"]').change(function() {
       $('#numPlay').prop('disabled', false);

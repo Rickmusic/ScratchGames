@@ -146,13 +146,13 @@ let init = function(global) {
     });
 
     socket.on('settings change', function(change) {
+      socket.broadcast.to(socket.request.user.lobbyId).emit('settings change', change);
       console.log('Settings change:\n' + JSON.stringify(change));
-      // game specific setting something
     });
 
     socket.on('danger change', function(change) {
+      socket.broadcast.to(socket.request.user.lobbyId).emit('danger change', change);
       console.log('Danger change:\n' + JSON.stringify(change));
-      // Update DB lobby info
     });
   });
 };
