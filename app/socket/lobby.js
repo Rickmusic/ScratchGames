@@ -2,21 +2,26 @@
 
 let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
-let { Lobby } = db.models;
+let { Lobby, User } = db.models;
 let games = require('../games');
 let nsps = require('./namespaceManager');
+
+let buildMember = function(user) {
+  return {
+    id: user.id,
+    name: user.displayName,
+    role: user.role,
+    ready: false,
+  };
+};
+
 
 let init = function(global) {
   let io = global.of('/lobby');
   io.on('connection', function(socket) {
     socket.on('join lobby', function(data) {
       socket.join(data.lobby);
-      socket.broadcast.to(data.lobby).emit('member', {
-        id: socket.request.user.id,
-        name: socket.request.user.displayName,
-        role: socket.request.user.role,
-        ready: false,
-      });
+      socket.broadcast.to(data.lobby).emit('member', buildMember(socket.request.user));
     });
 
     socket.on('leave lobby', function(data) {
@@ -101,18 +106,53 @@ let init = function(global) {
             .then(users => {
               ret.users = [];
               for (let user of users) {
-                ret.users.push({
-                  id: user.id,
-                  name: user.displayName,
-                  role: user.role,
-                  ready: false,
-                });
+                ret.users.push(buildMember(user));
               }
               socket.emit('lobbyLand', ret);
             })
             .catch(err => dblogger.error('Lobbyland get lobby users: ' + err));
         })
         .catch(err => dblogger.error('Lobbyland get lobby: ' + err));
+    });
+
+    let changeRole = function(user, role) {
+      user.update({ role })
+        .then(() => io.to(socket.request.user.lobbyId).emit('member', buildMember(user)))
+        .catch(err => dblogger.error('Lobby update user role ' + err));
+    };
+
+    socket.on('player -> spec', function(uid) {
+      if (!uid) {
+        return changeRole(socket.request.user, 'spectator');
+      } 
+      User.findById(uid)
+        .then(user => {
+          if (!user) return dblogger.error('Lobby change to spectator user not found');
+          changeRole(user, 'spectator');
+        })
+        .catch(err => dblogger.error('Lobby change to spectator ' + err));
+    });
+
+    socket.on('spec -> player', function(uid) {
+      if (!uid) {
+        return changeRole(socket.request.user, 'player');
+      } 
+      User.findById(uid)
+        .then(user => {
+          if (!user) return dblogger.error('Lobby change to player user not fond');
+          changeRole(user, 'player');
+        })
+        .catch(err => dblogger.error('Lobby change to player ' + err));
+    });
+
+    socket.on('settings change', function(change) {
+      console.log('Settings change:\n' + JSON.stringify(change));
+      // game specific setting something
+    });
+
+    socket.on('danger change', function(change) {
+      console.log('Danger change:\n' + JSON.stringify(change));
+      // Update DB lobby info
     });
   });
 };
