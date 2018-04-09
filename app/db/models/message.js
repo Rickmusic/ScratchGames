@@ -21,9 +21,7 @@ let init = (sequelize, DataTypes) => {
       },
       message: { type: DataTypes.STRING },
     },
-    {
-      tableName: 'messages',
-    }
+    { tableName: 'messages' }
   );
 
   return Message;

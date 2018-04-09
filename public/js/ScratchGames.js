@@ -24,15 +24,22 @@ let Scratch = function() {};
 
   $.fn.updateForm = function(newSettings) {
     for (let setting in newSettings) {
-      $setting = this.find('[name="' + setting + '"]');
-      if ($setting.length === 0) return console.log('Update setting "' + setting + '" failed: element not found');
+      let $setting = this.find('[name="' + setting + '"]');
+      if ($setting.length === 0)
+        return console.log('Update setting "' + setting + '" failed: element not found');
       switch ($setting.prop('nodeName')) {
         case 'SELECT':
-          $setting.find('option[value="' + newSettings[setting] + '"]').prop('selected', true);
+          $setting
+            .find('option[value="' + newSettings[setting] + '"]')
+            .prop('selected', true);
           break;
-        default: console.log('Cannot update setting "' + setting + '" of unknow element type:', $setting.prop('nodeName'));
-      };
-    };
+        default:
+          console.log(
+            'Cannot update setting "' + setting + '" of unknow element type:',
+            $setting.prop('nodeName')
+          );
+      }
+    }
   };
 
   $.fn.serializeJSON = function() {
@@ -139,7 +146,6 @@ let Scratch = function() {};
         break;
       default:
         return undefined;
-        break;
     }
     return nav;
   };
@@ -204,8 +210,7 @@ let Scratch = function() {};
    * @param {function} function(err) where err can be a Scratch.error.* error, or null otherwise
    */
   function navigate(newloc, args, opts, callback) {
-    if (typeof newloc === 'string')
-      newloc = { loc: newloc, nav: Scratch.nav(newloc) };
+    if (typeof newloc === 'string') newloc = { loc: newloc, nav: Scratch.nav(newloc) };
     if (typeof opts === 'function') {
       callback = opts;
       opts = undefined;
@@ -213,16 +218,18 @@ let Scratch = function() {};
     if (typeof args === 'function') {
       callback = args;
       args = undefined;
-    }
-    else if (!Array.isArray(args)) {
+    } else if (!Array.isArray(args)) {
       opts = args;
       args = undefined;
     }
-    if (typeof callback !== 'function') throw new Error('Navigate Callback is not a function');
+    if (typeof callback !== 'function')
+      throw new Error('Navigate Callback is not a function');
 
-    if (typeof newloc.nav === 'undefined') return callback(new Scratch.error.navUknownLocation(newloc.loc));
+    if (typeof newloc.nav === 'undefined')
+      return callback(new Scratch.error.navUknownLocation(newloc.loc));
 
-    if (!currlocation) { // If first load
+    if (!currlocation) {
+      // If first load
       currlocation = { nav: {} };
       if (newloc.loc === 'lobby' || newloc.loc === 'game') {
         return Scratch.sockets.lobby.emit('lobby reload', {});
@@ -248,11 +255,12 @@ let Scratch = function() {};
   function createHistory(loc, nav, opts) {
     opts = opts || {};
     nav = nav || {};
-    opts.noHistory = (typeof opts.noHistory !== 'undefined') ? opts.noHistory : (nav.modal || false);
+    opts.noHistory =
+      typeof opts.noHistory !== 'undefined' ? opts.noHistory : nav.modal || false;
     if (opts.noHistory) return;
 
     /* Default Values */
-    opts.pushState = (typeof opts.pushState !== 'undefined') ? opts.pushState : true;
+    opts.pushState = typeof opts.pushState !== 'undefined' ? opts.pushState : true;
     opts.loc = opts.loc || loc;
     opts.title = opts.title || nav.title || document.title;
     opts.path = opts.path || nav.path || getURLLoc();
@@ -260,10 +268,8 @@ let Scratch = function() {};
     opts.state = opts.state || {};
     opts.state.loc = opts.loc;
 
-    if (opts.replaceState)
-        history.replaceState(opts.state, opts.title, opts.path);
-    else if (opts.pushState)
-      history.pushState(opts.state, opts.title, opts.path);
+    if (opts.replaceState) history.replaceState(opts.state, opts.title, opts.path);
+    else if (opts.pushState) history.pushState(opts.state, opts.title, opts.path);
     return;
   }
 
@@ -301,18 +307,21 @@ let Scratch = function() {};
       let func = namespaces.pop();
       let context = Scratch;
       for (let i = 0; i < namespaces.length; i++) {
-        if (!(typeof context[namespaces[i]] !== 'undefined')) return reject(new Scratch.error.varUndefined(context, namespaces[i]));
+        if (!(typeof context[namespaces[i]] !== 'undefined'))
+          return reject(new Scratch.error.varUndefined(context, namespaces[i]));
         context = context[namespaces[i]];
       }
-      if (typeof context[func] !== 'function') return reject(new Scratch.error.notAFunction(context, func));
+      if (typeof context[func] !== 'function')
+        return reject(new Scratch.error.notAFunction(context, func));
       context[func].apply(Scratch.nav, args);
       fulfill();
     });
   }
-  
+
   function getCurrentLoc() {
     let currentState = history.state || {};
-    if (currentState.loc) return { loc: currentState.loc, nav: Scratch.nav(currentState.loc) };
+    if (currentState.loc)
+      return { loc: currentState.loc, nav: Scratch.nav(currentState.loc) };
     let loc = getURLLoc();
     let nav = Scratch.nav(loc);
     createHistory(loc, nav, { replaceState: true });
@@ -321,8 +330,8 @@ let Scratch = function() {};
 
   function getURLLoc() {
     return window.location.pathname
-      .replace(/^\//g, '')   // Remove leading '/'
-      .replace(/#.*/g, '')   // Remove any anchor
+      .replace(/^\//g, '') // Remove leading '/'
+      .replace(/#.*/g, '') // Remove any anchor
       .replace(/\?.*/g, ''); // Remove any get query
   }
 
@@ -351,7 +360,7 @@ let Scratch = function() {};
   Scratch.sockets.base.on('leave lobby', function(info) {
     Scratch.sockets.lobby.emit('leave lobby', info);
   });
-  
+
   // Pass from Lobby to Base (aka allow Lobby to initiate)
   Scratch.sockets.lobby.on('join lobby', function(info) {
     Scratch.sockets.base.emit('join lobby', info);
@@ -411,7 +420,10 @@ let Scratch = function() {};
     $('iframe#game').attr('src', '/games/' + game + '.html');
     $('iframe#game')[0].onload = function() {
       $('iframe#game').show();
-      $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ id: 'namespace', nsp }), '*');
+      $('iframe#game')[0].contentWindow.postMessage(
+        JSON.stringify({ id: 'namespace', nsp }),
+        '*'
+      );
       $('iframe#game')[0].onload = null;
     };
   };
@@ -423,7 +435,6 @@ let Scratch = function() {};
   Scratch.games.leave = function() {
     $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ id: 'leave' }), '*');
   };
-
 })();
 
 /* 
@@ -438,7 +449,7 @@ let Scratch = function() {};
     this.name = 'Variable Undefined';
     this.message = 'Variable Undefined: ' + context + '.' + variable;
     this.context = context;
-    this.variable = variable
+    this.variable = variable;
     this.stack = new Error().stack;
   };
   Scratch.error.varUndefined.prototype = new Error();
@@ -447,7 +458,7 @@ let Scratch = function() {};
     this.name = 'Not A Function';
     this.message = 'Variable is not a Function: ' + context + '.' + variable;
     this.context = context;
-    this.variable = variable
+    this.variable = variable;
     this.stack = new Error().stack;
   };
   Scratch.error.notAFunction.prototype = new Error();

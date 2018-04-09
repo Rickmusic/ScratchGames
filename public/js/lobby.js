@@ -16,17 +16,41 @@ Scratch.lobby = function() {};
       }
     });
     $('#Players').on('click', 'button', function() {
-      if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('switch-role') && Scratch.me.role === 'host')
+        return socket.emit(
+          'player -> spec',
+          $(this)
+            .closest('div.row')
+            .data('uid')
+        );
       if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
       if ($(this).hasClass('leave-lobby')) return socket.emit('leave lobby', null);
-      if ($(this).hasClass('kick-member')) return socket.emit('kick member', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('kick-member'))
+        return socket.emit(
+          'kick member',
+          $(this)
+            .closest('div.row')
+            .data('uid')
+        );
     });
 
     $('#Spectators').on('click', 'button', function() {
-      if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('spec -> player', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('switch-role') && Scratch.me.role === 'host')
+        return socket.emit(
+          'spec -> player',
+          $(this)
+            .closest('div.row')
+            .data('uid')
+        );
       if ($(this).hasClass('switch-role')) return socket.emit('spec -> player', null);
       if ($(this).hasClass('leave-lobby')) return socket.emit('leave lobby', null);
-      if ($(this).hasClass('kick-member')) return socket.emit('kick member', $(this).closest('div.row').data('uid'));
+      if ($(this).hasClass('kick-member'))
+        return socket.emit(
+          'kick member',
+          $(this)
+            .closest('div.row')
+            .data('uid')
+        );
     });
   };
 
@@ -106,17 +130,23 @@ Scratch.lobby = function() {};
 
     socket.on('settings change', changes => $('form#gameSet').updateForm(changes));
     $('form#gameSet').updateForm(gameSettings);
-  };
-
+  }
 
   socket.on('playerLeft', function(uid) {
-    $('#Players div.row, #Spectators div.row').filter(function() { return $(this).data('uid') === uid; }).remove();
+    $('#Players div.row, #Spectators div.row')
+      .filter(function() {
+        return $(this).data('uid') === uid;
+      })
+      .remove();
   });
 
   socket.on('playerReady', function(uid) {
     $('#Players div.row')
-        .filter(function() { return $(this).data('uid') === uid; })
-        .find('span').attr('class', 'glyphicon glyphicon-ok');
+      .filter(function() {
+        return $(this).data('uid') === uid;
+      })
+      .find('span')
+      .attr('class', 'glyphicon glyphicon-ok');
   });
   socket.on('lobbyReady', function() {
     if (Scratch.me.role === 'host') {
@@ -127,15 +157,20 @@ Scratch.lobby = function() {};
   });
   //Adds single member to player lists
   Scratch.lobby.member = function(mem) {
-    $('#Players div.row, #Spectators div.row').filter(function() { return $(this).data('uid') === mem.id; }).remove();
-    $newRow = $('<div class="row" />');
-    $newCol = $('<div class="col center">' + mem.name + '</div>');
+    $('#Players div.row, #Spectators div.row')
+      .filter(function() {
+        return $(this).data('uid') === mem.id;
+      })
+      .remove();
+    let $newRow = $('<div class="row" />');
+    let $newCol = $('<div class="col center">' + mem.name + '</div>');
     $newRow.append($newCol);
 
     // If adding myself //
     if (Scratch.me.id === mem.id) {
       Scratch.me.role = mem.role;
       // Adding Buttons to become player or spec //
+      let $newBtn;
       if (mem.role === 'player') {
         $newBtn = $(
           '<button type="button" class="btn btn-success switch-role">Become Spectator</button>'
@@ -162,7 +197,7 @@ Scratch.lobby = function() {};
     } else {
       if (Scratch.me.role === 'host') {
         // Adding kick Button //
-        $newBtn = $(
+        let $newBtn = $(
           '<button type="button" class="btn btn-danger kick-member">Kick From Lobby</button>'
         );
         $newCol = $('<div class="col center">' + '</div>');
@@ -177,6 +212,7 @@ Scratch.lobby = function() {};
         $newRow.append($newCol);
       }
     }
+    let $newSpan;
     if (mem.role === 'host') {
       $newSpan = $('<span class="glyphicon glyphicon-tower">' + '</span>');
       $newCol = $('<div class="col center"></div>');
@@ -207,7 +243,7 @@ Scratch.lobby = function() {};
 
   // Loading Danger Zone Settings //
   Scratch.lobby.loadDangerZone = function() {
-    $('#abandon').on('click', () => socket.emit("leave lobby", null));
+    $('#abandon').on('click', () => socket.emit('leave lobby', null));
 
     $('#editLobby').submit(function(e) {
       e.preventDefault();
@@ -263,10 +299,7 @@ Scratch.lobby = function() {};
     $('#editLobby select[name="gametype"]').change(function() {
       $('#numPlay').prop('disabled', false);
       $('#confirm').prop('disabled', false);
-      $('#editLobby select[name="numPlayers"] option:disabled').prop(
-        'selected',
-        true
-      );
+      $('#editLobby select[name="numPlayers"] option:disabled').prop('selected', true);
       $('#editLobby select[name="numPlayers"] option:enabled').remove();
       let $opt = $(this).find('option:selected');
       for (let i = $opt.data('minPlay'); i <= $opt.data('maxPlay'); i++) {
