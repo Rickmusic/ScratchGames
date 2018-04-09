@@ -7,6 +7,14 @@ Scratch.lobby = function() {};
   Scratch.lobby.init = function() {
     socket.emit('lobbyLand', null);
 
+    $('#startBtn').on('click', function() {
+      if (Scratch.me.role === 'player') {
+        socket.emit('playerReady', null);
+        $('#startBtn').prop('disabled', true);
+      } else if (Scratch.me.role === 'host') {
+        socket.emit('Start Game', {});
+      }
+    });
     $('#Players').on('click', 'button', function() {
       if ($(this).hasClass('switch-role') && Scratch.me.role === 'host') return socket.emit('player -> spec', $(this).closest('div.row').data('uid'));
       if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
