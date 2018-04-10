@@ -18,22 +18,14 @@ let buildMember = function(user) {
 let lobbies = {};
 /* Contains <lobbyid>: {<settings>} values with game specifice settings, player readyness, ect. */
 
-let createLobby = function(lobbyId, callback) {
+let createLobby = function(lobbyId) {
   lobbies[lobbyId] = {};
   lobbies[lobbyId].gamesettings = {};
-  lobbies[lobbyId].dangersettings = {};
   lobbies[lobbyId].ready = {};
-  Lobby.findById(lobbyId)
-    .then(lobby => {
-      lobbies[lobbyId].dangersettings.gametype = lobby.gametype;
-      lobbies[lobbyId].dangersettings.numPlayers = lobby.maxPlayers;
-      lobbies[lobbyId].dangersettings.numSpec = lobby.maxSpectators;
-      callback();
-    })
-    .catch(err => dblogger.error('Lobby create lobby object ' + err));
 };
 
 let lobbyAddPlayer = function(user) {
+  if (!lobbies[user.lobbyId]) createLobby(user.lobbyId);
   lobbies[user.lobbyId].ready[user.id] = false;
 };
 
@@ -50,10 +42,6 @@ let init = function(global) {
   io.on('connection', function(socket) {
     socket.on('join lobby', function(data) {
       socket.join(data.lobby);
-      if (!lobbies[data.lobby])
-        createLobby(data.lobby, () =>
-          io.to(data.lobby).emit('danger change', lobbies[data.lobby].dangersettings)
-        );
       if (socket.request.user.role === 'player') lobbyAddPlayer(socket.request.user);
       socket.broadcast.to(data.lobby).emit('member', buildMember(socket.request.user));
     });

@@ -285,17 +285,6 @@ Scratch.lobby = function() {};
       }
     });
 
-    $('#editLobby').change(function() {
-      socket.emit(
-        'danger change',
-        $(this)
-          .closest('form')
-          .serializeJSON()
-      );
-    });
-
-    socket.on('danger change', changes => $('form#editLobby').updateForm(changes));
-
     $('#editLobby select[name="gametype"]').change(function() {
       $('#numPlay').prop('disabled', false);
       $('#confirm').prop('disabled', false);
