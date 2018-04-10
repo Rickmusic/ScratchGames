@@ -160,6 +160,9 @@ table{
     max-height: 400px;
     min-height: 400px;
 }
+.tab-content{
+    margin: 10px 10px;
+}
 
 /* Mobile Styles */
 @media only screen and (max-width: 400px) {
