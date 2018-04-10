@@ -331,7 +331,7 @@ Scratch.locations = function() {};
  * ---------------------------------------- 
  */
 (function() {
-  Scratch.call = function (context, call, args) {
+  Scratch.call = function(context, call, args) {
     return new Promise((fulfill, reject) => {
       if (!call) return fulfill();
       if (!args) args = [];
@@ -347,8 +347,8 @@ Scratch.locations = function() {};
       context[func].apply(Scratch.nav, args);
       fulfill();
     });
-  }
-})()
+  };
+})();
 
 /* 
  * ----------------------------------------
