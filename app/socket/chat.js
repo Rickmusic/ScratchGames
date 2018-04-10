@@ -4,23 +4,24 @@ let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { Message, User } = db.models;
 
-let init = function(global) {
-  let io = global.of('/chat');
+let init = function(io) {
   io.on('connection', function(socket) {
-
     socket.on('hello', function(data) {
       socket.join(socket.request.user.id);
       let response = {};
-      response.you = { name: socket.request.user.displayName, id: socket.request.user.id };
-      let onlineUsersPromise = User.findAll({ 
-        attributes: ['id', ['displayName', 'name']], 
-        where: { status: 'online' }
+      response.you = {
+        name: socket.request.user.displayName,
+        id: socket.request.user.id,
+      };
+      let onlineUsersPromise = User.findAll({
+        attributes: ['id', ['displayName', 'name']],
+        where: { status: 'online' },
       });
       let lobbyUsersPromise = Promise.resolve(null);
       if (socket.request.user.lobbyId)
-        lobbyUsersPromise = User.findAll({ 
-          attributes: ['id', ['displayName', 'name'], 'role'], 
-          where: { status: 'online', lobbyId: socket.request.user.lobbyId }
+        lobbyUsersPromise = User.findAll({
+          attributes: ['id', ['displayName', 'name'], 'role'],
+          where: { status: 'online', lobbyId: socket.request.user.lobbyId },
         });
       Promise.all([onlineUsersPromise, lobbyUsersPromise])
         .then(promises => {
@@ -53,8 +54,7 @@ let init = function(global) {
         transport: 'global',
         message: data.message,
         senderId: socket.request.user.id,
-      })
-        .catch(err => dblogger.error('At Create Global Message: ' + err));
+      }).catch(err => dblogger.error('At Create Global Message: ' + err));
       io.emit('global message', buildMessage(data));
     });
 
@@ -66,15 +66,13 @@ let init = function(global) {
         senderId: socket.request.user.id,
         senderRole: socket.request.user.role,
         lobbyId: socket.request.user.lobbyId,
-      })
-        .catch(err => dblogger.error('At Create Lobby Message: ' + err));
+      }).catch(err => dblogger.error('At Create Lobby Message: ' + err));
       if (socket.request.user.role === 'player' || socket.request.user.role === 'host') {
         io
           .to(socket.request.user.lobbyId + 'player')
           .to(socket.request.user.lobbyId + 'spectator')
           .emit('lobby player message', buildMessage(data));
-      }
-      else {
+      } else {
         io
           .to(socket.request.user.lobbyId + 'spectator')
           .emit('lobby spectator message', buildMessage(data));
@@ -83,14 +81,13 @@ let init = function(global) {
 
     socket.on('private message', function(data) {
       User.findById(data.to)
-        .then((to) => {
+        .then(to => {
           Message.create({
             transport: 'private',
             message: data.message,
             senderId: socket.request.user.id,
             recipientId: to.id,
-          })
-            .catch(err => dblogger.error('At Create Private Message: ' + err));
+          }).catch(err => dblogger.error('At Create Private Message: ' + err));
           io.to(to.id).emit('private message', buildMessage(data, to));
           socket.emit('private message', buildMessage(data, to));
         })
@@ -101,11 +98,10 @@ let init = function(global) {
       socket.request.user.lobbyId = data.lobby;
       if (data.role === 'player' || data.role === 'host')
         socket.join(socket.request.user.lobbyId + 'player');
-      else 
-        socket.join(socket.request.user.lobbyId + 'spectator');
-      User.findAll({ 
-        attributes: ['id', ['displayName', 'name'], 'role'], 
-        where: { status: 'online', lobbyId: data.lobby }
+      else socket.join(socket.request.user.lobbyId + 'spectator');
+      User.findAll({
+        attributes: ['id', ['displayName', 'name'], 'role'],
+        where: { status: 'online', lobbyId: data.lobby },
       })
         .then(users => socket.emit('lobby users', { users }))
         .catch(err => dblogger.error('At Get Lobby Users: ' + err));

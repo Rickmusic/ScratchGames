@@ -1,59 +1,92 @@
 <div class="container">
     <div class="row" style="border-top: black solid 2px; border-bottom: black solid 2px">
-        <div class="col center">
-            <h2>Game Type</h2>
-        </div>
-        <div class="col center">
-            <h2>Lobby Name</h2>
-        </div>
-        <div class="col center">
-            <h2>Joincode: 75843</h2>
+        <div id ="lobbyName" class="col center">
+            <h2>Lobby Name:</h2>
         </div>
     </div>
-    <div class="row h-25">
+    <div class="row" style="border-top: black solid 2px; border-bottom: black solid 2px">
+        <div id="gameType" class="col center">
+            <h2>Game Type: </h2>
+        </div>
+        <div id ="access" class="col center">
+            <h2>Access: </h2>
+        </div>
+        <div id="joincode" class="col center">
+            <h2>Joincode:</h2>
+        </div>
+    </div>
+    <div class="row">
         <div class="col voidPad" style="border-right: black solid 2px">
             <div class="page-header sideTitle">
                 <h2>Players</h2>
             </div>
-            <div class="table table-bordered">
-                <table id="Players" class="center">
-                <tbody>
-                <tr>
-                    <td>Austin</td>
-                    <td><button type="button" class="btn btn-success">Become Spectator</button></td>
-                </tr>
-                </tbody>
-                </table>
+            <div id="Players" class="container">
             </div>
         </div>
         <div class="col voidPad">
             <div class="page-header sideTitle">
                 <h2>Spectators</h2>
             </div>
-            <div class="table table-bordered">
-                <table id="Spectators" class="center">
-                    <tbody>
-                    <tr>
-                        <td>That guy again</td>
-                        <td><button type="button" class="btn btn-success">Become player</button></td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div id="Spectators" class="container">
+            </div>
+        </div>
+    </div>
+    <div class="row h-50">
+        <div id="gameSettings" class="col center voidPad" style="border-right: black solid 2px;">
+            <!-- Loaded Dynamically depending on the game -->
+        </div>
+        <div class="col center voidPad">
+            <div class="page-header sideTitle danger">
+                <h2>Danger Zone</h2>
+            </div>
+            <div class="container">
+                <form id="editLobby" action="">
+                    <div class="form-group row">
+                        <label class="col-6 col-form-label" for="type">Game type:</label>
+                        <div class="col-6">
+                            <select class="form-control" name="gametype" id="type">
+                                <option value="" disabled selected>Select</option>
+                                <!-- Options Loaded Dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-6 col-form-label" for="numPlay">Max number of players:</label>
+                        <div class="col-6">
+                            <select class="form-control" name="numPlayers" id="numPlay" disabled>
+                                <option value="" disabled selected>Select</option>
+                                <!-- Options Populated Dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-6 col-form-label" for="numSpec">Number of allowed Spectators:</label>
+                        <div class="col-6">
+                            <select name="numSpec" class="form-control" id="numSpec">
+                                <option value="" disabled selected>Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="center">
+                        <p id="message" style="color: red;"><p>
+                        <button disabled id="confirm" type="submit" value="Create" class="btn btn-success btn-lg">Confirm</button>
+                    </div>
+                </form>
+                <button id="abandon" type="button" class="btn btn-danger btn-sm btn">Kill lobby</button>
             </div>
         </div>
     </div>
     <div class="row h-25">
-        <div class="col center voidPad">
-            Game specific setting dynamically loaded
-        </div>
-        <div class="col center voidPad">
-            Danger Zone ie lobby settings that will restart lobby. Change lobby name
-            Make lobby public. Change game type.
-        </div>
-    </div>
-    <div class="row h-25">
-        <div class="col center">
-            <button type="button" class="btn btn-danger btn-lg btn-block">Start Game</button>
+        <div class="col center pad">
+            <button id="startBtn" type="button" class="btn btn-warning btn-lg btn-block">Start Game</button>
         </div>
     </div>
 </div>

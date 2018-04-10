@@ -4,11 +4,13 @@ html, body {
   padding: 0 !important;
   max-width: 100%;
   overflow-x: hidden;
-  background-color: #c4c2c2;
+/*  background-color: #c4c2c2;*/
+  background-color: #B2D6FF;
   max-height: 100%;
   height: 100%;
-  overflow-y: hidden;
+  /*overflow-y: hidden;*/
 }
+
 /* Chat Interface */
 
 #chat .name {
@@ -22,10 +24,28 @@ html, body {
   padding: 0px;
 }
 
+/* Utillities */
+
 .center{
     text-align: center;
 }
+.b-bottom{
+     border-bottom: black solid 2px;
+ }
+.scroll{
+    overflow-y: auto;
+}
+.pad{
+    padding: 1em;
+}
+.b-space{
+    margin-bottom: 1em;
+}
 
+.danger{
+    background: #e00f1f;
+    margin-bottom: 1em;
+}
 /* New Bootstrap things */
 #navbarText > .navbar-nav {
   float:none;
@@ -49,13 +69,15 @@ html, body {
    text-align: center;
    line-height: 2em;
    border-bottom: black solid 2px;
-  background-color: #34589d;
+  background-color: #8399a8;
+    color: ghostwhite;
+
 }
 
 h1 {
       color: orange;
       font-size: 2.5em;
-      font-family: 'Georgia';
+      font-family: 'Georgia', sans-serif;
       display: inline;
       margin: 0;
 }
@@ -66,10 +88,10 @@ h2{
 }
 .col-2, .col-8{
     padding: 0;
+    border-top: black solid 2px;
 }
 
 #left {
-  padding-left: 15px;
   border-right: black solid 2px;
 }
 .right{
@@ -78,11 +100,16 @@ h2{
 }
 
 .navbar-light{
-  background-color: darkorange;
+  background-color: #7496B0;
 }
 
 .scroll{
     overflow-y: auto;
+
+}
+.lobbyChat{
+    height:100px;
+    border: 1px solid black;
 }
 
 #scratchLogo{
@@ -101,18 +128,143 @@ table{
 
 .top{
     height: 15%;
-    border-bottom: black solid 2px;
 }
 .fill{
-    height: 85%;
+    height: 95%;
     border-bottom: black solid 2px;
 }
+
 #main{
     height: 100%;
 }
 .container{
     height: 100%;
+    max-width: none;
+}
+.container-fluid{
+    height: 85%;
 }
 .voidPad{
     padding: 0;
 }
+
+.modal-header{
+    text-align: center;
+    margin: 0 auto;
+}
+.navbar-collapse.collapse {
+    display: block!important;
+}
+
+.pre-scrollable{
+    max-height: 400px;
+    min-height: 400px;
+}
+
+/* Mobile Styles */
+@media only screen and (max-width: 400px) {
+    body{
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+
+    .mainItems{
+        display: table-header-group;
+    }
+    .onlinePlayers{
+        display: table-footer-group;
+
+    }
+    .onlineChat{
+        display: table-footer-group;
+    }
+
+    .fill{
+        display: table;
+        text-align: center;
+        margin: 0 auto;
+        height: auto;
+
+    }
+    .centerItems{
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
+    .modal-content{
+        margin: 0 auto;
+        text-align: center;
+    }
+    .nav-item{
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+	.pre-scrollable{
+        max-height: 100px;
+        min-height: 100px;
+    }
+
+}
+
+/* Tablet Styles */
+@media only screen and (min-width: 401px) and (max-width: 960px) {
+
+
+    .mainItems{
+        display: table-header-group;
+    }
+    .onlinePlayers{
+        display: table-footer-group;
+
+    }
+    .onlineChat{
+        display: table-footer-group;
+    }
+
+    .fill{
+        display: table;
+        text-align: center;
+        margin: 0 auto;
+        height: auto;
+
+    }
+    .centerItems{
+        margin: 0 auto;
+        padding-bottom: 10px;
+    }
+    .col-2, .col-8{
+        margin: 15px 15px;
+    }
+    .form-group{
+        font-size: 1.3em;
+    }
+
+    .form-control{
+        font-size: 0.8em;
+    }
+
+	.pre-scrollable{
+        max-height: 100px;
+        min-height: 100px;
+    }
+
+
+}
+
+/* Desktop Styles */
+@media only screen and (min-width: 961px) {
+    .modal-content{
+        text-align: center;
+    }
+    .form-group{
+        font-size: 1.3em;
+    }
+    .form-control{
+        font-size: 0.8em;
+    }
+
+}
+

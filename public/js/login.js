@@ -15,9 +15,7 @@ $(function() {
       },
       error: function(obj, status, textStatus) {
         console.log('Ajax Failed (Status' + textStatus + ')');
-        $('#message').text(
-          'Could not connect to server, please try again later'
-        );
+        $('#message').text('Could not connect to server, please try again later');
       },
     });
     this.reset();
@@ -40,9 +38,7 @@ $(function() {
       },
       error: function(obj, status, textStatus) {
         console.log('Ajax Failed (Status' + textStatus + ')');
-        $('#signupMessage').text(
-          'Could not connect to server, please try again later'
-        );
+        $('#signupMessage').text('Could not connect to server, please try again later');
       },
     });
     this.reset();

@@ -11,6 +11,8 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="msapplication-config" content="/favicon/browserconfig.xml">
         <meta name="theme-color" content="#ffffff">
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+
 
         <!-- JQuery -->
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -39,7 +41,21 @@
         <script src="chat.js"></script>
     </head>
     <body>
-        <div class="top">
+    <style>
+        body{
+            background-color: #DCF0FF;
+
+            /*possible colors:
+            #3DA5D9
+            #4F5D75
+            EEE0CB
+            B7D7EF
+
+
+            */
+        }
+    </style>
+        <div class=" b-bottom">
             <div class="d-flex justify-content-end" id="logout">
                 <a href="/logout"><h4>Log out</h4></a>
             </div>
@@ -48,158 +64,157 @@
             </div>
         </div>
 
-        <div class="row fill">
-        <div class="col-2" id="left">
-            <div class="page-header sideTitle">
-                <h2>Players</h2>
-            </div>
-
-            <div id="accordion-players">
-                <div class="card">
-                    <div class="card-header" id="headingPlayersOne">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapsePlayersOne" aria-expanded="true" aria-controls="collapsePlayersOne">
-                                Global
-                            </button>
-                        </h5>
+        <div class = 'centerItems container-fluid'>
+            <div class="row fill">
+                <div class="col-2 section onlinePlayers" id="left">
+                    <div class="page-header sideTitle">
+                        <h2>Players</h2>
                     </div>
 
-                    <div id="collapsePlayersOne" class="collapse show" aria-labelledby="headingPlayersOne" data-parent="#accordion-players">
-                        <div id="global-players" class="card-body">
-                            <div class="scroll">
-                                <ul>
-                                    <!-- Dynamically Populated by chat.js -->
-                                </ul>
+                    <div id="accordion-players">
+                        <div class="card">
+                            <div class="card-header" id="headingPlayersOne">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapsePlayersOne" aria-expanded="true" aria-controls="collapsePlayersOne">
+                                        Global
+                                    </button>
+                                </h5>
+                            </div>
+
+                            <div id="collapsePlayersOne" class="collapse show" aria-labelledby="headingPlayersOne" data-parent="#accordion-players">
+                                <div id="global-players" class="card-body">
+                                    <div class="pre-scrollable" id="GlobalPlayerWindow">
+                                        <ul><!-- Dynamically Populated by chat.js --></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingPlayersTwo">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapsePlayersTwo" aria-expanded="false" aria-controls="collapsePlayersTwo">
+                                        Lobby
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapsePlayersTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion-players">
+                                <div id="lobby-players" class="card-body">
+                                    <div class="pre-scrollable" id="GlobalLobbyWindow">
+                                        <ul><!-- Dynamically Populated by chat.js --></ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header" id="headingPlayersTwo">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapsePlayersTwo" aria-expanded="false" aria-controls="collapsePlayersTwo">
-                                Lobby
-                            </button>
-                        </h5>
+                <div class="col-8 section mainItems">
+                    <nav class="navbar navbar-expand-sm navbar-light">
+                        <div class="collapse navbar-collapse" id="navbarText">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#"><div id="navp"> Profile </div></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#"><div id="navl"> Leaderboards </div></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#"><div id="navj"> Joincode </div></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+
+                    <div id="main">
+                        <!-- Loaded From Snippets -->
                     </div>
-                    <div id="collapsePlayersTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion-players">
-                        <div id="lobby-players" class="card-body">
-                            <div class="scroll">
-                                <ul>
-                                    <!-- Dynamically Populated by chat.js -->
-                                </ul>
-                             </div>
+
+
+                </div>
+
+                <div id="chat" class="col-2 right section onlineChat">
+                    <div class="page-header sideTitle">
+                        <h2>Chat</h2>
+                    </div>
+
+                    <div id="accordion-chat">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Global Chat
+                                    </button>
+                                </h5>
+                            </div>
+
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion-chat">
+                                <div id="global-chat" class="card-body">
+                                    <div class="pre-scrollable" id="GlobalChatWindow">
+                                        <ul></ul>
+                                    </div>
+                                    <div class="chatInput">
+                                        <form class="chat-input" action="">
+                                            <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
+                                            <input type="submit" value="Send"/>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Lobby Chat
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion-chat">
+                                <div id="lobby-chat" class="card-body">
+                                    <div class="pre-scrollable" id="LobbyChatWindow">
+                                        <ul></ul>
+                                    </div>
+                                    <div class="chatInput">
+                                        <form class="chat-input" action="">
+                                            <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
+                                            <input type="submit" value="Send"/>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- I we can always access both the global leaderboards and the profile specific leaderboards does
+                this need to exist here too? -Austin -->
+                <!--<div class="leaderboard">
+                    <h1>Top Players</h1>
+                    <div class="accord">
+                        <h4 class="accordbtn">UNO</h4>
+                        <div class="accordcon">
+                            <ul id="UNO">
+                                <li>Austin</li>
+                            </ul>
+                        </div>
+                        <h4 class="accordbtn">SomeGame</h4>
+                        <div class="accordcon">
+                            <ul id="SomeOtherGame">
+                                <li>Some random Guy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>-->
+                <!-- Bootstrap Modal -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content" id="modalContent">
+                            <!-- Loaded by Snippets -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-8">
-            <nav class="navbar navbar-expand-sm navbar-light">
-                <div class="collapse navbar-collapse" id="navbarText">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"><div id="navp">Profile</div></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"><div id="navl">Leaderboards</div></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#"><div id="navj">Joincode</div></a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
 
-            <div id="main">
-                <!-- Loaded From Snippets -->
-            </div>
-
-
-        </div>
-
-        <div id="chat" class="col-2 right">
-            <div class="page-header sideTitle">
-                <h2>Chat</h2>
-            </div>
-
-            <div id="accordion-chat">
-                <div class="card">
-                    <div class="card-header" id="headingOne">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                Global Chat
-                            </button>
-                        </h5>
-                    </div>
-
-                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion-chat">
-                        <div id="global-chat" class="card-body">
-                            <div class="scroll">
-                                <ul></ul>
-                            </div>
-                            <div class="chatInput">
-                                <form class="chat-input" action="">
-                                    <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
-                                    <input type="submit" value="Send"/>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header" id="headingTwo">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Lobby Chat
-                            </button>
-                        </h5>
-                    </div>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion-chat">
-                        <div id="lobby-chat" class="card-body">
-                            <div class="scroll">
-                                <ul></ul>
-                            </div>
-                            <div class="chatInput">
-                                <form class="chat-input" action="">
-                                    <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
-                                    <input type="submit" value="Send"/>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- I we can always access both the global leaderboards and the profile specific leaderboards does
-        this need to exist here too? -Austin -->
-        <!--<div class="leaderboard">
-            <h1>Top Players</h1>
-            <div class="accord">
-                <h4 class="accordbtn">UNO</h4>
-                <div class="accordcon">
-                    <ul id="UNO">
-                        <li>Austin</li>
-                    </ul>
-                </div>
-                <h4 class="accordbtn">SomeGame</h4>
-                <div class="accordcon">
-                    <ul id="SomeOtherGame">
-                        <li>Some random Guy</li>
-                    </ul>
-                </div>
-            </div>
-        </div>-->
-    <!-- Bootstrap Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content" id="modalContent">
-                <!-- Loaded by Snippets -->
-            </div>
-        </div>
-    </div>
-        </div>
     </body>
 
 </html>

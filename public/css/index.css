@@ -9,7 +9,9 @@ body {
     background-color: #6c8ba3;
 
 }
-
+.mainLobby{
+    background-color: #e00f1f;
+}
 /*  Mobile Styles*/
 @media only screen and (max-width: 400px){
     .content h1{
@@ -133,14 +135,15 @@ h2 {
 }
 .backImg{
     background-image: url(https://static.pexels.com/photos/163828/poker-game-play-gambling-163828.jpeg);
-/* no-repeat 50% 50%*/
+
+    /* no-repeat 50% 50%*/
     min-height: 100%;
     width: 100%;
     max-width: none;
     display: table;
     top: 0;
     background-size: cover;
-   /* position: center;*/
+    /* position: center;*/
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -169,7 +172,7 @@ h2 {
     margin: 0 auto;
     /*Padding Bottom is where the "welcome Log In" show up */
     padding-bottom: 30%;
-   /* position: fixed;*/
+    /* position: fixed;*/
     right: 0;
 }
 
