@@ -52,6 +52,8 @@ html, body {
   margin:0 auto;
   display: block;
   text-align: center;
+  font-size: 1.5em;
+
 }
 
 #navbarText > .navbar-nav > li {
@@ -71,6 +73,7 @@ html, body {
    border-bottom: black solid 2px;
   background-color: #8399a8;
     color: ghostwhite;
+  font-size: medium;
 
 }
 
@@ -85,6 +88,9 @@ h2{
     font-size: 1.5em;
     margin: 0;
     padding: 0;
+}
+.btn-link{
+    font-size: medium;
 }
 .col-2, .col-8{
     padding: 0;
@@ -168,7 +174,10 @@ table{
 .tab-content{
     margin: 10px 10px;
 }
-
+.availableGames{
+    background-color: #7496B0;
+    font-size: large;
+}
 /* Mobile Styles */
 @media only screen and (max-width: 400px) {
     body{
@@ -210,6 +219,7 @@ table{
         padding-left: 15px;
         padding-right: 15px;
     }
+
 	.pre-scrollable{
         max-height: 100px;
         min-height: 100px;
