@@ -248,7 +248,7 @@ Scratch.locations = function() {};
     createHistory(newloc.loc, newloc.nav, opts);
     Promise.all([loadHTML(newloc.nav), loadJS(newloc.nav)])
       .then(() => {
-        makeFunctionCall(newloc.nav, args)
+        Scratch.call(Scratch, newloc.nav.call, args)
           .then(() => callback.call(Scratch.nav, null))
           .catch(err => callback.call(Scratch.nav, err));
       })
@@ -302,25 +302,6 @@ Scratch.locations = function() {};
     });
   }
 
-  function makeFunctionCall(nav, args) {
-    return new Promise((fulfill, reject) => {
-      if (!nav.call) return fulfill();
-      if (!args) args = [];
-      let namespaces = nav.call.split('.');
-      let func = namespaces.pop();
-      let context = Scratch;
-      for (let i = 0; i < namespaces.length; i++) {
-        if (!(typeof context[namespaces[i]] !== 'undefined'))
-          return reject(new Scratch.error.varUndefined(context, namespaces[i]));
-        context = context[namespaces[i]];
-      }
-      if (typeof context[func] !== 'function')
-        return reject(new Scratch.error.notAFunction(context, func));
-      context[func].apply(Scratch.nav, args);
-      fulfill();
-    });
-  }
-
   function getCurrentLoc() {
     let currentState = history.state || {};
     if (currentState.loc)
@@ -343,6 +324,31 @@ Scratch.locations = function() {};
     if (err) console.log('Scratch Games Nav Error', err);
   };
 })();
+
+/* 
+ * ----------------------------------------
+ * Scratch Call
+ * ---------------------------------------- 
+ */
+(function() {
+  Scratch.call = function (context, call, args) {
+    return new Promise((fulfill, reject) => {
+      if (!call) return fulfill();
+      if (!args) args = [];
+      let namespaces = call.split('.');
+      let func = namespaces.pop();
+      for (let i = 0; i < namespaces.length; i++) {
+        if (!(typeof context[namespaces[i]] !== 'undefined'))
+          return reject(new Scratch.error.varUndefined(context, namespaces[i]));
+        context = context[namespaces[i]];
+      }
+      if (typeof context[func] !== 'function')
+        return reject(new Scratch.error.notAFunction(context, func));
+      context[func].apply(Scratch.nav, args);
+      fulfill();
+    });
+  }
+})()
 
 /* 
  * ----------------------------------------
