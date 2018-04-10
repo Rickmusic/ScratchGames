@@ -1,6 +1,6 @@
 /* global Scratch */
 (function() {
-  Scratch.joincode = function() {};
+  Scratch.locations.joincode = function() {};
 
   let socket = Scratch.sockets.base; /* Links to app/socket/base.js */
   /* (If you want to have a new server file, just ask and I'll configure a new one.
@@ -9,7 +9,7 @@
      * ~Kayleigh)
      */
 
-  Scratch.joincode.init = function() {
+  Scratch.locations.joincode.init = function() {
     $('#joincodeForm').submit(function(e) {
       e.preventDefault();
       e.stopImmediatePropagation();

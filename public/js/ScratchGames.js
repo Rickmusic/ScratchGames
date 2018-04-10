@@ -85,7 +85,7 @@ Scratch.locations = function() {};
           title: 'Scratch Games',
           path: 'profile',
           js: 'profile.js',
-          call: 'profile.init',
+          call: 'locations.profile.init',
         };
         break;
       case 'leaderboard':
@@ -103,7 +103,7 @@ Scratch.locations = function() {};
           html: 'modals/createLobby.html',
           modal: true,
           js: false,
-          call: 'lobbylist.create.init',
+          call: 'locations.lobbylist.create.init',
         };
         break;
       case 'lobby':
@@ -133,7 +133,7 @@ Scratch.locations = function() {};
           title: 'Scratch Games',
           path: 'joincode',
           js: 'joincode.js',
-          call: 'joincode.init',
+          call: 'locations.joincode.init',
         };
         break;
       case 'lobbylist': // alias for home
@@ -144,7 +144,7 @@ Scratch.locations = function() {};
           title: 'Scratch Games',
           path: 'home',
           js: 'lobbylist.js',
-          call: 'lobbylist.init',
+          call: 'locations.lobbylist.init',
         };
         break;
       default:

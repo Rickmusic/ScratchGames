@@ -1,5 +1,5 @@
 /* global Scratch */
-Scratch.profile = function() {};
+Scratch.locations.profile = function() {};
 
 (function() {
   let socket = Scratch.sockets.base; /* Links to app/socket/base.js */
@@ -9,7 +9,7 @@ Scratch.profile = function() {};
    * ~Kayleigh)
    */
 
-  Scratch.profile.init = function() {
+  Scratch.locations.profile.init = function() {
     /* This function is called on page load
      * Put all event hooks here, as they need to be rehooked everytime the html is loaded.
      * (This takes no arguments. Although if you believe it needs to, feel free to bring it up.
