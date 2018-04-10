@@ -30,9 +30,7 @@ let local = new LocalStrategy(function(username, password, done) {
       .then(auth => {
         if (!auth) {
           logger.warn('Login ' + username + ' Failed: User not found');
-          return done(null, false, {
-            message: 'Incorrect username or password.',
-          });
+          return done(null, false, { message: 'Incorrect username or password.' });
         }
 
         auth
@@ -40,9 +38,7 @@ let local = new LocalStrategy(function(username, password, done) {
           .then(isMatch => {
             if (!isMatch) {
               logger.warn('Login ' + username + ' Failed: Incorrect Password');
-              return done(null, false, {
-                message: 'Incorrect username or password.',
-              });
+              return done(null, false, { message: 'Incorrect username or password.' });
             }
 
             logger.debug('Login ' + username + ': Correct Password');
@@ -63,18 +59,14 @@ let localsignup = new LocalStrategy({ passReqToCallback: true }, function(
   process.nextTick(function() {
     logger.verbose('Signup User ' + username);
     logger.silly('user: ' + username + ' pwd: ' + password);
-    let lookupUsername = Auth.findOne({
-      where: { username: username.toLowerCase() },
-    });
+    let lookupUsername = Auth.findOne({ where: { username: username.toLowerCase() } });
     let lookupEmail = Auth.findOne({ where: { email: req.body.email } });
     Promise.all([lookupUsername, lookupEmail])
       .then(promises => {
         let user = promises[0];
         let email = promises[1];
         if (user) {
-          logger.warn(
-            'Signup ' + username + ' Failed: Username already exists'
-          );
+          logger.warn('Signup ' + username + ' Failed: Username already exists');
           return done(null, false, { message: 'Username already exists.' });
         }
         if (email) {
@@ -131,14 +123,10 @@ let facebook = new FacebookStrategy(
       Auth.findOne({ where: { facebookId: profile.id } })
         .then(auth => {
           if (auth) {
-            logger.debug(
-              'Facebook Auth ' + profile.displayName + ': User Found'
-            );
+            logger.debug('Facebook Auth ' + profile.displayName + ': User Found');
             return deserializeUser(auth.userId, done);
           }
-          logger.debug(
-            'Facebook Auth ' + profile.displayName + ': Creating New User'
-          );
+          logger.debug('Facebook Auth ' + profile.displayName + ': Creating New User');
 
           User.create(
             {
@@ -179,9 +167,7 @@ let google = new GoogleStrategy(
             logger.debug('Google Auth ' + profile.displayName + ': User Found');
             return deserializeUser(auth.userId, done);
           }
-          logger.debug(
-            'Google Auth ' + profile.displayName + ': Creating New User'
-          );
+          logger.debug('Google Auth ' + profile.displayName + ': Creating New User');
 
           User.create(
             {

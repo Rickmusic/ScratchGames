@@ -28,9 +28,7 @@ Scratch.base = function() {};
   Scratch.base.loadMain = function(html, callback) {
     $('#main').load(html, function(response, status, xhr) {
       if (status === 'error')
-        return callback(
-          new Scratch.error.ajax('At loadMain', html, xhr.statusText)
-        );
+        return callback(new Scratch.error.ajax('At loadMain', html, xhr.statusText));
       callback(null);
     });
   };
@@ -38,9 +36,7 @@ Scratch.base = function() {};
   Scratch.base.loadModal = function(html, callback) {
     $('#modalContent').load(html, function(response, status, xhr) {
       if (status === 'error')
-        return callback(
-          new Scratch.error.ajax('At loadModal', html, xhr.statusText)
-        );
+        return callback(new Scratch.error.ajax('At loadModal', html, xhr.statusText));
       $('#myModal').modal({ show: false });
       $('#myModal').modal('show');
       callback(null);

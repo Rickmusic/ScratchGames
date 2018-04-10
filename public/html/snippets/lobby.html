@@ -1,44 +1,33 @@
 <div class="container">
     <div class="row" style="border-top: black solid 2px; border-bottom: black solid 2px">
+        <div id ="lobbyName" class="col center">
+            <h2>Lobby Name:</h2>
+        </div>
+    </div>
+    <div class="row" style="border-top: black solid 2px; border-bottom: black solid 2px">
         <div id="gameType" class="col center">
             <h2>Game Type: </h2>
         </div>
-        <div id ="lobbyName" class="col center">
-            <h2>Lobby Name:</h2>
+        <div id ="access" class="col center">
+            <h2>Access: </h2>
         </div>
         <div id="joincode" class="col center">
             <h2>Joincode:</h2>
         </div>
     </div>
-    <div class="row h-25">
+    <div class="row">
         <div class="col voidPad" style="border-right: black solid 2px">
             <div class="page-header sideTitle">
                 <h2>Players</h2>
             </div>
-            <div class="table table-bordered">
-                <table id="Players" class="center">
-                <tbody>
-                <tr>
-                    <td>Austin</td>
-                    <td><button type="button" class="btn btn-success">Become Spectator</button></td>
-                </tr>
-                </tbody>
-                </table>
+            <div id="Players" class="container">
             </div>
         </div>
         <div class="col voidPad">
             <div class="page-header sideTitle">
                 <h2>Spectators</h2>
             </div>
-            <div class="table table-bordered">
-                <table id="Spectators" class="center">
-                    <tbody>
-                    <tr>
-                        <td>That guy again</td>
-                        <td><button type="button" class="btn btn-success">Become player</button></td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div id="Spectators" class="container">
             </div>
         </div>
     </div>
@@ -88,9 +77,10 @@
                     </div>
                     <div class="center">
                         <p id="message" style="color: red;"><p>
-                        <button disabled id="confirm" type="submit" value="Create" class="btn btn-success">Confirm</button>
+                        <button disabled id="confirm" type="submit" value="Create" class="btn btn-success btn-lg">Confirm</button>
                     </div>
                 </form>
+                <button id="abandon" type="button" class="btn btn-danger btn-sm btn">Kill lobby</button>
             </div>
         </div>
     </div>

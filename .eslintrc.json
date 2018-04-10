@@ -15,16 +15,13 @@
   },
   "plugins": ["react"],
   "rules": {
-    "indent": ["warn", 2],
     "linebreak-style": ["warn", "unix"],
-    "semi": ["warn", "always"],
     "no-else-return": "warn",
     "consistent-return": "warn",
     "no-console": "off",
     "no-extra-parens": "warn",
     "arrow-body-style": ["warn", "as-needed"],
     "no-var": "warn",
-    "arrow-spacing": "warn",
-    "object-curly-newline": ["warn", { "multiline": true }]
+    "arrow-spacing": "warn"
   }
 }
