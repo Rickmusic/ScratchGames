@@ -1,10 +1,10 @@
 /* global Scratch */
-Scratch.lobby = function() {};
+Scratch.pages.lobby = function() {};
 
 (function() {
   let socket = Scratch.sockets.lobby; /* Links to app/socket/lobby.js */
   let global = Scratch.sockets.base; /* Links to app/socket/base.js */
-  Scratch.lobby.init = function() {
+  Scratch.pages.lobby.init = function() {
     socket.emit('lobbyLand', null);
 
     $('#startBtn').on('click', function() {
@@ -12,7 +12,7 @@ Scratch.lobby = function() {};
         socket.emit('playerReady', null);
         $('#startBtn').prop('disabled', true);
       } else if (Scratch.me.role === 'host') {
-        socket.emit('Start Game', {});
+        socket.emit('start game', {});
       }
     });
     $('#Players').on('click', 'button', function() {
@@ -24,7 +24,7 @@ Scratch.lobby = function() {};
             .data('uid')
         );
       if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
-      if ($(this).hasClass('leave-lobby')) return socket.emit('leave lobby', null);
+      if ($(this).hasClass('leave-lobby')) return Scratch.lobby.leave();
       if ($(this).hasClass('kick-member'))
         return socket.emit(
           'kick member',
@@ -43,7 +43,7 @@ Scratch.lobby = function() {};
             .data('uid')
         );
       if ($(this).hasClass('switch-role')) return socket.emit('spec -> player', null);
-      if ($(this).hasClass('leave-lobby')) return socket.emit('leave lobby', null);
+      if ($(this).hasClass('leave-lobby')) return Scratch.lobby.leave();
       if ($(this).hasClass('kick-member'))
         return socket.emit(
           'kick member',
@@ -64,24 +64,24 @@ Scratch.lobby = function() {};
     //let maxPlayers = everything.maxPlayers; // in progress
     //let maxSpec = everything.maxSpectators; // in progress
 
-    Scratch.lobby.loadTop(gameType, lobbyName, joincode, access);
+    Scratch.pages.lobby.loadTop(gameType, lobbyName, joincode, access);
     for (let mem of members) {
-      Scratch.lobby.member(mem);
+      Scratch.pages.lobby.member(mem);
     }
 
-    Scratch.lobby
+    Scratch.pages.lobby
       .loadGameSettings(gameType)
       .then(() => hookGameSettings(gameSettings))
       .catch(err => console.log(err));
-    Scratch.lobby.loadDangerZone();
+    Scratch.pages.lobby.loadDangerZone();
   });
 
   socket.on('member', function(mem) {
-    Scratch.lobby.member(mem);
+    Scratch.pages.lobby.member(mem);
   });
 
   // Loads the top bar information ///
-  Scratch.lobby.loadTop = function(gameType, lobbyName, joincode, access) {
+  Scratch.pages.lobby.loadTop = function(gameType, lobbyName, joincode, access) {
     $('#access')
       .children()
       .append(' ' + access);
@@ -96,7 +96,7 @@ Scratch.lobby = function() {};
       .append(' ' + joincode);
   };
   // Loads Game specific Settings HTML //
-  Scratch.lobby.loadGameSettings = function(gameType) {
+  Scratch.pages.lobby.loadGameSettings = function(gameType) {
     return new Promise((fulfill, reject) => {
       $('#gameSettings').load('gamesettings/' + gameType + '.html', function(
         response,
@@ -156,7 +156,7 @@ Scratch.lobby = function() {};
     }
   });
   //Adds single member to player lists
-  Scratch.lobby.member = function(mem) {
+  Scratch.pages.lobby.member = function(mem) {
     $('#Players div.row, #Spectators div.row')
       .filter(function() {
         return $(this).data('uid') === mem.id;
@@ -242,7 +242,7 @@ Scratch.lobby = function() {};
   };
 
   // Loading Danger Zone Settings //
-  Scratch.lobby.loadDangerZone = function() {
+  Scratch.pages.lobby.loadDangerZone = function() {
     $('#abandon').on('click', () => socket.emit('leave lobby', null));
 
     $('#editLobby').submit(function(e) {

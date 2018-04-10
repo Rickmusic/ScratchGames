@@ -1,9 +1,19 @@
 /* global Scratch, io */
+Scratch.chat = function() {};
+
 $(function() {
   let global = Scratch.sockets.base; /* Links to app/socket/base.js */
-  let socket = io('/chat'); /* Links to app/socket/chat.js */
+  let socket = Scratch.sockets.chat; /* Links to app/socket/chat.js */
 
   socket.emit('hello', {});
+
+  Scratch.chat.joinLobby = function(lobby) {
+    socket.emit('join lobby', lobby);
+  };
+
+  Scratch.chat.leaveLobby = function() {
+    socket.emit('leave lobby', {});
+  };
 
   /* Chat Input Forms */
 
@@ -58,18 +68,6 @@ $(function() {
   socket.on('lobby spectator message', function(msg) {
     $('#lobby-chat ul').append(buildDisplayedMessage(msg));
     $('#LobbyChatWindow').scrollTop($('#LobbyChatWindow')[0].scrollHeight);
-  });
-
-  /* Join / Leave Lobby (Recieved on Global Socket) */
-
-  global.on('join lobby', function(data) {
-    // Echo to Chat Socket
-    socket.emit('join lobby', data);
-  });
-
-  global.on('leave lobby', function(data) {
-    // Echo to Chat Socket
-    socket.emit('leave lobby', data);
   });
 
   /* 

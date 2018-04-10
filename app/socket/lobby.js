@@ -40,66 +40,16 @@ let setPlayerReady = function(user) {
 let init = function(global) {
   let io = global.of('/lobby');
   io.on('connection', function(socket) {
-    socket.on('join lobby', function(data) {
-      socket.join(data.lobby);
+    socket.on('join lobby', function() {
+      socket.join('user' + socket.request.user.id);
+      socket.join(socket.request.user.lobbyId);
       if (socket.request.user.role === 'player') lobbyAddPlayer(socket.request.user);
-      socket.broadcast.to(data.lobby).emit('member', buildMember(socket.request.user));
     });
-
-    socket.on('leave lobby', function(data) {
-      if (!data)
-        return socket.emit('leave lobby', { lobby: socket.request.user.lobbyId });
-      lobbyRemovePlayer(socket.request.user);
-      socket.leave(data.lobby);
-      if (socket.request.user.role === 'host')
-        io
-          .to(socket.request.user.lobbyId)
-          .emit('leave lobby', { lobby: socket.request.user.lobbyId });
-      socket.request.user.update({ role: null, lobbyId: null });
-      socket.emit('navigate', { loc: 'lobbylist' });
-    });
-
-    socket.on('kick-member', function(uid) {
-      // TODO kick member
-    });
-
-    let reloadLocation = function() {
-      socket.request.user
-        .getLobby()
-        .then(lobby => {
-          if (!lobby) {
-            // Check if lobby exists
-            return socket.emit('navigate', {
-              loc: 'lobbylist',
-              redirect: true,
-            });
-          }
-          if (Object.keys(socket.rooms).length === 1) {
-            // If socket not in lobby room
-            socket.emit('join lobby', {
-              lobby: lobby.id,
-              role: socket.request.user.role,
-            });
-          }
-          if (!lobby.inGame) {
-            // Check if lobby is playing a game
-            return socket.emit('navigate', {
-              loc: 'lobby',
-              redirect: true,
-            });
-          }
-          socket.emit('navigate', {
-            loc: 'game',
-            args: [lobby.game, nsps.get(lobby.game).name],
-            redirect: true,
-          });
-        })
-        .catch(err => dblogger.error('At Player Get Lobby ' + err));
-    };
-    socket.on('lobby reload', reloadLocation);
-    socket.on('game reload', reloadLocation);
 
     socket.on('lobbyLand', function(data) {
+      socket.broadcast
+        .to(socket.request.user.lobbyId)
+        .emit('member', buildMember(socket.request.user));
       socket.request.user
         .getLobby()
         .then(lobby => {
@@ -198,6 +148,19 @@ let init = function(global) {
             .catch(err => dblogger.error('At Lobby set inGame ' + err));
         })
         .catch(err => dblogger.error('At Player Get Lobby ' + err));
+    });
+
+    socket.on('leave lobby', function() {
+      lobbyRemovePlayer(socket.request.user);
+      if (socket.request.user.role === 'host')
+        io.to(socket.request.user.lobbyId).emit('leave lobby', {});
+      socket.request.user.update({ role: null, lobbyId: null });
+      socket.emit('navigate', { loc: 'lobbylist' });
+      socket.disconnect(); // Manually remove client from the lobby namespace.
+    });
+
+    socket.on('kick-member', function(uid) {
+      socket.to('user' + uid).emit('leave lobby', {});
     });
   });
 };

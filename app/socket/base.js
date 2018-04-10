@@ -3,6 +3,7 @@
 let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { Lobby } = db.models;
+let nsps = require('./namespaceManager');
 
 const GameTypes = [
   { id: 'uno', display: 'UNO', maxPlayer: 4, minPlayer: 2 },
@@ -16,15 +17,15 @@ let init = function(io) {
      * Session Information: socket.request.session
      */
 
-    socket.on('game types', function(data) {
-      socket.emit('game types', { GameTypes });
-    });
-
     socket.on('whoami', function(data) {
       socket.emit('whoami', {
         id: socket.request.user.id,
         name: socket.request.user.displayName,
       });
+    });
+
+    socket.on('game types', function(data) {
+      socket.emit('game types', { GameTypes });
     });
 
     socket.on('create lobby', function(form) {
@@ -100,14 +101,36 @@ let init = function(io) {
         .catch(err => dblogger.error('At Lobby Find By Code: ' + err));
     });
 
-    /* Pass on join/leave initiated by other namespaces
-     * As everything hooks into the global join/leave emit */
-    socket.on('join lobby', function(info) {
-      socket.emit('join lobby', info);
-    });
-    socket.on('leave lobby', function(info) {
-      socket.emit('leave lobby', info);
-    });
+    let lobbyreload = function() {
+      socket.request.user
+        .getLobby()
+        .then(lobby => {
+          if (!lobby) {
+            // Check if lobby exists
+            return socket.emit('navigate', {
+              loc: 'lobbylist',
+              redirect: true,
+            });
+          }
+          socket.emit('join lobby', { lobby: lobby.id, role: socket.request.user.role });
+          if (!lobby.inGame) {
+            // If lobby is not playing a game
+            return socket.emit('navigate', {
+              loc: 'lobby',
+              redirect: true,
+            });
+          }
+          // Otherwise lobby is in game
+          socket.emit('navigate', {
+            loc: 'game',
+            args: [lobby.game, nsps.get(lobby.game).name],
+            redirect: true,
+          });
+        })
+        .catch(err => dblogger.error('At Player Get Lobby ' + err));
+    };
+    socket.on('lobby reload', lobbyreload);
+    socket.on('game reload', lobbyreload);
   });
 };
 

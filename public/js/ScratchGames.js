@@ -3,6 +3,9 @@
 // Declare Global App Variable
 let Scratch = function() {};
 
+// Variable for all page JS functions
+Scratch.pages = function() {};
+
 /* 
  * ----------------------------------------
  * Custom jQuery Functions
@@ -110,7 +113,7 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'lobby',
           js: 'lobby.js',
-          call: 'lobby.init',
+          call: 'pages.lobby.init',
         };
         break;
       case 'game':
@@ -232,7 +235,7 @@ let Scratch = function() {};
       // If first load
       currlocation = { nav: {} };
       if (newloc.loc === 'lobby' || newloc.loc === 'game') {
-        return Scratch.sockets.lobby.emit('lobby reload', {});
+        return Scratch.sockets.base.emit('lobby reload', {});
       }
     }
 
@@ -349,35 +352,18 @@ let Scratch = function() {};
 (function() {
   Scratch.sockets = function() {};
   Scratch.sockets.base = io();
-  Scratch.sockets.lobby = io('/lobby');
+  Scratch.sockets.chat = io('/chat');
+  Scratch.sockets.lobby = null;
 
-  /* Join / Leave Lobby */
+  /* Joining Lobby */
 
-  // Pass from Base to Lobby
-  Scratch.sockets.base.on('join lobby', function(info) {
-    Scratch.sockets.lobby.emit('join lobby', info);
-  });
-  Scratch.sockets.base.on('leave lobby', function(info) {
-    Scratch.sockets.lobby.emit('leave lobby', info);
-  });
-
-  // Pass from Lobby to Base (aka allow Lobby to initiate)
-  Scratch.sockets.lobby.on('join lobby', function(info) {
-    Scratch.sockets.base.emit('join lobby', info);
-  });
-  Scratch.sockets.lobby.on('leave lobby', function(info) {
-    Scratch.sockets.base.emit('leave lobby', info);
-  });
+  Scratch.sockets.base.on('join lobby', lobby => Scratch.lobby.join(lobby));
 
   /* Server Navigate */
 
-  Scratch.sockets.base.on('navigate', function(nav) {
-    Scratch.nav.socketNavigate(nav, serverNavigateCallback);
-  });
-
-  Scratch.sockets.lobby.on('navigate', function(nav) {
-    Scratch.nav.socketNavigate(nav, serverNavigateCallback);
-  });
+  Scratch.sockets.base.on('navigate', nav =>
+    Scratch.nav.socketNavigate(nav, serverNavigateCallback)
+  );
 
   function serverNavigateCallback(err) {
     // TODO Determine how to deal with errors on server navigate
@@ -406,6 +392,40 @@ let Scratch = function() {};
 
 /* 
  * ----------------------------------------
+ * Scratch Lobby
+ * ---------------------------------------- 
+ */
+(function() {
+  Scratch.lobby = function() {};
+
+  Scratch.lobby.join = function(lobby) {
+    if (Scratch.sockets.lobby) {
+      // TODO Already connected to a lobby
+    } else {
+      Scratch.sockets.lobby = io('/lobby');
+    }
+    Scratch.me.role = lobby.role;
+    Scratch.chat.joinLobby(lobby);
+
+    let socket = Scratch.sockets.lobby;
+
+    socket.emit('join lobby', {});
+
+    /* Allow hosts to kick members from the lobby */
+    socket.on('leave lobby', () => Scratch.lobby.leave());
+
+    /* allow lobby socket to call navigation */
+    socket.on('navigate', nav => Scratch.nav.socketNavigate(nav, Scratch.nav.callback));
+  };
+
+  Scratch.lobby.leave = function() {
+    Scratch.chat.leaveLobby();
+    Scratch.sockets.lobby.emit('leave lobby', {});
+  };
+})();
+
+/* 
+ * ----------------------------------------
  * Scratch Games
  * ---------------------------------------- 
  */
@@ -429,7 +449,7 @@ let Scratch = function() {};
   };
 
   Scratch.games.reload = function() {
-    Scratch.sockets.lobby.emit('game reload', {});
+    Scratch.sockets.base.emit('game reload', {});
   };
 
   Scratch.games.leave = function() {
