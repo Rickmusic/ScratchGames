@@ -4,7 +4,7 @@
 let Scratch = function() {};
 
 // Variable for all page JS functions
-Scratch.pages = function() {};
+Scratch.locations = function() {};
 
 /* 
  * ----------------------------------------
@@ -113,7 +113,7 @@ Scratch.pages = function() {};
           title: 'Scratch Games',
           path: 'lobby',
           js: 'lobby.js',
-          call: 'pages.lobby.init',
+          call: 'locations.lobby.init',
         };
         break;
       case 'game':
