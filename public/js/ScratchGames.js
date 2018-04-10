@@ -75,6 +75,7 @@ Scratch.locations = function() {};
      * path: URL path (false to keep same)
      *   (must be the same as loc, or if using aliases same as one of loc's)
      * js: the javascript file to load (or false)
+     * obj: the 'Scratch.locations.*' object with 'init' and 'leave' functions (or false)
      * call: The 'Scratch.*' call to make when loaded (or false)
      */
     switch (loc) {
@@ -82,20 +83,16 @@ Scratch.locations = function() {};
         nav = {
           html: 'snippets/profile.html',
           modal: true,
-          title: 'Scratch Games',
-          path: 'profile',
           js: 'profile.js',
-          call: 'locations.profile.init',
+          obj: 'profile',
         };
         break;
       case 'leaderboard':
         nav = {
           html: 'snippets/leaderboard.html',
           modal: true,
-          title: 'Scratch Games',
-          path: 'leaderboard',
           js: false,
-          call: false,
+          obj: false,
         };
         break;
       case 'createlobby':
@@ -109,17 +106,15 @@ Scratch.locations = function() {};
       case 'lobby':
         nav = {
           html: 'snippets/lobby.html',
-          modal: false,
           title: 'Scratch Games',
           path: 'lobby',
           js: 'lobby.js',
-          call: 'locations.lobby.init',
+          obj: 'lobby',
         };
         break;
       case 'game':
         nav = {
           html: 'snippets/game.html',
-          modal: false,
           title: 'Scratch Games',
           path: 'game',
           js: false,
@@ -130,21 +125,18 @@ Scratch.locations = function() {};
         nav = {
           html: 'snippets/joincode.html',
           modal: true,
-          title: 'Scratch Games',
-          path: 'joincode',
           js: 'joincode.js',
-          call: 'locations.joincode.init',
+          obj: 'joincode',
         };
         break;
       case 'lobbylist': // alias for home
       case 'home':
         nav = {
           html: 'snippets/lobbyList.html',
-          modal: false,
           title: 'Scratch Games',
           path: 'home',
           js: 'lobbylist.js',
-          call: 'locations.lobbylist.init',
+          obj: 'lobbylist',
         };
         break;
       default:
@@ -248,9 +240,19 @@ Scratch.locations = function() {};
     createHistory(newloc.loc, newloc.nav, opts);
     Promise.all([loadHTML(newloc.nav), loadJS(newloc.nav)])
       .then(() => {
-        Scratch.call(Scratch, newloc.nav.call, args)
-          .then(() => callback.call(Scratch.nav, null))
-          .catch(err => callback.call(Scratch.nav, err));
+        if (newloc.nav.obj) {
+          Scratch.call(Scratch.locations, newloc.nav.obj + '.init')
+            .then(() => {
+              Scratch.call(Scratch, newloc.nav.call, args)
+                .then(() => callback.call(Scratch.nav, null))
+                .catch(err => callback.call(Scratch.nav, err));
+            })
+            .catch(err => callback.call(Scratch.nav, err));
+        } else {
+          Scratch.call(Scratch, newloc.nav.call, args)
+            .then(() => callback.call(Scratch.nav, null))
+            .catch(err => callback.call(Scratch.nav, err));
+        }
       })
       .catch(err => callback.call(Scratch.nav, err));
   }
