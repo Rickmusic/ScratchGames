@@ -4,8 +4,7 @@ let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { Message, User } = db.models;
 
-let init = function(global) {
-  let io = global.of('/chat');
+let init = function(io) {
   io.on('connection', function(socket) {
     socket.on('hello', function(data) {
       socket.join(socket.request.user.id);

@@ -3,6 +3,7 @@
 let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { Lobby, User } = db.models;
+let lobbymanager = require('../lobby');
 let games = require('../games');
 let nsps = require('./namespaceManager');
 
@@ -11,39 +12,18 @@ let buildMember = function(user) {
     id: user.id,
     name: user.displayName,
     role: user.role,
-    ready: false,
+    ready: lobbymanager.getPlayerReady(user),
   };
 };
 
-let lobbies = {};
-/* Contains <lobbyid>: {<settings>} values with game specifice settings, player readyness, ect. */
-
-let createLobby = function(lobbyId) {
-  lobbies[lobbyId] = {};
-  lobbies[lobbyId].gamesettings = {};
-  lobbies[lobbyId].ready = {};
-};
-
-let lobbyAddPlayer = function(user) {
-  if (!lobbies[user.lobbyId]) createLobby(user.lobbyId);
-  lobbies[user.lobbyId].ready[user.id] = false;
-};
-
-let lobbyRemovePlayer = function(user) {
-  delete lobbies[user.lobbyId].ready[user.id];
-};
-
-let setPlayerReady = function(user) {
-  lobbies[user.lobbyId].ready[user.id] = true;
-};
-
-let init = function(global) {
-  let io = global.of('/lobby');
+let init = function(io) {
+  lobbymanager.init(io);
   io.on('connection', function(socket) {
     socket.on('join lobby', function() {
       socket.join('user' + socket.request.user.id);
       socket.join(socket.request.user.lobbyId);
-      if (socket.request.user.role === 'player') lobbyAddPlayer(socket.request.user);
+      if (socket.request.user.role === 'player')
+        lobbymanager.lobbyAddPlayer(socket.request.user);
     });
 
     socket.on('lobbyLand', function(data) {
@@ -55,7 +35,7 @@ let init = function(global) {
         .then(lobby => {
           let ret = {};
           ret.game = lobby.game;
-          ret.gamesettings = lobbies[lobby.id].gamesettings;
+          ret.gamesettings = lobbymanager.getGameSettings(socket.request.user.lobbyId);
           ret.type = lobby.type;
           ret.name = lobby.name;
           ret.joincode = lobby.joincode;
@@ -69,6 +49,11 @@ let init = function(global) {
                 ret.users.push(buildMember(user));
               }
               socket.emit('lobbyLand', ret);
+              if (
+                socket.request.user.role === 'host' &&
+                lobbymanager.checkLobbyReady(socket.request.user.lobbyId)
+              )
+                socket.emit('lobbyReady', {});
             })
             .catch(err => dblogger.error('Lobbyland get lobby users: ' + err));
         })
@@ -78,10 +63,10 @@ let init = function(global) {
     let changeRole = function(user, role) {
       switch (role) {
         case 'player':
-          lobbyAddPlayer(user);
+          lobbymanager.lobbyAddPlayer(user);
           break;
         case 'spectator':
-          lobbyRemovePlayer(user);
+          lobbymanager.lobbyRemovePlayer(user);
           break;
       }
       user
@@ -116,18 +101,14 @@ let init = function(global) {
 
     socket.on('settings change', function(change) {
       socket.broadcast.to(socket.request.user.lobbyId).emit('settings change', change);
-      lobbies[socket.request.user.lobbyId].gamesettings = change;
-    });
-
-    socket.on('danger change', function(change) {
-      socket.broadcast.to(socket.request.user.lobbyId).emit('danger change', change);
-      lobbies[socket.request.user.lobbyId].dangersettings = change;
+      lobbymanager.updateGameSettings(socket.request.user.lobbyId, change);
     });
 
     socket.on('playerReady', function() {
-      setPlayerReady(socket.request.user);
+      lobbymanager.setPlayerReady(socket.request.user);
       io.to(socket.request.user.lobbyId).emit('playerReady', socket.request.user.id);
-      // When all players have readied, emit 'lobyReady' to host
+      if (lobbymanager.checkLobbyReady(socket.request.user.lobbyId))
+        io.to(socket.request.user.lobbyId).emit('lobbyReady', {});
     });
 
     socket.on('start game', function(settings) {
@@ -151,7 +132,7 @@ let init = function(global) {
     });
 
     socket.on('leave lobby', function() {
-      lobbyRemovePlayer(socket.request.user);
+      lobbymanager.lobbyRemovePlayer(socket.request.user);
       if (socket.request.user.role === 'host')
         io.to(socket.request.user.lobbyId).emit('leave lobby', {});
       socket.request.user.update({ role: null, lobbyId: null });

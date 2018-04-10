@@ -4,6 +4,7 @@ let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { Lobby } = db.models;
 let nsps = require('./namespaceManager');
+let lobbymanager = require('../lobby');
 
 const GameTypes = [
   { id: 'uno', display: 'UNO', maxPlayer: 4, minPlayer: 2 },
@@ -59,6 +60,7 @@ let init = function(io) {
           lobby
             .addPlayer(socket.request.user)
             .then(() => {
+              lobbymanager.createLobby(lobby.id);
               socket.emit('join lobby', { lobby: lobby.id, role: 'host' });
               socket.emit('navigate', { loc: 'lobby' });
             })

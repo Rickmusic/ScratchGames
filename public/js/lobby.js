@@ -52,6 +52,14 @@ Scratch.pages.lobby = function() {};
             .data('uid')
         );
     });
+
+    if (Scratch.me.role !== 'host') {
+      $('#editLobby :input').prop('disabled', true);
+      $('#startBtn').html('Ready Up');
+      $('#abandon').prop('disabled', true);
+    } else {
+      $('#startBtn').prop('disabled', true);
+    }
   };
 
   socket.on('lobbyLand', function(everything) {
@@ -112,11 +120,6 @@ Scratch.pages.lobby = function() {};
   function hookGameSettings(gameSettings) {
     if (Scratch.me.role !== 'host') {
       $('#gameSet :input').prop('disabled', true);
-      $('#editLobby :input').prop('disabled', true);
-      $('#startBtn').html('Ready Up');
-      $('#abandon').prop('disabled', true);
-    } else {
-      $('#startBtn').prop('disabled', true);
     }
 
     $('#gameSet').change(function() {
@@ -151,6 +154,13 @@ Scratch.pages.lobby = function() {};
   socket.on('lobbyReady', function() {
     if (Scratch.me.role === 'host') {
       $('#startBtn').prop('disabled', false);
+    } else {
+      //Do nothing
+    }
+  });
+  socket.on('lobbyUnready', function() {
+    if (Scratch.me.role === 'host') {
+      $('#startBtn').prop('disabled', true);
     } else {
       //Do nothing
     }
