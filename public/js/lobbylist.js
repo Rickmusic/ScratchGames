@@ -30,10 +30,7 @@ Scratch.lobbylist = function() {};
 
     $('#createLobby select[name="gametype"]').change(function() {
       $('#numPlay').prop('disabled', false);
-      $('#createLobby select[name="numPlayers"] option:disabled').prop(
-        'selected',
-        true
-      );
+      $('#createLobby select[name="numPlayers"] option:disabled').prop('selected', true);
       $('#createLobby select[name="numPlayers"] option:enabled').remove();
       let $opt = $(this).find('option:selected');
       for (let i = $opt.data('minPlay'); i <= $opt.data('maxPlay'); i++) {

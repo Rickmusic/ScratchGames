@@ -3,6 +3,9 @@
 // Declare Global App Variable
 let Scratch = function() {};
 
+// Variable for all page JS functions
+Scratch.pages = function() {};
+
 /* 
  * ----------------------------------------
  * Custom jQuery Functions
@@ -20,6 +23,26 @@ let Scratch = function() {};
         callback(new Scratch.error.ajax('At loadscript', url, textStatus)),
       async: true,
     });
+  };
+
+  $.fn.updateForm = function(newSettings) {
+    for (let setting in newSettings) {
+      let $setting = this.find('[name="' + setting + '"]');
+      if ($setting.length === 0)
+        return console.log('Update setting "' + setting + '" failed: element not found');
+      switch ($setting.prop('nodeName')) {
+        case 'SELECT':
+          $setting
+            .find('option[value="' + newSettings[setting] + '"]')
+            .prop('selected', true);
+          break;
+        default:
+          console.log(
+            'Cannot update setting "' + setting + '" of unknow element type:',
+            $setting.prop('nodeName')
+          );
+      }
+    }
   };
 
   $.fn.serializeJSON = function() {
@@ -90,7 +113,7 @@ let Scratch = function() {};
           title: 'Scratch Games',
           path: 'lobby',
           js: 'lobby.js',
-          call: 'lobby.init',
+          call: 'pages.lobby.init',
         };
         break;
       case 'game':
@@ -126,7 +149,6 @@ let Scratch = function() {};
         break;
       default:
         return undefined;
-        break;
     }
     return nav;
   };
@@ -191,8 +213,7 @@ let Scratch = function() {};
    * @param {function} function(err) where err can be a Scratch.error.* error, or null otherwise
    */
   function navigate(newloc, args, opts, callback) {
-    if (typeof newloc === 'string')
-      newloc = { loc: newloc, nav: Scratch.nav(newloc) };
+    if (typeof newloc === 'string') newloc = { loc: newloc, nav: Scratch.nav(newloc) };
     if (typeof opts === 'function') {
       callback = opts;
       opts = undefined;
@@ -200,19 +221,21 @@ let Scratch = function() {};
     if (typeof args === 'function') {
       callback = args;
       args = undefined;
-    }
-    else if (!Array.isArray(args)) {
+    } else if (!Array.isArray(args)) {
       opts = args;
       args = undefined;
     }
-    if (typeof callback !== 'function') throw new Error('Navigate Callback is not a function');
+    if (typeof callback !== 'function')
+      throw new Error('Navigate Callback is not a function');
 
-    if (typeof newloc.nav === 'undefined') return callback(new Scratch.error.navUknownLocation(newloc.loc));
+    if (typeof newloc.nav === 'undefined')
+      return callback(new Scratch.error.navUknownLocation(newloc.loc));
 
-    if (!currlocation) { // If first load
+    if (!currlocation) {
+      // If first load
       currlocation = { nav: {} };
       if (newloc.loc === 'lobby' || newloc.loc === 'game') {
-        return Scratch.sockets.lobby.emit('lobby reload', {});
+        return Scratch.sockets.base.emit('lobby reload', {});
       }
     }
 
@@ -235,11 +258,12 @@ let Scratch = function() {};
   function createHistory(loc, nav, opts) {
     opts = opts || {};
     nav = nav || {};
-    opts.noHistory = (typeof opts.noHistory !== 'undefined') ? opts.noHistory : (nav.modal || false);
+    opts.noHistory =
+      typeof opts.noHistory !== 'undefined' ? opts.noHistory : nav.modal || false;
     if (opts.noHistory) return;
 
     /* Default Values */
-    opts.pushState = (typeof opts.pushState !== 'undefined') ? opts.pushState : true;
+    opts.pushState = typeof opts.pushState !== 'undefined' ? opts.pushState : true;
     opts.loc = opts.loc || loc;
     opts.title = opts.title || nav.title || document.title;
     opts.path = opts.path || nav.path || getURLLoc();
@@ -247,10 +271,8 @@ let Scratch = function() {};
     opts.state = opts.state || {};
     opts.state.loc = opts.loc;
 
-    if (opts.replaceState)
-        history.replaceState(opts.state, opts.title, opts.path);
-    else if (opts.pushState)
-      history.pushState(opts.state, opts.title, opts.path);
+    if (opts.replaceState) history.replaceState(opts.state, opts.title, opts.path);
+    else if (opts.pushState) history.pushState(opts.state, opts.title, opts.path);
     return;
   }
 
@@ -288,18 +310,21 @@ let Scratch = function() {};
       let func = namespaces.pop();
       let context = Scratch;
       for (let i = 0; i < namespaces.length; i++) {
-        if (!(typeof context[namespaces[i]] !== 'undefined')) return reject(new Scratch.error.varUndefined(context, namespaces[i]));
+        if (!(typeof context[namespaces[i]] !== 'undefined'))
+          return reject(new Scratch.error.varUndefined(context, namespaces[i]));
         context = context[namespaces[i]];
       }
-      if (typeof context[func] !== 'function') return reject(new Scratch.error.notAFunction(context, func));
+      if (typeof context[func] !== 'function')
+        return reject(new Scratch.error.notAFunction(context, func));
       context[func].apply(Scratch.nav, args);
       fulfill();
     });
   }
-  
+
   function getCurrentLoc() {
     let currentState = history.state || {};
-    if (currentState.loc) return { loc: currentState.loc, nav: Scratch.nav(currentState.loc) };
+    if (currentState.loc)
+      return { loc: currentState.loc, nav: Scratch.nav(currentState.loc) };
     let loc = getURLLoc();
     let nav = Scratch.nav(loc);
     createHistory(loc, nav, { replaceState: true });
@@ -308,8 +333,8 @@ let Scratch = function() {};
 
   function getURLLoc() {
     return window.location.pathname
-      .replace(/^\//g, '')   // Remove leading '/'
-      .replace(/#.*/g, '')   // Remove any anchor
+      .replace(/^\//g, '') // Remove leading '/'
+      .replace(/#.*/g, '') // Remove any anchor
       .replace(/\?.*/g, ''); // Remove any get query
   }
 
@@ -327,40 +352,76 @@ let Scratch = function() {};
 (function() {
   Scratch.sockets = function() {};
   Scratch.sockets.base = io();
-  Scratch.sockets.lobby = io('/lobby');
+  Scratch.sockets.chat = io('/chat');
+  Scratch.sockets.lobby = null;
 
-  /* Join / Leave Lobby */
+  /* Joining Lobby */
 
-  // Pass from Base to Lobby
-  Scratch.sockets.base.on('join lobby', function(info) {
-    Scratch.sockets.lobby.emit('join lobby', info);
-  });
-  Scratch.sockets.base.on('leave lobby', function(info) {
-    Scratch.sockets.lobby.emit('leave lobby', info);
-  });
-  
-  // Pass from Lobby to Base (aka allow Lobby to initiate)
-  Scratch.sockets.lobby.on('join lobby', function(info) {
-    Scratch.sockets.base.emit('join lobby', info);
-  });
-  Scratch.sockets.lobby.on('leave lobby', function(info) {
-    Scratch.sockets.base.emit('leave lobby', info);
-  });
+  Scratch.sockets.base.on('join lobby', lobby => Scratch.lobby.join(lobby));
 
   /* Server Navigate */
 
-  Scratch.sockets.base.on('navigate', function(nav) {
-    Scratch.nav.socketNavigate(nav, serverNavigateCallback);
-  });
-
-  Scratch.sockets.lobby.on('navigate', function(nav) {
-    Scratch.nav.socketNavigate(nav, serverNavigateCallback);
-  });
+  Scratch.sockets.base.on('navigate', nav =>
+    Scratch.nav.socketNavigate(nav, serverNavigateCallback)
+  );
 
   function serverNavigateCallback(err) {
     // TODO Determine how to deal with errors on server navigate
     if (err) console.log(err);
   }
+})();
+
+/* 
+ * ----------------------------------------
+ * Scratch Current User Info
+ * ---------------------------------------- 
+ */
+(function() {
+  Scratch.me = {};
+  Scratch.me.id = null;
+  Scratch.me.name = null;
+  Scratch.me.role = null;
+
+  Scratch.sockets.base.on('whoami', function(you) {
+    Scratch.me.id = you.id;
+    Scratch.me.name = you.name;
+  });
+
+  Scratch.sockets.base.emit('whoami', {});
+})();
+
+/* 
+ * ----------------------------------------
+ * Scratch Lobby
+ * ---------------------------------------- 
+ */
+(function() {
+  Scratch.lobby = function() {};
+
+  Scratch.lobby.join = function(lobby) {
+    if (Scratch.sockets.lobby) {
+      // TODO Already connected to a lobby
+    } else {
+      Scratch.sockets.lobby = io('/lobby');
+    }
+    Scratch.me.role = lobby.role;
+    Scratch.chat.joinLobby(lobby);
+
+    let socket = Scratch.sockets.lobby;
+
+    socket.emit('join lobby', {});
+
+    /* Allow hosts to kick members from the lobby */
+    socket.on('leave lobby', () => Scratch.lobby.leave());
+
+    /* allow lobby socket to call navigation */
+    socket.on('navigate', nav => Scratch.nav.socketNavigate(nav, Scratch.nav.callback));
+  };
+
+  Scratch.lobby.leave = function() {
+    Scratch.chat.leaveLobby();
+    Scratch.sockets.lobby.emit('leave lobby', {});
+  };
 })();
 
 /* 
@@ -379,19 +440,21 @@ let Scratch = function() {};
     $('iframe#game').attr('src', '/games/' + game + '.html');
     $('iframe#game')[0].onload = function() {
       $('iframe#game').show();
-      $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ id: 'namespace', nsp }), '*');
+      $('iframe#game')[0].contentWindow.postMessage(
+        JSON.stringify({ id: 'namespace', nsp }),
+        '*'
+      );
       $('iframe#game')[0].onload = null;
     };
   };
 
   Scratch.games.reload = function() {
-    Scratch.sockets.lobby.emit('game reload', {});
+    Scratch.sockets.base.emit('game reload', {});
   };
 
   Scratch.games.leave = function() {
     $('iframe#game')[0].contentWindow.postMessage(JSON.stringify({ id: 'leave' }), '*');
   };
-
 })();
 
 /* 
@@ -406,7 +469,7 @@ let Scratch = function() {};
     this.name = 'Variable Undefined';
     this.message = 'Variable Undefined: ' + context + '.' + variable;
     this.context = context;
-    this.variable = variable
+    this.variable = variable;
     this.stack = new Error().stack;
   };
   Scratch.error.varUndefined.prototype = new Error();
@@ -415,7 +478,7 @@ let Scratch = function() {};
     this.name = 'Not A Function';
     this.message = 'Variable is not a Function: ' + context + '.' + variable;
     this.context = context;
-    this.variable = variable
+    this.variable = variable;
     this.stack = new Error().stack;
   };
   Scratch.error.notAFunction.prototype = new Error();
