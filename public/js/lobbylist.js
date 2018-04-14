@@ -97,11 +97,20 @@ Scratch.locations.lobbylist = function() {};
     }
   });
 
-  socket.on('removeLobby', function(lid){
+  socket.on('removeLobby', function(lid) {
     Scratch.locations.lobbylist.killLobby(lid);
   });
 
   Scratch.locations.lobbylist.addlobby = function(lob) {
+    // If the lobby is already there. Kill it before adding it //
+    /*$('#addLob')
+      .children()
+      .filter(function() {
+        return $(this).data('lid') === lob.id;
+      })
+      .remove();*/
+    let $newSpan;
+    let $newBtn;
     let $newRow = $('<tr> </tr>');
     // Adding Lobby Name //
     let $newCol = $('<td> </td>');
@@ -119,17 +128,38 @@ Scratch.locations.lobbylist = function() {};
     $newCol = $('<td> </td>');
     $newCol.append(lob.spectators);
     $newRow.append($newCol);
-    // Adding Private Public Setting //
-    $newCol = $('<td> </td>');
-    // lob.access //
-    let $newSpan = $('<span class="glyphicon glyphicon-lock">' + '</span>');
-    $newCol.append($newSpan);
-    $newRow.append($newCol);
-    // Adding join Spec Button //
-    $newCol = $('<td> </td>');
-    let $newBtn = $('<button type="button" class="btn btn-success btn-lg">Join</button>');
-    $newCol.append($newBtn);
-    $newRow.append($newCol);
+    // Adding Private Public logic //
+    if (lob.access === 'private') {
+      // Locking players //
+      $newCol = $('<td> </td>');
+      $newSpan = $('<span class="glyphicon glyphicon-lock">' + '</span>');
+      $newCol.append($newSpan);
+      $newRow.append($newCol);
+      // Locking Spectators //
+      $newCol = $('<td> </td>');
+      $newSpan = $('<span class="glyphicon glyphicon-lock">' + '</span>');
+      $newCol.append($newSpan);
+      $newRow.append($newCol);
+    } else {
+      if (lob.currentPlayers === lob.lobbyCap) {
+        // Locking players because no more room //
+        $newCol = $('<td> </td>');
+        $newSpan = $('<span class="glyphicon glyphicon-lock">' + '</span>');
+        $newCol.append($newSpan);
+        $newRow.append($newCol);
+      } else {
+        // Add join players //
+        $newCol = $('<td> </td>');
+        $newBtn = $('<button type="button" class="btn btn-success btn-lg">Join</button>');
+        $newCol.append($newBtn);
+        $newRow.append($newCol);
+      }
+      // Adding join Spectators //
+      $newCol = $('<td> </td>');
+      $newBtn = $('<button type="button" class="btn btn-success btn-lg">Join</button>');
+      $newCol.append($newBtn);
+      $newRow.append($newCol);
+    }
     // Adding Data //
     $newRow.data('gameType', lob.gameType);
     $newRow.data('lid', lob.id);
