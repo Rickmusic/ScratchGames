@@ -64,9 +64,9 @@ let init = function(io) {
               socket.emit('join lobby', { lobby: lobby.id, role: 'host' });
               socket.emit('navigate', { loc: 'lobby' });
             })
-            .catch(err => dblogger.error('At Add Player to Lobby: ' + err));
+            .catch(err => dblogger.error('SockBase - Create Lobby - Add Player to Lobby: ' + err));
         })
-        .catch(err => dblogger.error('At Lobby Create: ' + err));
+        .catch(err => dblogger.error('SockBase - Create Lobby - Create Lobby: ' + err));
     });
 
     socket.on('join via code', function(form) {
@@ -85,7 +85,7 @@ let init = function(io) {
                   socket.emit('join lobby', { lobby: lobby.id, role: 'player' });
                   socket.emit('navigate', { loc: 'lobby' });
                 })
-                .catch(err => dblogger.error('At Add Player to Lobby: ' + err));
+                .catch(err => dblogger.error('SockBase - Joincode - Add Player to Lobby: ' + err));
               break;
             case 'spec':
               lobby
@@ -94,13 +94,13 @@ let init = function(io) {
                   socket.emit('join lobby', { lobby: lobby.id, role: 'spectator' });
                   socket.emit('navigate', { loc: 'lobby' });
                 })
-                .catch(err => dblogger.error('At Add Spectator to Lobby: ' + err));
+                .catch(err => dblogger.error('SockBase - Joincode - Add Spectator to Lobby: ' + err));
               break;
             default:
               break;
           }
         })
-        .catch(err => dblogger.error('At Lobby Find By Code: ' + err));
+        .catch(err => dblogger.error('SockBase - Joincode - Find Lobby: ' + err));
     });
 
     let lobbyreload = function() {
@@ -129,7 +129,7 @@ let init = function(io) {
             redirect: true,
           });
         })
-        .catch(err => dblogger.error('At Player Get Lobby ' + err));
+        .catch(err => dblogger.error('SockBase - Lobby Reload - Get Lobby: ' + err));
     };
     socket.on('lobby reload', lobbyreload);
     socket.on('game reload', lobbyreload);

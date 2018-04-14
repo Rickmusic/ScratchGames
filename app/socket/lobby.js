@@ -55,9 +55,9 @@ let init = function(io) {
               )
                 socket.emit('lobbyReady', {});
             })
-            .catch(err => dblogger.error('Lobbyland get lobby users: ' + err));
+            .catch(err => dblogger.error('SockLob - LobbyLand - Get Lobby Users: ' + err));
         })
-        .catch(err => dblogger.error('Lobbyland get lobby: ' + err));
+        .catch(err => dblogger.error('SockLob - LobbyLand - Get Lobby: ' + err));
     });
 
     let changeRole = function(user, role) {
@@ -72,7 +72,7 @@ let init = function(io) {
       user
         .update({ role })
         .then(() => io.to(socket.request.user.lobbyId).emit('member', buildMember(user)))
-        .catch(err => dblogger.error('Lobby update user role ' + err));
+        .catch(err => dblogger.error('SockLob - Change Role - Update User: ' + err));
     };
 
     socket.on('player -> spec', function(uid) {
@@ -81,10 +81,10 @@ let init = function(io) {
       }
       User.findById(uid)
         .then(user => {
-          if (!user) return dblogger.error('Lobby change to spectator user not found');
+          if (!user) return dblogger.error('SockLob - Play->Spec - User Not Found');
           changeRole(user, 'spectator');
         })
-        .catch(err => dblogger.error('Lobby change to spectator ' + err));
+        .catch(err => dblogger.error('SockLob - Play->Spec - Lookup User: ' + err));
     });
 
     socket.on('spec -> player', function(uid) {
@@ -93,10 +93,10 @@ let init = function(io) {
       }
       User.findById(uid)
         .then(user => {
-          if (!user) return dblogger.error('Lobby change to player user not fond');
+          if (!user) return dblogger.error('SockLob - Spec->Play - User Not Found');
           changeRole(user, 'player');
         })
-        .catch(err => dblogger.error('Lobby change to player ' + err));
+        .catch(err => dblogger.error('SockLob - Spec->Play - Lookup User: ' + err));
     });
 
     socket.on('settings change', function(change) {
@@ -126,9 +126,9 @@ let init = function(io) {
           lobby
             .update({ inGame: true })
             .then(() => {})
-            .catch(err => dblogger.error('At Lobby set inGame ' + err));
+            .catch(err => dblogger.error('SockLob - Start Game - Update Lobby: ' + err));
         })
-        .catch(err => dblogger.error('At Player Get Lobby ' + err));
+        .catch(err => dblogger.error('SockLob - Start Game - Get Lobby: ' + err));
     });
 
     socket.on('leave lobby', function() {

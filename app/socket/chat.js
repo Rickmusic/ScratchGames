@@ -34,7 +34,7 @@ let init = function(io) {
           }
           socket.emit('hello', response);
         })
-        .catch(err => dblogger.error('At Get Online Users: ' + err));
+        .catch(err => dblogger.error('SockChat - Hello - Find Users: ' + err));
     });
 
     let buildMessage = function(data, to) {
@@ -54,7 +54,7 @@ let init = function(io) {
         transport: 'global',
         message: data.message,
         senderId: socket.request.user.id,
-      }).catch(err => dblogger.error('At Create Global Message: ' + err));
+      }).catch(err => dblogger.error('SockChat - Global Message - Create Message: ' + err));
       io.emit('global message', buildMessage(data));
     });
 
@@ -66,7 +66,7 @@ let init = function(io) {
         senderId: socket.request.user.id,
         senderRole: socket.request.user.role,
         lobbyId: socket.request.user.lobbyId,
-      }).catch(err => dblogger.error('At Create Lobby Message: ' + err));
+      }).catch(err => dblogger.error('SockChat - Lobby Message - Create Message: ' + err));
       if (socket.request.user.role === 'player' || socket.request.user.role === 'host') {
         io
           .to(socket.request.user.lobbyId + 'player')
@@ -87,11 +87,11 @@ let init = function(io) {
             message: data.message,
             senderId: socket.request.user.id,
             recipientId: to.id,
-          }).catch(err => dblogger.error('At Create Private Message: ' + err));
+          }).catch(err => dblogger.error('SockChat - Private Message - Create Message: ' + err));
           io.to(to.id).emit('private message', buildMessage(data, to));
           socket.emit('private message', buildMessage(data, to));
         })
-        .catch(err => dblogger.error('At Private Message Lookup User: ' + err));
+        .catch(err => dblogger.error('SockChat - Private Message - Lookup User: ' + err));
     });
 
     socket.on('join lobby', function(data) {
@@ -104,7 +104,7 @@ let init = function(io) {
         where: { status: 'online', lobbyId: data.lobby },
       })
         .then(users => socket.emit('lobby users', { users }))
-        .catch(err => dblogger.error('At Get Lobby Users: ' + err));
+        .catch(err => dblogger.error('SockChat - Join Lobby - Find Users: ' + err));
     });
 
     socket.on('leave lobby', function(data) {
