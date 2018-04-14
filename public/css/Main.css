@@ -24,6 +24,18 @@ html, body {
   padding: 0px;
     height: 100%;
 }
+.chatInput{
+    min-height: 5%;
+    max-height:5%;
+}
+.chat-input{
+    max-height: 100%;
+}
+#chatBox, #chatSend{
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+}
 
 /* Utillities */
 
@@ -303,5 +315,12 @@ table{
         font-size: 0.8em;
     }
 
+}
+
+/* Screen height too small, add scrollbar */
+@media only screen and (max-height: 600px){
+    html, body{
+        overflow-y: scroll;
+    }
 }
 
