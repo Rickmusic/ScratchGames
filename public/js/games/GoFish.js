@@ -78,7 +78,7 @@
         '%; top: ' +
         yLoc +
         "%'>" +
-        us['uid'];
+        us['name'];
       console.log('CURUSER');
       curUser +=
         "<button id='choose-player-" +
@@ -176,9 +176,11 @@
   let selectedCard;
   let chosenPlayer;
   function myTurnPartTwo(player) {
+
     $('#instructions-wording').html(
-      'Select a card to ask ' + chosenPlayer + 'for from your hand'
+      'Select a card to ask ' + goFish.loby[chosenPlayer].name + ' for from your hand'
     );
+    console.log(goFish.me.hand);
     for (let i in goFish.me.hand) {
       let card = goFish.me.hand[i];
       console.log(card);
@@ -341,6 +343,7 @@
 
   socketFunctions.status = function(status) {
     console.log(status);
+    goFish.pl = status["turn"];
     for (let i in status['players']) {
       let join = status['players'][i];
       if (join.sid == socket.id) {
@@ -351,7 +354,7 @@
       }
     }
     goFish.setLeader(status['leader']);
-    if (goFish.amLeader()) {
+    if (goFish.amLeader() && !status.started) {
       console.log('YOU ARE THE LEADER');
       $('#start-game').show();
       $('#start-game').click(function() {
@@ -360,6 +363,11 @@
         socket.emit('start-game', '');
       });
     }
+    if (goFish.pl == goFish.me['uid']) {
+      $('#instructions-turn').html('It is your turn');
+      console.log(goFish.loby);
+      myTurn();
+    } 
   };
 
   socketFunctions.userJoined = function(join) {
@@ -382,6 +390,7 @@
   };
 
   socketFunctions.playersTurn = function(pl) {
+	  goFish.turn = pl;
     if (firstTurn) {
       updateUsers();
       firstTurn = false;
@@ -390,13 +399,14 @@
     if (pl == goFish.me['uid']) {
       console.log('MY TURN');
       $('#instructions-turn').html('It is your turn');
+      console.log(goFish.loby);
       myTurn();
     } 
     else {
       hideUserButtons();
       //updateUsers();
       $('#ask-button').hide();
-      $('#instructions-turn').html('It is ' + pl + "'s turn");
+      $('#instructions-turn').html('It is ' + goFish.loby[pl].name + "'s turn");
     }
   };
 

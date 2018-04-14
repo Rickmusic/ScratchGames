@@ -41,6 +41,20 @@
         <script src="chat.js"></script>
     </head>
     <body>
+    <style>
+        body{
+            background-color: #DCF0FF;
+
+            /*possible colors:
+            #3DA5D9
+            #4F5D75
+            EEE0CB
+            B7D7EF
+
+
+            */
+        }
+    </style>
         <div class=" b-bottom">
             <div class="d-flex justify-content-end" id="logout">
                 <a href="/logout"><h4>Log out</h4></a>
@@ -57,6 +71,7 @@
                         <h2>Players</h2>
                     </div>
 
+<<<<<<< HEAD
                     <div id="headingPlayersOne">
                         <h5 class="page-header sideTitle">
                                 Global
@@ -77,6 +92,40 @@
                         <div id="lobby-players">
                             <div class="pre-scrollable" id="GlobalLobbyWindow">
                                 <ul><!-- Dynamically Populated by chat.js --></ul>
+=======
+                    <div id="accordion-players">
+                        <div class="card">
+                            <div class="card-header" id="headingPlayersOne">
+                                <h4 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapsePlayersOne" aria-expanded="true" aria-controls="collapsePlayersOne">
+                                        Global
+                                    </button>
+                                </h4>
+                            </div>
+
+                            <div id="collapsePlayersOne" class="collapse show" aria-labelledby="headingPlayersOne" data-parent="#accordion-players">
+                                <div id="global-players" class="card-body">
+                                    <div class="pre-scrollable" id="GlobalPlayerWindow">
+                                        <ul><!-- Dynamically Populated by chat.js --></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingPlayersTwo">
+                                <h4 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapsePlayersTwo" aria-expanded="false" aria-controls="collapsePlayersTwo">
+                                        Lobby
+                                    </button>
+                                </h4>
+                            </div>
+                            <div id="collapsePlayersTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion-players">
+                                <div id="lobby-players" class="card-body">
+                                    <div class="pre-scrollable" id="GlobalLobbyWindow">
+                                        <ul><!-- Dynamically Populated by chat.js --></ul>
+                                    </div>
+                                </div>
+>>>>>>> 8f9dafa07abb5612f3229aa1f27458a8e52462c1
                             </div>
                         </div>
                     </div>

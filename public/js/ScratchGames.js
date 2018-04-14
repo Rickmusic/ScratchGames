@@ -4,7 +4,7 @@
 let Scratch = function() {};
 
 // Variable for all page JS functions
-Scratch.pages = function() {};
+Scratch.locations = function() {};
 
 /* 
  * ----------------------------------------
@@ -75,6 +75,7 @@ Scratch.pages = function() {};
      * path: URL path (false to keep same)
      *   (must be the same as loc, or if using aliases same as one of loc's)
      * js: the javascript file to load (or false)
+     * obj: the 'Scratch.locations.*' object with 'init' and 'leave' functions (or false)
      * call: The 'Scratch.*' call to make when loaded (or false)
      */
     switch (loc) {
@@ -82,20 +83,16 @@ Scratch.pages = function() {};
         nav = {
           html: 'snippets/profile.html',
           modal: true,
-          title: 'Scratch Games',
-          path: 'profile',
           js: 'profile.js',
-          call: 'profile.init',
+          obj: 'profile',
         };
         break;
       case 'leaderboard':
         nav = {
           html: 'snippets/leaderboard.html',
           modal: true,
-          title: 'Scratch Games',
-          path: 'leaderboard',
           js: false,
-          call: false,
+          obj: false,
         };
         break;
       case 'createlobby':
@@ -103,23 +100,21 @@ Scratch.pages = function() {};
           html: 'modals/createLobby.html',
           modal: true,
           js: false,
-          call: 'lobbylist.create.init',
+          call: 'locations.lobbylist.create.init',
         };
         break;
       case 'lobby':
         nav = {
           html: 'snippets/lobby.html',
-          modal: false,
           title: 'Scratch Games',
           path: 'lobby',
           js: 'lobby.js',
-          call: 'pages.lobby.init',
+          obj: 'lobby',
         };
         break;
       case 'game':
         nav = {
           html: 'snippets/game.html',
-          modal: false,
           title: 'Scratch Games',
           path: 'game',
           js: false,
@@ -130,21 +125,18 @@ Scratch.pages = function() {};
         nav = {
           html: 'snippets/joincode.html',
           modal: true,
-          title: 'Scratch Games',
-          path: 'joincode',
           js: 'joincode.js',
-          call: 'joincode.init',
+          obj: 'joincode',
         };
         break;
       case 'lobbylist': // alias for home
       case 'home':
         nav = {
           html: 'snippets/lobbyList.html',
-          modal: false,
           title: 'Scratch Games',
           path: 'home',
           js: 'lobbylist.js',
-          call: 'lobbylist.init',
+          obj: 'lobbylist',
         };
         break;
       default:
@@ -248,9 +240,19 @@ Scratch.pages = function() {};
     createHistory(newloc.loc, newloc.nav, opts);
     Promise.all([loadHTML(newloc.nav), loadJS(newloc.nav)])
       .then(() => {
-        makeFunctionCall(newloc.nav, args)
-          .then(() => callback.call(Scratch.nav, null))
-          .catch(err => callback.call(Scratch.nav, err));
+        if (newloc.nav.obj) {
+          Scratch.call(Scratch.locations, newloc.nav.obj + '.init')
+            .then(() => {
+              Scratch.call(Scratch, newloc.nav.call, args)
+                .then(() => callback.call(Scratch.nav, null))
+                .catch(err => callback.call(Scratch.nav, err));
+            })
+            .catch(err => callback.call(Scratch.nav, err));
+        } else {
+          Scratch.call(Scratch, newloc.nav.call, args)
+            .then(() => callback.call(Scratch.nav, null))
+            .catch(err => callback.call(Scratch.nav, err));
+        }
       })
       .catch(err => callback.call(Scratch.nav, err));
   }
@@ -302,25 +304,6 @@ Scratch.pages = function() {};
     });
   }
 
-  function makeFunctionCall(nav, args) {
-    return new Promise((fulfill, reject) => {
-      if (!nav.call) return fulfill();
-      if (!args) args = [];
-      let namespaces = nav.call.split('.');
-      let func = namespaces.pop();
-      let context = Scratch;
-      for (let i = 0; i < namespaces.length; i++) {
-        if (!(typeof context[namespaces[i]] !== 'undefined'))
-          return reject(new Scratch.error.varUndefined(context, namespaces[i]));
-        context = context[namespaces[i]];
-      }
-      if (typeof context[func] !== 'function')
-        return reject(new Scratch.error.notAFunction(context, func));
-      context[func].apply(Scratch.nav, args);
-      fulfill();
-    });
-  }
-
   function getCurrentLoc() {
     let currentState = history.state || {};
     if (currentState.loc)
@@ -341,6 +324,31 @@ Scratch.pages = function() {};
   Scratch.nav.callback = function(err) {
     // TODO Include location in base html to display errors.
     if (err) console.log('Scratch Games Nav Error', err);
+  };
+})();
+
+/* 
+ * ----------------------------------------
+ * Scratch Call
+ * ---------------------------------------- 
+ */
+(function() {
+  Scratch.call = function(context, call, args) {
+    return new Promise((fulfill, reject) => {
+      if (!call) return fulfill();
+      if (!args) args = [];
+      let namespaces = call.split('.');
+      let func = namespaces.pop();
+      for (let i = 0; i < namespaces.length; i++) {
+        if (!(typeof context[namespaces[i]] !== 'undefined'))
+          return reject(new Scratch.error.varUndefined(context, namespaces[i]));
+        context = context[namespaces[i]];
+      }
+      if (typeof context[func] !== 'function')
+        return reject(new Scratch.error.notAFunction(context, func));
+      context[func].apply(Scratch.nav, args);
+      fulfill();
+    });
   };
 })();
 
