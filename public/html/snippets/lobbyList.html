@@ -5,19 +5,19 @@
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link availableGames" href="#">All</a>
+                        <div id="All" class="nav-link availableGames">All</div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link availableGames" href="#">Go Fish</a>
+                        <div id="GoFish" class="nav-link availableGames">Go Fish</div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link availableGames" href="#">UNO</a>
+                        <div id="UNO" class="nav-link availableGames">UNO</div>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div id="table" class="table table-bordered">
+    <div id="table" class="table table-bordered pre-scrollable">
         <table id="lobbylist" class="center">
             <thead>
                 <tr>
@@ -25,19 +25,12 @@
                     <th>Game Type</th>
                     <th># of Players</th>
                     <th># of Spectators</th>
-                    <th>Join Players</th>
+                    <th>Play</th>
                     <th>Spectate</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>Austin is great</td>
-                    <td>Go Fish</td>
-                    <td>2/4</td>
-                    <td>23</td>
-                    <td><span class="glyphicon glyphicon-lock"></span></td>
-                    <td><button type="button" class="btn btn-success btn-lg ">Join</button></span></td>
-                </tr>
+            <tbody id="addLob">
+                <!-- // Loaded in Dynamically // -->
             </tbody>
         </table>
     </div>
