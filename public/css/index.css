@@ -9,7 +9,9 @@ body {
     background-color: #6c8ba3;
 
 }
-
+.mainLobby{
+    background-color: #e00f1f;
+}
 /*  Mobile Styles*/
 @media only screen and (max-width: 400px){
     .content h1{

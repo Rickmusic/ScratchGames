@@ -27,9 +27,7 @@ let init = (sequelize, DataTypes) => {
             .format(),
       },
     },
-    {
-      tableName: 'tokens',
-    }
+    { tableName: 'tokens' }
   );
 
   Token.prototype.hasExpired = function() {

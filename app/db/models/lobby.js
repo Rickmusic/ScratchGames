@@ -24,21 +24,19 @@ let init = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'UNO',
       },
-      joincode: { 
+      joincode: {
         type: DataTypes.INTEGER,
         unique: true,
       },
       maxPlayers: { type: DataTypes.INTEGER },
       maxSpectators: { type: DataTypes.INTEGER },
-      inGame: { 
+      inGame: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: '0',
       },
     },
-    {
-      tableName: 'lobbies',
-    }
+    { tableName: 'lobbies' }
   );
 
   let generateJoinCode = function generateJoinCode() {
@@ -55,14 +53,14 @@ let init = (sequelize, DataTypes) => {
     });
   };
 
-  Lobby.beforeCreate('generateJoinCode', (instance, options) => {
-    return generateJoinCode()
+  Lobby.beforeCreate('generateJoinCode', (instance, options) =>
+    generateJoinCode()
       .then(joincode => {
         instance.joincode = joincode;
         return joincode;
       })
-      .catch(err => console.log('At create gen joincode ', err));
-  });
+      .catch(err => console.log('At create gen joincode ', err))
+  );
 
   Lobby.prototype.generateNewJoinCode = function() {
     return new Promise((fulfill, reject) => {
@@ -87,7 +85,8 @@ let init = (sequelize, DataTypes) => {
     return new Promise((fulfill, reject) => {
       let role = 'player';
       if (user.id === this.hostId) role = 'host';
-      user.update({ role })
+      user
+        .update({ role })
         .then(() => {
           this.addUser(user);
           fulfill();
@@ -105,7 +104,8 @@ let init = (sequelize, DataTypes) => {
     }
 
     return new Promise((fulfill, reject) => {
-      user.update({ role: 'spectator' })
+      user
+        .update({ role: 'spectator' })
         .then(() => {
           this.addUser(user);
           fulfill();

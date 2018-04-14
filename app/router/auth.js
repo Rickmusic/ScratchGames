@@ -44,8 +44,7 @@ let redirectAfterLogin = function(req, res) {
 router.get('/login', function(req, res) {
   if (req.isAuthenticated()) return res.redirect('/home');
 
-  if (req.query.redirect)
-    req.session.return_to = encodeURIComponent(req.query.redirect);
+  if (req.query.redirect) req.session.return_to = encodeURIComponent(req.query.redirect);
   res.sendFile(path.join('public/html/login.html'), rootdir);
 });
 
@@ -85,15 +84,11 @@ router.post(
     mailer.sendVerification(req, function(err) {
       if (err) {
         logger.warn(
-          'Signup ' +
-            req.user.displayName +
-            ' - Failed to Send Verification Email'
+          'Signup ' + req.user.displayName + ' - Failed to Send Verification Email'
         );
         return next(err);
       }
-      logger.info(
-        'Signup ' + req.user.displayName + ' - Verification Email Sent'
-      );
+      logger.info('Signup ' + req.user.displayName + ' - Verification Email Sent');
       return next();
     });
   },
@@ -116,15 +111,11 @@ router.post(
         mailer.sendVerification(req, function(err) {
           if (err) {
             logger.warn(
-              'Signup ' +
-                req.user.displayName +
-                ' - Failed to Send Verification Email'
+              'Signup ' + req.user.displayName + ' - Failed to Send Verification Email'
             );
             return next(err);
           }
-          logger.info(
-            'Signup ' + req.user.displayName + ' - Verification Email Sent'
-          );
+          logger.info('Signup ' + req.user.displayName + ' - Verification Email Sent');
           return next();
         });
       });
