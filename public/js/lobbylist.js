@@ -102,8 +102,7 @@ Scratch.locations.lobbylist = function() {};
 
   Scratch.locations.lobbylist.addlobby = function(lob) {
     // If the lobby is already there. Kill it before adding it //
-
-      $('#addLob')
+    $('#addLob')
       .children()
       .filter(function() {
         return $(this).data('lid') === lob.id;
