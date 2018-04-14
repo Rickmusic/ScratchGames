@@ -93,8 +93,12 @@ Scratch.locations.lobbylist = function() {};
 
   socket.on('lobbyList', function(lobbies) {
     for (let lob of lobbies) {
-      Scratch.lobbylist.addlobby(lob);
+      Scratch.locations.lobbylist.addlobby(lob);
     }
+  });
+
+  socket.on('removeLobby', function(lid){
+    Scratch.locations.lobbylist.killLobby(lid);
   });
 
   Scratch.locations.lobbylist.addlobby = function(lob) {
@@ -122,9 +126,7 @@ Scratch.locations.lobbylist = function() {};
     $newRow.append($newCol);
     // Adding join Spec Button //
     $newCol = $('<td> </td>');
-    let $newBtn = $(
-      '<button type="button" class="btn btn-success btn-lg">Join</button>'
-    );
+    let $newBtn = $('<button type="button" class="btn btn-success btn-lg">Join</button>');
     $newCol.append($newBtn);
     $newRow.append($newCol);
     // Adding Data //
@@ -137,5 +139,12 @@ Scratch.locations.lobbylist = function() {};
     $('#addLob').append($newRow);
   };
 
-  Scratch.locations.lobbylist.killLobby = function(lobId) {};
+  Scratch.locations.lobbylist.killLobby = function(lobId) {
+    $('#addLob')
+      .children()
+      .filter(function() {
+        return $(this).data('lid') === lobId;
+      })
+      .remove();
+  };
 })();

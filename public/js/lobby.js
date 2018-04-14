@@ -215,8 +215,8 @@ Scratch.locations.lobby = function() {};
         // Adding swap button //
         $newRow.append($newCol);
         $newBtn = $(
-          '<button type="button" class="btn btn-warning switch-role">Switch Role</button>'
-        );
+              '<button type="button" class="btn btn-warning switch-role">Switch Role</button>'
+          );
         $newCol = $('<div class="col center">' + '</div>');
         $newCol.append($newBtn);
         $newRow.append($newCol);
