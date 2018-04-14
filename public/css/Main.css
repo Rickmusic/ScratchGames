@@ -123,6 +123,7 @@ h2{
 
 .navbar-light{
   background-color: #7496B0;
+    height: 5%;
 }
 
 .scroll{
@@ -324,7 +325,7 @@ table{
 /* Screen height too small, add scrollbar */
 @media only screen and (max-height: 600px){
     html, body{
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 }
 
