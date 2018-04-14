@@ -4,8 +4,8 @@ let socketsession = require('./socketsession');
 
 let events = function(io) {
   require('./base')(io);
-  require('./chat')(io);
-  require('./lobby')(io);
+  require('./chat')(io.of('/chat'));
+  require('./lobby')(io.of('/lobby'));
 };
 
 let init = function(app) {
@@ -25,4 +25,3 @@ let init = function(app) {
 };
 
 module.exports = init;
-

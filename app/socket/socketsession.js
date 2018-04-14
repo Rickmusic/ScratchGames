@@ -5,6 +5,7 @@
 
 'use strict';
 
+let crc = require('crc').crc32;
 let cookieParser = require('../cookie');
 let session = require('../session');
 let { passport } = require('../passport');
@@ -25,6 +26,9 @@ let socketSession = function(socket, next) {
   //  Override socket.on
   socket.onevent = function() {
     let _args = arguments;
+    originalHash = savedHash = hash(req.session);
+    cookieId = req.sessionID;
+    originalId = req.sessionID;
     _onevent.apply(socket, _args);
     if (shouldSave(req)) req.session.save();
     if (req.user && req.user.changed()) req.user.save();
@@ -69,19 +73,9 @@ let socketSession = function(socket, next) {
     return originalId !== sess.id || originalHash !== hash(sess);
   }
 
-  // check if session has been modified
-  function isModified(sess) {
-    return originalId !== sess.id || originalHash !== hash(sess);
-  }
-
   // check if session has been saved
   function isSaved(sess) {
     return originalId === sess.id && savedHash === hash(sess);
-  }
-
-  // determine if session should be destroyed
-  function shouldDestroy(req) {
-    return req.sessionID && unsetDestroy && req.session == null;
   }
 
   // determine if session should be saved to store
