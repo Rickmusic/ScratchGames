@@ -39,6 +39,7 @@ let getAllLobbies = function() {
             createLobby(lobby.id);
           }
           ret.push({
+            id: lobby.id,
             name: lobby.name,
             access: lobby.type,
             gameType: lobby.game,
