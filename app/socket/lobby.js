@@ -3,7 +3,7 @@
 let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { Lobby, User } = db.models;
-let lobbymanager = require('../lobby');
+let manager = require('../lobby');
 let games = require('../games');
 let nsps = require('./namespaceManager');
 
@@ -12,18 +12,17 @@ let buildMember = function(user) {
     id: user.id,
     name: user.displayName,
     role: user.role,
-    ready: lobbymanager.getPlayerReady(user),
+    ready: manager.getPlayerReady(user),
   };
 };
 
 let init = function(io) {
-  lobbymanager.init(io);
+  manager.setLobbySocket(io);
   io.on('connection', function(socket) {
     socket.on('join lobby', function() {
       socket.join('user' + socket.request.user.id);
       socket.join(socket.request.user.lobbyId);
-      if (socket.request.user.role === 'player')
-        lobbymanager.lobbyAddPlayer(socket.request.user);
+      manager.addMember(socket.request.user);
     });
 
     socket.on('lobbyLand', function(data) {
@@ -35,7 +34,7 @@ let init = function(io) {
         .then(lobby => {
           let ret = {};
           ret.game = lobby.game;
-          ret.gamesettings = lobbymanager.getGameSettings(socket.request.user.lobbyId);
+          ret.gamesettings = manager.getGameSettings(socket.request.user.lobbyId);
           ret.type = lobby.type;
           ret.name = lobby.name;
           ret.joincode = lobby.joincode;
@@ -51,28 +50,23 @@ let init = function(io) {
               socket.emit('lobbyLand', ret);
               if (
                 socket.request.user.role === 'host' &&
-                lobbymanager.checkLobbyReady(socket.request.user.lobbyId)
+                manager.checkLobbyReady(socket.request.user.lobbyId)
               )
                 socket.emit('lobbyReady', {});
             })
-            .catch(err => dblogger.error('Lobbyland get lobby users: ' + err));
+            .catch(err => dblogger.error('SockLob - LobbyLand - Get Lobby Users: ' + err));
         })
-        .catch(err => dblogger.error('Lobbyland get lobby: ' + err));
+        .catch(err => dblogger.error('SockLob - LobbyLand - Get Lobby: ' + err));
     });
 
     let changeRole = function(user, role) {
-      switch (role) {
-        case 'player':
-          lobbymanager.lobbyAddPlayer(user);
-          break;
-        case 'spectator':
-          lobbymanager.lobbyRemovePlayer(user);
-          break;
-      }
       user
         .update({ role })
-        .then(() => io.to(socket.request.user.lobbyId).emit('member', buildMember(user)))
-        .catch(err => dblogger.error('Lobby update user role ' + err));
+        .then(() => { 
+          manager.update(user);
+          io.to(socket.request.user.lobbyId).emit('member', buildMember(user));
+        })
+        .catch(err => dblogger.error('SockLob - Change Role - Update User: ' + err));
     };
 
     socket.on('player -> spec', function(uid) {
@@ -81,10 +75,10 @@ let init = function(io) {
       }
       User.findById(uid)
         .then(user => {
-          if (!user) return dblogger.error('Lobby change to spectator user not found');
+          if (!user) return dblogger.error('SockLob - Play->Spec - User Not Found');
           changeRole(user, 'spectator');
         })
-        .catch(err => dblogger.error('Lobby change to spectator ' + err));
+        .catch(err => dblogger.error('SockLob - Play->Spec - Lookup User: ' + err));
     });
 
     socket.on('spec -> player', function(uid) {
@@ -93,22 +87,19 @@ let init = function(io) {
       }
       User.findById(uid)
         .then(user => {
-          if (!user) return dblogger.error('Lobby change to player user not fond');
+          if (!user) return dblogger.error('SockLob - Spec->Play - User Not Found');
           changeRole(user, 'player');
         })
-        .catch(err => dblogger.error('Lobby change to player ' + err));
+        .catch(err => dblogger.error('SockLob - Spec->Play - Lookup User: ' + err));
     });
 
     socket.on('settings change', function(change) {
       socket.broadcast.to(socket.request.user.lobbyId).emit('settings change', change);
-      lobbymanager.updateGameSettings(socket.request.user.lobbyId, change);
+      manager.updateGameSettings(socket.request.user.lobbyId, change);
     });
 
     socket.on('playerReady', function() {
-      lobbymanager.setPlayerReady(socket.request.user);
-      io.to(socket.request.user.lobbyId).emit('playerReady', socket.request.user.id);
-      if (lobbymanager.checkLobbyReady(socket.request.user.lobbyId))
-        io.to(socket.request.user.lobbyId).emit('lobbyReady', {});
+      manager.setPlayerReady(socket.request.user, true);
     });
 
     socket.on('start game', function(settings) {
@@ -126,15 +117,13 @@ let init = function(io) {
           lobby
             .update({ inGame: true })
             .then(() => {})
-            .catch(err => dblogger.error('At Lobby set inGame ' + err));
+            .catch(err => dblogger.error('SockLob - Start Game - Update Lobby: ' + err));
         })
-        .catch(err => dblogger.error('At Player Get Lobby ' + err));
+        .catch(err => dblogger.error('SockLob - Start Game - Get Lobby: ' + err));
     });
 
     socket.on('leave lobby', function() {
-      lobbymanager.lobbyRemovePlayer(socket.request.user);
-      if (socket.request.user.role === 'host')
-        io.to(socket.request.user.lobbyId).emit('leave lobby', {});
+      manager.removeMember(socket.request.user);
       socket.request.user.update({ role: null, lobbyId: null });
       socket.emit('navigate', { loc: 'lobbylist' });
       socket.disconnect(); // Manually remove client from the lobby namespace.

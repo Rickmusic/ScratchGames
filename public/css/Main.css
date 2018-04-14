@@ -206,6 +206,7 @@ table{
 .availableGames{
     background-color: #7496B0;
     font-size: large;
+    cursor: pointer;
 }
 /* Mobile Styles */
 @media only screen and (max-width: 400px) {
