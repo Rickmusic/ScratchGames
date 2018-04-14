@@ -1,19 +1,19 @@
 /* global Scratch */
-Scratch.lobbylist = function() {};
+Scratch.locations.lobbylist = function() {};
 
 (function() {
   let socket = Scratch.sockets.base; /* Links to app/socket/base.js */
 
-  Scratch.lobbylist.init = function() {
+  Scratch.locations.lobbylist.init = function() {
     $('#createbtn').click(function() {
       // TODO Replace callback with local error handling callback function
       Scratch.nav.goTo('createlobby', Scratch.nav.callback);
     });
   };
 
-  Scratch.lobbylist.create = function() {};
+  Scratch.locations.lobbylist.create = function() {};
 
-  Scratch.lobbylist.create.init = function() {
+  Scratch.locations.lobbylist.create.init = function() {
     $('#createLobby').submit(function(e) {
       e.preventDefault();
       e.stopImmediatePropagation();

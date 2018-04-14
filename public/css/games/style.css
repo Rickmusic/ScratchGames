@@ -2,6 +2,10 @@ html, body {
     width: 100%;
     height: 100%;
 }
+.choose-player-button {
+	z-index: 99999999;
+}
+
 #start-game {
 	position: fixed;
 	left: 40%;
@@ -48,9 +52,9 @@ html, body {
 #last-played {
 	position: absolute;
 	width: 60px;
-	left: calc(50vw + 35px);
+	left: calc(50% + 35px);
 	height: 86px;
-	top: calc(50vh + 10px);
+	top: calc(50% + 10px);
 	border: 1px dotted white;
 }
 .card-flip {

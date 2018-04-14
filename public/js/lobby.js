@@ -1,10 +1,10 @@
 /* global Scratch */
-Scratch.pages.lobby = function() {};
+Scratch.locations.lobby = function() {};
 
 (function() {
   let socket = Scratch.sockets.lobby; /* Links to app/socket/lobby.js */
   let global = Scratch.sockets.base; /* Links to app/socket/base.js */
-  Scratch.pages.lobby.init = function() {
+  Scratch.locations.lobby.init = function() {
     socket.emit('lobbyLand', null);
 
     $('#startBtn').on('click', function() {
@@ -72,24 +72,24 @@ Scratch.pages.lobby = function() {};
     //let maxPlayers = everything.maxPlayers; // in progress
     //let maxSpec = everything.maxSpectators; // in progress
 
-    Scratch.pages.lobby.loadTop(gameType, lobbyName, joincode, access);
+    Scratch.locations.lobby.loadTop(gameType, lobbyName, joincode, access);
     for (let mem of members) {
-      Scratch.pages.lobby.member(mem);
+      Scratch.locations.lobby.member(mem);
     }
 
-    Scratch.pages.lobby
+    Scratch.locations.lobby
       .loadGameSettings(gameType)
       .then(() => hookGameSettings(gameSettings))
       .catch(err => console.log(err));
-    Scratch.pages.lobby.loadDangerZone();
+    Scratch.locations.lobby.loadDangerZone();
   });
 
   socket.on('member', function(mem) {
-    Scratch.pages.lobby.member(mem);
+    Scratch.locations.lobby.member(mem);
   });
 
   // Loads the top bar information ///
-  Scratch.pages.lobby.loadTop = function(gameType, lobbyName, joincode, access) {
+  Scratch.locations.lobby.loadTop = function(gameType, lobbyName, joincode, access) {
     $('#access')
       .children()
       .append(' ' + access);
@@ -104,7 +104,7 @@ Scratch.pages.lobby = function() {};
       .append(' ' + joincode);
   };
   // Loads Game specific Settings HTML //
-  Scratch.pages.lobby.loadGameSettings = function(gameType) {
+  Scratch.locations.lobby.loadGameSettings = function(gameType) {
     return new Promise((fulfill, reject) => {
       $('#gameSettings').load('gamesettings/' + gameType + '.html', function(
         response,
@@ -166,7 +166,7 @@ Scratch.pages.lobby = function() {};
     }
   });
   //Adds single member to player lists
-  Scratch.pages.lobby.member = function(mem) {
+  Scratch.locations.lobby.member = function(mem) {
     $('#Players div.row, #Spectators div.row')
       .filter(function() {
         return $(this).data('uid') === mem.id;
@@ -252,7 +252,7 @@ Scratch.pages.lobby = function() {};
   };
 
   // Loading Danger Zone Settings //
-  Scratch.pages.lobby.loadDangerZone = function() {
+  Scratch.locations.lobby.loadDangerZone = function() {
     $('#abandon').on('click', () => socket.emit('leave lobby', null));
 
     $('#editLobby').submit(function(e) {

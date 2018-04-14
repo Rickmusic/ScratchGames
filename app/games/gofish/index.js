@@ -15,13 +15,18 @@ let init = function(io) {
       game.playerJoined({
         uid: userId,
         sid: socket.id,
+        name: socket.request.user.displayName
       });
 
       io.to(socket.request.user.lobbyId).emit('user-joined', {
         uid: userId,
         sid: socket.id,
+        name: socket.request.user.displayName
       });
-
+	  if (game.gameStarted){
+		io.to(socket.id).emit('game-state', game.getStateFor(userId));
+		io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
+	  }
       socket.emit('status', game.getStatus(userId));
     });
 
@@ -47,7 +52,7 @@ let init = function(io) {
       socket.emit('game-state', game.getStateFor(ask.uid));
       io.to(socket.request.user.lobbyId).emit('game-info', {
         player: socket.request.user.id,
-        message: ask.uid + ', do you have any ' + ask.asksFor + '\'s?',
+        message: game.players[ask.asks].name + ', do you have any ' + ask.asksFor + '\'s?',
       });
       if (result != 'Go Fish') {
         console.log('UPDATE OTHERS HAND');

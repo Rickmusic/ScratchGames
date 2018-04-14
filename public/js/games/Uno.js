@@ -88,7 +88,7 @@
         '%; top: ' +
         yLoc +
         "%'>" +
-        us['uid'];
+        us['name'];
       console.log('CURUSER');
       curUser +=
         "<button id='choose-player-" +
@@ -247,7 +247,11 @@
       }
       console.log(uno.me);
       for (let x = 0; x < uno.me['hand'].length; x++) {
-        let card = $('.card-deck-card:nth-child(' + counter + ')');
+	    var card = {length: 0};
+	    while (card.length == 0) {
+		    card = $('.card-deck-card:nth-child(' + counter + ')');
+		    counter += 1;
+	    }
         card.attr('suit', uno.me['hand'][x]['suit']);
         card.attr('num', uno.me['hand'][x]['num']);
         let xLoc = x * 60;
@@ -360,9 +364,11 @@
 
   socketFunctions.status = function(status) {
     console.log(status);
+    console.log("BEN HERE ABC");
     for (let i in status['players']) {
       let join = status['players'][i];
-      if (join.sid == socket.id) {
+      
+      if (join.uid == status.uid) {
         uno.updateMe(join);
       } else {
         addUserToGame(join);
@@ -411,7 +417,7 @@
     } else {
       hideUserButtons();
       //updateUsers();
-      $('#instructions-turn').html('It is ' + pl + "'s turn");
+      $('#instructions-turn').html('It is ' + uno.loby[pl].name + "'s turn");
       $('#ask-button').hide();
     }
   };

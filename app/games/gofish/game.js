@@ -37,16 +37,23 @@ class GoFish {
   }
   playerJoined(player) {
     let pl = new Player(player);
-    this.players[player.uid] = pl;
+	if (this.players[player.uid] == null) {
+		this.players[player.uid] = pl;
+	}
+	else {
+		this.players[player.uid].sid = player.sid;
+	}
   }
   getStatus(player) {
-    if (!this.gameStarted) {
+    //if (!this.gameStarted) {
       return {
         players: this.players,
         leader: this.leader,
         turn: this.pTurn,
+        uid: player,
+        started: this.gameStarted
       };
-    }
+    //}
   }
   getStateFor(uid) {
     let returnData = {};
@@ -59,6 +66,7 @@ class GoFish {
         returnData[player.uid] = {
           uid: player.uid,
           sid: player.sid,
+          name: player.name,
           hand: player.hand.length,
         };
       }
