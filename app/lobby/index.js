@@ -3,6 +3,8 @@
 let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { Lobby } = db.models;
+let games = require('../games');
+let nsps = require('../socket/namespaceManager');
 
 let lobbyio;
 let listio;
@@ -166,6 +168,26 @@ let updateGameSettings = function(lobbyId, newSettings) {
   lobbies[lobbyId].gamesettings = newSettings;
 };
 
+let startGame = function(user, settings) {
+  user
+    .getLobby()
+    .then(dblobby => {
+      // TODO store settings into lobby
+      if (!nsps.exists(dblobby.game)) games[dblobby.game].init(nsps.create(dblobby.game));
+      // TODO only pass game-specific settings to create
+      games[dblobby.game].create(settings, dblobby.id, dblobby.hostId);
+      lobbyio.to(dblobby.id).emit('navigate', {
+        loc: 'game',
+        args: [dblobby.game, nsps.get(dblobby.game).name],
+      });
+      dblobby
+        .update({ inGame: true })
+        .then(() => {})
+        .catch(err => dblogger.error('Lobby - Start Game - Update Lobby: ' + err));
+    })
+    .catch(err => dblogger.error('Lobby - Start Game - Get Lobby: ' + err));
+};
+
 module.exports = {
   setLobbySocket,
   setLobbylistSocket,
@@ -179,4 +201,5 @@ module.exports = {
   checkLobbyReady,
   getGameSettings,
   updateGameSettings,
+  startGame,
 };
