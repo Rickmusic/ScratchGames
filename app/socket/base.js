@@ -60,7 +60,7 @@ let init = function(io) {
           lobby
             .addPlayer(socket.request.user)
             .then(() => {
-              lobbymanager.createLobby(lobby.id);
+              lobbymanager.createLobby(lobby);
               socket.emit('join lobby', { lobby: lobby.id, role: 'host' });
               socket.emit('navigate', { loc: 'lobby' });
             })

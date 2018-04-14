@@ -22,11 +22,25 @@ let lobbies = {};
  * spectators = { uid: {}} spectators
  */
 
-let createLobby = function(lobbyId) {
-  lobbies[lobbyId] = {};
-  lobbies[lobbyId].gamesettings = {};
-  lobbies[lobbyId].players = {};
-  lobbies[lobbyId].spectators = {};
+let buildListLobby = function(dblobby) {
+  return {
+    id: dblobby.id,
+    name: dblobby.name,
+    access: dblobby.type,
+    gameType: dblobby.game,
+    lobbyCap: dblobby.maxPlayers,
+    currentPlayers: Object.keys(lobbies[dblobby.id].players).length,
+    spectators: Object.keys(lobbies[dblobby.id].spectators).length,
+  };
+}
+
+let createLobby = function(dblobby, callback) {
+  lobbies[dblobby.id] = {};
+  lobbies[dblobby.id].gamesettings = {};
+  lobbies[dblobby.id].players = {};
+  lobbies[dblobby.id].spectators = {};
+  listio.emit('lobbylist', [buildListLobby(dblobby)]);
+  if (callback) callback();
 };
 
 let getAllLobbies = function() {
@@ -34,18 +48,11 @@ let getAllLobbies = function() {
     Lobby.all()
       .then(dblobbies => {
         let ret = [];
-        for (let lobby of dblobbies) {
-          if(!lobbies[lobby.id]) {
-            createLobby(lobby.id);
+        for (let dblobby of dblobbies) {
+          if(!lobbies[dblobby.id]) {
+            createLobby(dblobby);
           }
-          ret.push({
-            name: lobby.name,
-            access: lobby.type,
-            gameType: lobby.game,
-            lobbyCap: lobby.maxPlayers,
-            currentPlayers: Object.keys(lobbies[lobby.id].players).length,
-            spectators: Object.keys(lobbies[lobby.id].spectators).length,
-          });
+          ret.push(buildListLobby(dblobby));
         }
         return fulfill(ret);
       })
@@ -57,14 +64,24 @@ let getAllLobbies = function() {
 };
 
 let addMember = function(user) {
-  switch (user.role) {
-    case 'host':
-    case 'player':
-      addPlayer(user);
-      break;
-    default:
-      addSpectator(user);
-      break;
+  if (!lobbies[user.lobbyId]) {
+    user.getLobby()
+      .then(dblobby => createLobby(dblobby, next))
+      .catch(err => dblogger.error('Lobby - Add Member - Get Lobby: ' + err));
+  } else {
+    next();
+  }
+
+  function next() {
+    switch (user.role) {
+      case 'host':
+      case 'player':
+        addPlayer(user);
+        break;
+      default:
+        addSpectator(user);
+        break;
+    }
   }
 };
 
@@ -88,9 +105,15 @@ let updateMember = function(user) {
 };
 
 let removeMember = function(user) {
+  if (!lobbies[user.lobbyId]) return; // Lobby was deleted
   switch (user.role) {
    case 'host':
     io.to(user.lobbyId).emit('leave lobby', {});
+    delete lobbies[user.lobbyId]; 
+    user.getLobby()
+      .then(dblobby => dblobby.destroy())
+      .catch(err => dblogger.error('Lobby - Remove User - Get Lobby: ' + err));
+    break;
   case 'player':
     removePlayer(user);
     break;
@@ -98,7 +121,6 @@ let removeMember = function(user) {
     removeSpectator(user);
     break;
   }
-  //if empty, remove lpbby.
 };
 
 function addPlayer(user) {
