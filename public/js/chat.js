@@ -9,10 +9,26 @@ $(function() {
 
   Scratch.chat.joinLobby = function(lobby) {
     socket.emit('join lobby', lobby);
+    let gList = document.getElementById('headingPlayersOne');
+    let lList = document.getElementById('headingPlayersTwo');
+    let gChat = document.getElementById('headingOne');
+    let lChat = document.getElementById('headingTwo');
+    gList.style.display = 'none';
+    lList.style.display = 'block';
+    gChat.style.display = 'none';
+    lChat.style.display = 'block';
   };
 
   Scratch.chat.leaveLobby = function() {
     socket.emit('leave lobby', {});
+    let gList = document.getElementById('headingPlayersOne');
+    let lList = document.getElementById('headingPlayersTwo');
+    let gChat = document.getElementById('headingOne');
+    let lChat = document.getElementById('headingTwo');
+    gList.style.display = 'block';
+    lList.style.display = 'none';
+    gChat.style.display = 'block';
+    lChat.style.display = 'none';
   };
 
   /* Chat Input Forms */
