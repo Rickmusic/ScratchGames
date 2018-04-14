@@ -18,10 +18,12 @@ let setLobbylistSocket = function(newio) {
 };
 
 let lobbies = {};
-/* Contains <lobbyid>: {<settings>} where <settings> contains
- * gamesettings - Tracked Game Specific Settings
- * players = (uid: {bool}} players + ready status
- * spectators = { uid: {}} spectators
+/* 
+ * Contains <lobbyid>: {<settings>} 
+ *   where <settings> contains
+ *     gamesettings - {} Tracked Game Specific Settings
+ *     players = (uid: {bool}} players + ready status
+ *     spectators = { uid: {}} spectators
  */
 
 let buildListLobby = function(dblobby) {
@@ -41,7 +43,7 @@ let createLobby = function(dblobby, callback) {
   lobbies[dblobby.id].gamesettings = {};
   lobbies[dblobby.id].players = {};
   lobbies[dblobby.id].spectators = {};
-  listio.emit('lobbylist', [buildListLobby(dblobby)]);
+  listio.emit('update', buildListLobby(dblobby));
   if (callback) callback();
 };
 
@@ -66,30 +68,21 @@ let getAllLobbies = function() {
 };
 
 let addMember = function(user) {
-  if (!lobbies[user.lobbyId]) {
     user.getLobby()
-      .then(dblobby => createLobby(dblobby, next))
+      .then(dblobby => {
+        if (!lobbies[user.lobbyId]) createLobby(dblobby, next);
+        switch (user.role) {
+          case 'host':
+          case 'player':
+            addPlayer(user);
+            break;
+          default:
+            addSpectator(user);
+            break;
+        }
+        listio.emit('update', buildListLobby(dblobby));
+      })
       .catch(err => dblogger.error('Lobby - Add Member - Get Lobby: ' + err));
-  } else {
-    next();
-  }
-
-  function next() {
-    switch (user.role) {
-      case 'host':
-      case 'player':
-        addPlayer(user);
-        break;
-      default:
-        addSpectator(user);
-        break;
-    }
-    listio.emit('update', {
-      id: user.lobbyId,
-      players: Object.keys(lobbies[user.lobbyId].players).length,
-      spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
-    });
-  }
 };
 
 let updateMember = function(user) {
@@ -109,11 +102,9 @@ let updateMember = function(user) {
     default:
       break;
   }
-  listio.emit('update', {
-    id: user.lobbyId,
-    players: Object.keys(lobbies[user.lobbyId].players).length,
-    spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
-  });
+  user.getLobby()
+    .then(dblobby => listio.emit('update', buildListLobby(dblobby))
+    .catch(err => dblogger.error('Lobby - Update Member - Get Lobby: ' + err));
 };
 
 let removeMember = function(user) {
@@ -125,8 +116,8 @@ let removeMember = function(user) {
     listio.emit('removeLobby', user.lobbyId);
     user.getLobby()
       .then(dblobby => dblobby.destroy())
-      .catch(err => dblogger.error('Lobby - Remove User - Get Lobby: ' + err));
-    break;
+      .catch(err => dblogger.error('Lobby - Remove Member - Get Lobby: ' + err));
+    return;
   case 'player':
     removePlayer(user);
     break;
@@ -134,11 +125,9 @@ let removeMember = function(user) {
     removeSpectator(user);
     break;
   }
-  listio.emit('update', {
-    id: user.lobbyId,
-    players: Object.keys(lobbies[user.lobbyId].players).length,
-    spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
-  });
+  user.getLobby()
+    .then(dblobby => listio.emit('update', buildListLobby(dblobby))
+    .catch(err => dblogger.error('Lobby - Remove Member (Update) - Get Lobby: ' + err));
 };
 
 function addPlayer(user) {
