@@ -13,6 +13,7 @@ class Uno {
     this.playedCards = [];
     this.playedSuit = null;
     this.playedNum = null;
+    this.winners = [];
   }
   get numberPlayers() {
     return Object.keys(this.players).length;
@@ -103,6 +104,9 @@ class Uno {
         this.curPlayer.hand.length > 0
       ) {
         return false;
+      }
+      if (this.winners.indexOf(this.pTurn) < 0) {
+	      this.winners.push(this.pTurn);
       }
     }
     // There are no cards in the deck, and no players with cards
@@ -200,6 +204,7 @@ class Uno {
     return true;
   }
   getWinner() {
+	  /*
     let maxBooks = 0;
     let winners = [];
     for (let i in this.players) {
@@ -209,7 +214,8 @@ class Uno {
         this.winners = [this.players[i].uid];
       }
     }
-    return winners;
+    return winners;*/
+    return this.winners;
   }
 }
 module.exports = Uno;
