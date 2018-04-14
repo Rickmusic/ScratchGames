@@ -6,7 +6,6 @@ Scratch.locations.lobbylist = function() {};
   let socket = io('/lobbylist');
 
   Scratch.locations.lobbylist.init = function() {
-    Scratch.locations.lobbylist.addlobby('Pizza');
     $('#All').click(function() {
       $('#addLob')
         .children()
@@ -19,7 +18,7 @@ Scratch.locations.lobbylist = function() {};
       $('#addLob')
         .children()
         .filter(function() {
-          return $(this).data('gameType') === 'Go Fish';
+          return $(this).data('gameType') === 'GoFish';
         })
         .show();
     });
@@ -30,7 +29,7 @@ Scratch.locations.lobbylist = function() {};
       $('#addLob')
         .children()
         .filter(function() {
-          return $(this).data('gameType') === 'UNO';
+          return $(this).data('gameType') === 'Uno';
         })
         .show();
     });
@@ -91,7 +90,8 @@ Scratch.locations.lobbylist = function() {};
     global.emit('game types', {});
   };
 
-  socket.on('lobbyList', function(lobbies) {
+  socket.on('lobbylist', function(lobbies) {
+    console.log(lobbies);
     for (let lob of lobbies) {
       Scratch.locations.lobbylist.addlobby(lob);
     }
@@ -105,22 +105,23 @@ Scratch.locations.lobbylist = function() {};
     let $newRow = $('<tr> </tr>');
     // Adding Lobby Name //
     let $newCol = $('<td> </td>');
-    $newCol.append('name');
+    $newCol.append(lob.name);
     $newRow.append($newCol);
     // Adding Lobby Game Type //
     $newCol = $('<td> </td>');
-    $newCol.append('Game Type');
+    $newCol.append(lob.gameType);
     $newRow.append($newCol);
     // Adding player counts //
     $newCol = $('<td> </td>');
-    $newCol.append('currentNumber / Lobby Cap');
+    $newCol.append(lob.currentPlayers + '/' + lob.lobbyCap);
     $newRow.append($newCol);
     // Adding number of Spectators //
     $newCol = $('<td> </td>');
-    $newCol.append('Spec Number');
+    $newCol.append(lob.spectators);
     $newRow.append($newCol);
     // Adding Private Public Setting //
     $newCol = $('<td> </td>');
+    // lob.access //
     let $newSpan = $('<span class="glyphicon glyphicon-lock">' + '</span>');
     $newCol.append($newSpan);
     $newRow.append($newCol);
@@ -130,8 +131,8 @@ Scratch.locations.lobbylist = function() {};
     $newCol.append($newBtn);
     $newRow.append($newCol);
     // Adding Data //
-    $newRow.data('gameType', 'Go Fish');
-    $newRow.data('lid', 'someId');
+    $newRow.data('gameType', lob.gameType);
+    $newRow.data('lid', lob.id);
 
     // Adding everything to table //
     $newRow.append($newCol);
