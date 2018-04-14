@@ -5,6 +5,7 @@ class Player {
     console.log(data);
     this.uid = data['uid'];
     this.sid = data['sid'];
+    this.name = data["name"];
     this.hand = [];
     this.books = [];
   }
