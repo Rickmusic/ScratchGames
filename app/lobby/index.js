@@ -58,6 +58,9 @@ let getAllLobbies = function() {
 };
 
 let addMember = function(user) {
+  if(!lobbies[user.lobbyId]) {
+    createLobby(user.lobbyId);
+  }
   switch (user.role) {
     case 'host':
     case 'player':
