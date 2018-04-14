@@ -84,6 +84,11 @@ let addMember = function(user) {
         addSpectator(user);
         break;
     }
+    listio.emit('update', {
+      id: user.lobbyId,
+      players: Object.keys(lobbies[user.lobbyId].players).length,
+      spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
+    });
   }
 };
 
@@ -104,6 +109,11 @@ let updateMember = function(user) {
     default:
       break;
   }
+  listio.emit('update', {
+    id: user.lobbyId,
+    players: Object.keys(lobbies[user.lobbyId].players).length,
+    spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
+  });
 };
 
 let removeMember = function(user) {
@@ -112,6 +122,7 @@ let removeMember = function(user) {
    case 'host':
     io.to(user.lobbyId).emit('leave lobby', {});
     delete lobbies[user.lobbyId]; 
+    listio.emit('removeLobby', user.lobbyId);
     user.getLobby()
       .then(dblobby => dblobby.destroy())
       .catch(err => dblogger.error('Lobby - Remove User - Get Lobby: ' + err));
@@ -123,6 +134,11 @@ let removeMember = function(user) {
     removeSpectator(user);
     break;
   }
+  listio.emit('update', {
+    id: user.lobbyId,
+    players: Object.keys(lobbies[user.lobbyId].players).length,
+    spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
+  });
 };
 
 function addPlayer(user) {
