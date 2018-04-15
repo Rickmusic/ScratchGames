@@ -72,6 +72,9 @@ let init = function(io) {
         }
         io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
       } else {
+	      if (game.gameOver) {
+		      // @Kayleigh - here!
+	      }
         // Display an error message
       }
       /*var result = res["result"];

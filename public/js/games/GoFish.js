@@ -162,7 +162,9 @@
 	    showSpectatorHand();
     }
   }
+  var suits = {"C": "e900", "D": "e901", "H": "e902", "S": "e903"};
   function showSpectatorHand() {
+	  alert("A");
 	  console.log("SHOWING HAND");
 	  for (let p in goFish.loby) {
 		   var player = goFish.loby[p];
@@ -175,7 +177,7 @@
 				 	counter = 0;
 			 	}
 			   var card = player["hand"][c];
-			   htm += "<td>"+card["suit"]+card["num"]+"</td>";
+			   htm += "<td>&#x"+suits[card["suit"]]+";"+card["num"]+"</td>";
 			   counter += 1;
 		   }
 		   console.log(htm);
@@ -509,7 +511,6 @@
   socketFunctions.gameOver = function(books) {
 	  // Winners is a array
 	  // TODO: How do we want to display this?
-	  alert("WIN");
 	  console.log(books);
   };
 

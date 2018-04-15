@@ -137,7 +137,7 @@
 				 	counter = 0;
 			 	}
 			   var card = player["hand"][c];
-			   htm += "<td>"+card["suit"]+card["num"]+"</td>";
+			   htm += "<td>&#x"+suits[card["suit"]]+";"+card["num"]+"</td>";
 			   counter += 1;
 		   }
 		   console.log(htm);
@@ -164,6 +164,7 @@
   let selectedCard;
   let selectedSuit;
   let selectedChoice;
+  var suits = {"C": "e900", "D": "e901", "H": "e902", "S": "e903"};
   function askFor() {
     $('#select-suit').hide();
     $('#ask-button').hide();
@@ -181,14 +182,14 @@
   function suitChoice() {
     $('#select-suit').show();
     $('#instructions-wording').html(
-      'Play the ' + selectedCard['num'] + ' of ' + selectedCard['suit'] + '?'
+      'Play the ' + selectedCard['num'] + ' of &#x' + suits[selectedCard['suit']] + ';?'
     );
     $('#ask-button').hide();
   }
   function swapOrSkip() {
     $('#select-swap-or-skip').show();
     $('#instructions-wording').html(
-      'Play the ' + selectedCard['num'] + ' of ' + selectedCard['suit'] + '?'
+      'Play the ' + selectedCard['num'] + ' of &#x' + suits[selectedCard['suit']] + ';?'
     );
     $('#ask-button').hide();
   }
@@ -234,9 +235,9 @@
           $('#instructions-wording').html(
             'Play the ' +
               selectedCard['num'] +
-              ' of ' +
-              selectedCard['suit'] +
-              '?'
+              ' of &#x' +
+              suits[selectedCard['suit']] +
+              ';?'
           );
           $('#ask-button').show();
         });
