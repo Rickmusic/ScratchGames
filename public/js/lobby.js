@@ -178,7 +178,7 @@ Scratch.locations.lobby = function() {};
 
     // If adding myself //
     if (Scratch.me.id === mem.id) {
-      Scratch.me.role = mem.role;
+      Scratch.chat.updateRole(mem.role);
       // Adding Buttons to become player or spec //
       let $newBtn;
       if (mem.role === 'player') {

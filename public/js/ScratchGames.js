@@ -360,7 +360,6 @@ Scratch.locations = function() {};
 (function() {
   Scratch.sockets = function() {};
   Scratch.sockets.base = io();
-  Scratch.sockets.chat = io('/chat');
   Scratch.sockets.lobby = null;
 
   /* Joining Lobby */
@@ -421,6 +420,9 @@ Scratch.locations = function() {};
 
     /* Allow hosts to kick members from the lobby */
     socket.on('leave lobby', () => Scratch.lobby.leave());
+
+    /* Sync role updates to chat */
+    socket.on('change role', role => Scratch.chat.updateRole(role));
 
     /* allow lobby socket to call navigation */
     socket.on('navigate', nav => Scratch.nav.socketNavigate(nav, Scratch.nav.callback));

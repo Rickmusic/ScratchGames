@@ -2,10 +2,11 @@
 Scratch.chat = function() {};
 
 $(function() {
-  let global = Scratch.sockets.base; /* Links to app/socket/base.js */
-  let socket = Scratch.sockets.chat; /* Links to app/socket/chat.js */
+  let socket = io('/chat'); /* Links to app/socket/chat.js */
 
   socket.emit('hello', {});
+
+  /* Global Functions */
 
   Scratch.chat.joinLobby = function(lobby) {
     socket.emit('join lobby', lobby);
@@ -19,6 +20,11 @@ $(function() {
     lChat.style.display = 'block';
   };
 
+  Scratch.chat.updateRole = function(role) {
+    Scratch.me.role = role;
+    socket.emit('update role', role);
+  };
+
   Scratch.chat.leaveLobby = function() {
     socket.emit('leave lobby', {});
     let gList = document.getElementById('headingPlayersOne');
@@ -29,6 +35,7 @@ $(function() {
     lList.style.display = 'none';
     gChat.style.display = 'block';
     lChat.style.display = 'none';
+    $('#lobby-players ul li').remove(); // clear the lobby player list
   };
 
   /* Chat Input Forms */
@@ -90,29 +97,29 @@ $(function() {
    * Online User Lists 
    */
   let userListAdd = function(user, $ul) {
-    // If user not already in list, add them
-    if (
-      $ul.find('li').filter(function() {
+    $ul
+      .find('li')
+      .filter(function() {
         return $(this).data('uid') === user.id;
-      }).length === 0
-    ) {
-      $ul.append(
-        $('<li>')
-          .addClass(function() {
-            if (user.role) return user.role;
-          })
-          .data('uid', user.id)
-          .data('uname', user.name)
-          .data('urole', user.role)
-          .text(user.name)
-      );
-      $ul
-        .find('li')
-        .sort(function(a, b) {
-          return $(b).data('uname') < $(a).data('uname') ? 1 : -1;
+      })
+      .remove();
+
+    $ul.append(
+      $('<li>')
+        .addClass(function() {
+          if (user.role) return user.role;
         })
-        .appendTo($ul);
-    }
+        .data('uid', user.id)
+        .data('uname', user.name)
+        .data('urole', user.role)
+        .text(user.name)
+    );
+    $ul
+      .find('li')
+      .sort(function(a, b) {
+        return $(b).data('uname') < $(a).data('uname') ? 1 : -1;
+      })
+      .appendTo($ul);
   };
 
   let userListRemove = function(user, $ul) {
@@ -154,6 +161,7 @@ $(function() {
   });
 
   socket.on('user join lobby', function(user) {
+    // Also used for updating role
     userListAdd(user, $('#lobby-players ul'));
   });
 
