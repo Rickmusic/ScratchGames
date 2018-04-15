@@ -12,6 +12,7 @@
       this.gameStarted = false;
       console.log('SETUP');
       this.isSpectator = false;
+      this.playerBooks = {};
     }
     get numberPlayers() {
       return Object.keys(this.loby).length;
@@ -30,9 +31,11 @@
       }
     }
     updateMe(data) {
+	  this.playerBooks[data['uid']] = 0;
       this.me = data;
     }
     addUser(user) {
+	  this.playerBooks[user['uid']] = 0;
       this.loby[user['uid']] = user;
     }
     userLeft(user) {
@@ -482,8 +485,9 @@
   };
 
   socketFunctions.playerBooks = function(books) {
+	  goFish.playerBooks[books["player"]] += books["playerBooks"].length;
     // TODO it appears 'res' would not be visible in this function
-    if (res.player == goFish.me.uid) {
+    if (books.player == goFish.me.uid) {
       let message = $('#my-messages');
       $('#my-messages').html(stringBooks(books));
       $('#my-messages').show();
@@ -505,6 +509,8 @@
   socketFunctions.gameOver = function(books) {
 	  // Winners is a array
 	  // TODO: How do we want to display this?
+	  alert("WIN");
+	  console.log(books);
   };
 
   /* Recieve Calls From Rest of App */

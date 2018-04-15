@@ -80,7 +80,7 @@ let init = function(io) {
 	  }
       io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
       if (res['books'].length != 0) {
-        io.to(socket.request.user.lobbyId).emit('player-books', { player: userId, gotBooks: res['books'] });
+        io.to(socket.request.user.lobbyId).emit('player-books', { player: socket.request.user.id, gotBooks: res['books'] });
       }
     });
 

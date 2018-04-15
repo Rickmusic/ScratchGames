@@ -22,6 +22,13 @@ class GoFish {
 
     return 5;
   }
+  score() {
+	  var ret = {};
+	  for (var p in this.players) {
+		  ret[p] = this.players[p].books.length;
+	  }
+	  return ret;
+  }
   startGame() {
     this.gameStarted = true;
     let playersCards = this.deck.dealCards(

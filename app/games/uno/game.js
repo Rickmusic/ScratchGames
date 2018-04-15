@@ -17,6 +17,13 @@ class Uno {
     this.playedNum = null;
     this.winners = [];
   }
+  score() {
+	  var ret = {};
+	  for (var p in this.players) {
+		  ret[p] = this.players[p].hand.length;
+	  }
+	  return ret;
+  }
   get numberPlayers() {
     return Object.keys(this.players).length;
   }
