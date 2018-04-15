@@ -164,7 +164,6 @@
   }
   var suits = {"C": "e900", "D": "e901", "H": "e902", "S": "e903"};
   function showSpectatorHand() {
-	  alert("A");
 	  console.log("SHOWING HAND");
 	  for (let p in goFish.loby) {
 		   var player = goFish.loby[p];
@@ -435,8 +434,10 @@
 	    updateGame();
 	  }
 	  else {
+		  goFish.loby = state["players"];
 		  goFish.isSpectator = true;
 		  updateUsers();
+		  
 		  showSpectatorHand();
 	  }
   };
