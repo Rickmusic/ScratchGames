@@ -19,9 +19,9 @@ html, body {
 #chat .name:after {
     content: ':'
 }
-#chat{
-  margin: 0px;
-  padding: 0px;
+#chat, #left{
+    margin: 0px;
+    padding: 0px;
     height: 100%;
 }
 .chatInput{
@@ -64,12 +64,11 @@ html, body {
 }
 /* New Bootstrap things */
 #navbarText > .navbar-nav {
-  float:none;
-  margin:0 auto;
-  display: block;
-  text-align: center;
-  font-size: 1.5em;
-
+    float:none;
+    margin:0 auto;
+    display: block;
+    text-align: center;
+    font-size: 1.5em;
 }
 
 #navbarText > .navbar-nav > li {
@@ -259,7 +258,7 @@ table{
         margin: 0;
         padding: 0;
         text-align: center;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
 
@@ -312,7 +311,7 @@ table{
 /* Tablet Styles */
 @media only screen and (min-width: 401px) and (max-width: 960px) {
     html, body{
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     .mainItems{
@@ -328,7 +327,7 @@ table{
 
     .fill{
         display: table;
-        text-align: center;
+        /*text-align: center;*/
         margin: 0 auto;
         height: auto;
         width: 100%;
@@ -354,6 +353,9 @@ table{
         min-height: 100px;
     }
 
+    .chatPadding{
+        margin: 0px 0px;
+    }
 
 }
 
@@ -380,7 +382,14 @@ table{
 
 /* Lobby screen width sizing */
 @media only screen and (max-width: 467px){
-    .smallLines{
+    body.chrome .smallLines{
+        border-top: black solid 2px;
+        border-bottom: black solid 2px;
+    }
+}
+
+@media only screen and (max-width: 507px){
+    body.mozilla .smallLines{
         border-top: black solid 2px;
         border-bottom: black solid 2px;
     }
