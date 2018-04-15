@@ -15,28 +15,32 @@
             <h2>Joincode:</h2>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="height: 20%">
         <div class="col voidPad" style="border-right: black solid 2px">
-            <div class="page-header sideTitle">
+            <div class="page-header sideTitle playerSpectatorList">
                 <h2>Players</h2>
             </div>
-            <div id="Players" class="container">
+            <div class="pre-scrollable scrollingList">
+                <div id="Players" class="container">
+                </div>
             </div>
         </div>
         <div class="col voidPad">
-            <div class="page-header sideTitle">
+            <div class="page-header sideTitle playerSpectatorList">
                 <h2>Spectators</h2>
             </div>
-            <div id="Spectators" class="container">
+            <div class="pre-scrollable scrollingList">
+                <div id="Spectators" class="container">
+                </div>
             </div>
         </div>
     </div>
-    <div class="row h-50">
+    <div class="row" id="gameSettingsSize">
         <div id="gameSettings" class="col center voidPad" style="border-right: black solid 2px;">
             <!-- Loaded Dynamically depending on the game -->
         </div>
         <div class="col center voidPad">
-            <div class="page-header sideTitle danger">
+            <div class="page-header sideTitle danger playerSpectatorList">
                 <h2>Danger Zone</h2>
             </div>
             <div class="container">
@@ -84,7 +88,7 @@
             </div>
         </div>
     </div>
-    <div class="row h-25">
+    <div class="row bar">
         <div class="col center pad">
             <button id="startBtn" type="button" class="btn btn-warning btn-lg btn-block">Start Game</button>
         </div>

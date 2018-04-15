@@ -234,7 +234,19 @@ table{
 }
 
 /* Lobby */
-
+.bar{
+    height: 5%;
+}
+.playerSpectatorList{
+    height: 1.8em;
+}
+.scrollingList{
+    min-height: 80%;
+    max-height: 80%;
+}
+#gameSettingsSize{
+    height: 60%;
+}
 
 
 /* Mobile Styles */
