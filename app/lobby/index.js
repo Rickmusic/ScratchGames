@@ -203,7 +203,7 @@ let startGame = function(user, settings) {
       // TODO store settings into lobby
       if (!nsps.exists(dblobby.game)) games[dblobby.game].init(nsps.create(dblobby.game));
       // TODO only pass game-specific settings to create
-      games[dblobby.game].create(settings, dblobby.id, dblobby.hostId);
+      games[dblobby.game].create(settings, dblobby.id, dblobby.hostId, function() {});
       lobbyIO.to(dblobby.id).emit('navigate', {
         loc: 'game',
         args: [dblobby.game, nsps.get(dblobby.game).name],
