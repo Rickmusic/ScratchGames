@@ -91,8 +91,8 @@ Scratch.locations = function() {};
         nav = {
           html: 'snippets/leaderboard.html',
           modal: true,
-          js: false,
-          obj: false,
+          js: 'leaderboards.js',
+          obj: 'leaderboards',
         };
         break;
       case 'createlobby':
