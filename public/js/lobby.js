@@ -172,8 +172,8 @@ Scratch.locations.lobby = function() {};
         return $(this).data('uid') === mem.id;
       })
       .remove();
-    let $newRow = $('<div class="row" />');
-    let $newCol = $('<div class="col center">' + mem.name + '</div>');
+    let $newRow = $('<div class="row justify-content-md-center smallLines" />');
+    let $newCol = $('<div class="col playerList">' + mem.name + '</div>');
     $newRow.append($newCol);
 
     // If adding myself //
@@ -191,7 +191,7 @@ Scratch.locations.lobby = function() {};
         );
       }
       if (mem.role != 'host') {
-        $newCol = $('<div class="col center">' + '</div>');
+        $newCol = $('<div class="col playerList">' + '</div>');
         $newCol.append($newBtn);
         $newRow.append($newCol);
       }
@@ -200,7 +200,7 @@ Scratch.locations.lobby = function() {};
         $newBtn = $(
           '<button type="button" class="btn btn-danger leave-lobby">Leave Lobby</button>'
         );
-        $newCol = $('<div class="col center">' + '</div>');
+        $newCol = $('<div class="col playerList">' + '</div>');
         $newCol.append($newBtn);
         $newRow.append($newCol);
       }
@@ -210,14 +210,14 @@ Scratch.locations.lobby = function() {};
         let $newBtn = $(
           '<button type="button" class="btn btn-danger kick-member">Kick From Lobby</button>'
         );
-        $newCol = $('<div class="col center">' + '</div>');
+        $newCol = $('<div class="col playerList">' + '</div>');
         $newCol.append($newBtn);
         // Adding swap button //
         $newRow.append($newCol);
         $newBtn = $(
           '<button type="button" class="btn btn-warning switch-role">Switch Role</button>'
         );
-        $newCol = $('<div class="col center">' + '</div>');
+        $newCol = $('<div class="col playerList">' + '</div>');
         $newCol.append($newBtn);
         $newRow.append($newCol);
       }
@@ -225,13 +225,13 @@ Scratch.locations.lobby = function() {};
     let $newSpan;
     if (mem.role === 'host') {
       $newSpan = $('<span class="glyphicon glyphicon-tower">' + '</span>');
-      $newCol = $('<div class="col center"></div>');
+      $newCol = $('<div class="col playerList"></div>');
     } else if (mem.role === 'player' && mem.ready === false) {
       $newSpan = $('<span class="glyphicon glyphicon-remove">' + '</span>');
-      $newCol = $('<div class="col center"></div>');
+      $newCol = $('<div class="col playerList"></div>');
     } else if (mem.role === 'player' && mem.ready === true) {
       $newSpan = $('<span class="glyphicon glyphicon-ok">' + '</span>');
-      $newCol = $('<div class="col center"></div>');
+      $newCol = $('<div class="col playerList"></div>');
     }
     if (mem.role != 'spectator') {
       $newCol.append($newSpan);
