@@ -123,7 +123,7 @@ let init = function(io) {
         .then(lobby => {
           if (!lobby)
             return socket.emit('', {success: false, message: 'Lobby Not Found'});
-          lobby.addPlayer(socket.request.user)
+          lobby.addSpectator(socket.request.user)
             .then(() => {
               socket.emit('join lobby', { lobby: lobby.id, role: 'spectator' });
               socket.emit('navigate', { loc: 'lobby' });
