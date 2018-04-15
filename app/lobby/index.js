@@ -144,7 +144,7 @@ function removePlayer(user) {
 function addSpectator(user) {
   lobbies[user.lobbyId].spectators[user.id] = {};
 }
-function removePlayer(user) {
+function removeSpectator(user) {
   delete lobbies[user.lobbyId].spectators[user.id];
 };
 
