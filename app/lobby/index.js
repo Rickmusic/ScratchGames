@@ -160,7 +160,7 @@ let setPlayerReady = function(user) {
   lobbies[user.lobbyId].players[user.id].ready = true;
   lobbyio.to(user.lobbyId).emit('playerReady', user.id);
   if (checkLobbyReady(user.lobbyId))
-    io.to(user.lobbyId).emit('lobbyReady', {});
+    lobbyio.to(user.lobbyId).emit('lobbyReady', {});
 };
 let getPlayerReady = function(user) {
   if (!lobbies[user.lobbyId].players[user.id]) return false;
