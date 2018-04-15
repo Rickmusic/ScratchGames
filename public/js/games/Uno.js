@@ -454,6 +454,7 @@
     else {
 	    console.log("game state");
 	    uno.isSpectator = true;
+	    uno.loby = state["players"];
 	    updateUsers();
 	    showSpectatorHand();
 	    $('#last-played').removeClass('card-suit-D');

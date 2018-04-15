@@ -231,7 +231,7 @@ class Uno {
     }
     this.curPlayer.takeCardOfSuit(card.num, card.suit);
     this.playedCards.push(card);
-    return this.nextTurn();
+    return !this.nextTurn();
     //return true;
   }
   getWinner() {
