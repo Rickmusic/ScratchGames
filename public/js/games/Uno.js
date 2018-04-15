@@ -19,6 +19,7 @@
       return Object.keys(this.loby).length;
     }
     updateGameState(state) {
+	    
       for (let i in state['players']) {
         let player = state['players'][i];
         if (player['uid'] == this.me['uid']) {
@@ -124,6 +125,7 @@
     }
   }
   function showSpectatorHand() {
+	  
 	  for (let p in uno.loby) {
 		   var player = uno.loby[p];
 		   var htm = "<tr>";
@@ -131,7 +133,8 @@
 		   for (let c in player["hand"]) {
 			  
 			 	if (counter == 5) {
-				 	htm += "</tr><tr>"
+				 	htm += "</tr><tr>";
+				 	counter = 0;
 			 	}
 			   var card = player["hand"][c];
 			   htm += "<td>"+card["suit"]+card["num"]+"</td>";
@@ -304,6 +307,7 @@
     $('#last-played').removeClass('card-suit-H');
     $('#last-played').removeClass('card-suit-S');
     $('#last-played').removeClass('card-suit-C');
+    console.log("LASTCARD");
     console.log(uno.lastCard);
     $('#last-played').addClass('card-suit-' + uno.lastCard['suit']);
     $('#last-played').html(uno.lastCard['num']);
@@ -390,7 +394,7 @@
   socketFunctions.status = function(status) {
     console.log(status);
     if (status["state"] != "spectator") {
-	    uno.isSpectator = true;
+	    uno.isSpectator = false;
 	    console.log("BEN HERE ABC");
 	    for (let i in status['players']) {
 	      let join = status['players'][i];
@@ -413,6 +417,7 @@
 	    }
 	}
 	else {
+		uno.isSpectator = true;
 		console.log("12345");
 		for (let i in status['players']) {
 	      let join = status['players'][i];
@@ -442,13 +447,22 @@
     console.log(state);
     uno.updateGameState(state);
     if (state["state"] != "spectator") {
-	    uno.isSpectator = true;
+	    uno.isSpectator = false;
 	    updateGame();
     }
     else {
 	    console.log("game state");
+	    uno.isSpectator = true;
 	    updateUsers();
 	    showSpectatorHand();
+	    $('#last-played').removeClass('card-suit-D');
+	    $('#last-played').removeClass('card-suit-H');
+	    $('#last-played').removeClass('card-suit-S');
+	    $('#last-played').removeClass('card-suit-C');
+	    console.log("LASTCARD");
+	    console.log(uno.lastCard);
+	    $('#last-played').addClass('card-suit-' + uno.lastCard['suit']);
+	    $('#last-played').html(uno.lastCard['num']);
     }
   };
 
@@ -456,7 +470,10 @@
     if (firstTurn) {
 	    console.log("players turn");
       updateUsers();
-      showSpectatorHand();
+      if (uno.isSpectator) {
+	      showSpectatorHand();
+      }
+      
       firstTurn = false;
     }
     $('#instructions-wording').html('');

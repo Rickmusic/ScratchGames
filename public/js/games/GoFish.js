@@ -11,6 +11,7 @@
       this.me = {};
       this.gameStarted = false;
       console.log('SETUP');
+      this.isSpectator = false;
     }
     get numberPlayers() {
       return Object.keys(this.loby).length;
@@ -151,9 +152,32 @@
     }
   }
 
-  function addUserToGame(user) {
+  function addUserToGame(user, isSpectator=false) {
     goFish.addUser(user);
     updateUsers();
+    if (isSpectator) {
+	    showSpectatorHand();
+    }
+  }
+  function showSpectatorHand() {
+	  console.log("SHOWING HAND");
+	  for (let p in goFish.loby) {
+		   var player = goFish.loby[p];
+		   var htm = "<tr>";
+		   var counter = 0;
+		   for (let c in player["hand"]) {
+			  
+			 	if (counter == 5) {
+				 	htm += "</tr><tr>";
+				 	counter = 0;
+			 	}
+			   var card = player["hand"][c];
+			   htm += "<td>"+card["suit"]+card["num"]+"</td>";
+			   counter += 1;
+		   }
+		   console.log(htm);
+		   $("#player-"+player.uid+">.cards-in-hand").html("<table>"+htm+"</tr></table>");
+	    }
   }
 
   function userLeft(sid) {
@@ -343,31 +367,46 @@
 
   socketFunctions.status = function(status) {
     console.log(status);
-    goFish.pl = status["turn"];
-    for (let i in status['players']) {
-      let join = status['players'][i];
-      if (join.sid == socket.id) {
-        goFish.updateMe(join);
-      } 
-      else {
-        addUserToGame(join);
-      }
-    }
-    goFish.setLeader(status['leader']);
-    if (goFish.amLeader() && !status.started) {
-      console.log('YOU ARE THE LEADER');
-      $('#start-game').show();
-      $('#start-game').click(function() {
-        goFish.startGame();
-        $('#start-game').hide();
-        socket.emit('start-game', '');
-      });
-    }
-    if (goFish.pl == goFish.me['uid']) {
-      $('#instructions-turn').html('It is your turn');
-      console.log(goFish.loby);
-      myTurn();
-    } 
+    if (status["state"] != "spectator") {
+	    goFish.pl = status["turn"];
+	    for (let i in status['players']) {
+	      let join = status['players'][i];
+	      if (join.sid == socket.id) {
+	        goFish.updateMe(join);
+	      } 
+	      else {
+	        addUserToGame(join);
+	      }
+	    }
+	    goFish.setLeader(status['leader']);
+	    if (goFish.amLeader() && !status.started) {
+	      console.log('YOU ARE THE LEADER');
+	      $('#start-game').show();
+	      $('#start-game').click(function() {
+	        goFish.startGame();
+	        $('#start-game').hide();
+	        socket.emit('start-game', '');
+	      });
+	    }
+	    if (goFish.pl == goFish.me['uid']) {
+	      $('#instructions-turn').html('It is your turn');
+	      console.log(goFish.loby);
+	      myTurn();
+	    } 
+	}
+	else {
+		goFish.isSpectator = true;
+		console.log("12345");
+		for (let i in status['players']) {
+	      let join = status['players'][i];
+	      console.log(join);
+	      if (join.uid == status.uid) {
+	        goFish.updateMe(join);
+	      } else {
+		      addUserToGame(join, true);
+	      }
+	    }
+	}
   };
 
   socketFunctions.userJoined = function(join) {
@@ -384,15 +423,26 @@
   };
 
   socketFunctions.gameState = function(state) {
-    console.log(state);
-    goFish.updateGameState(state);
-    updateGame();
+	  if (state["state"] != "spectator") {
+		  goFish.isSpectator = false;
+	    console.log(state);
+	    goFish.updateGameState(state);
+	    updateGame();
+	  }
+	  else {
+		  goFish.isSpectator = true;
+		  updateUsers();
+		  showSpectatorHand();
+	  }
   };
 
   socketFunctions.playersTurn = function(pl) {
 	  goFish.turn = pl;
     if (firstTurn) {
       updateUsers();
+      if (goFish.isSpectator) {
+	      showSpectatorHand();
+      }
       firstTurn = false;
     }
     $('#instructions-wording').html('');

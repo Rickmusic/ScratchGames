@@ -11,23 +11,32 @@ let init = function(io) {
       socket.join(socket.request.user.lobbyId);
       let game = games[socket.request.user.lobbyId];
       let userId = socket.request.user.id;
-
-      game.playerJoined({
-        uid: userId,
-        sid: socket.id,
-        name: socket.request.user.displayName
-      });
-
-      io.to(socket.request.user.lobbyId).emit('user-joined', {
-        uid: userId,
-        sid: socket.id,
-        name: socket.request.user.displayName
-      });
-	  if (game.gameStarted){
-		io.to(socket.id).emit('game-state', game.getStateFor(userId));
-		io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
-	  }
-      socket.emit('status', game.getStatus(userId));
+	  if (socket.request.user.role == "host" || socket.request.user.role == "player") {
+	      game.playerJoined({
+	        uid: userId,
+	        sid: socket.id,
+	        name: socket.request.user.displayName
+	      });
+	
+	      io.to(socket.request.user.lobbyId).emit('user-joined', {
+	        uid: userId,
+	        sid: socket.id,
+	        name: socket.request.user.displayName
+	      });
+		  if (game.gameStarted){
+			io.to(socket.id).emit('game-state', game.getStateFor(userId));
+			io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
+		  }
+	      socket.emit('status', game.getStatus(userId));
+	   }
+	   else {
+		   game.spectatorJoined({
+	        uid: userId,
+	        name: socket.request.user.displayName,
+	        sid: socket.id,
+	      });
+		  socket.emit("status", game.getSpectatorStatus());
+	   }
     });
 
     socket.on('start-game', function(abc) {
@@ -36,6 +45,10 @@ let init = function(io) {
       for (let i in game.players) {
         let player = game.players[i];
         io.to(player.sid).emit('game-state', game.getStateFor(player.uid));
+      }
+      for (let i in game.spectators) {
+        let player = game.spectators[i];
+        io.to(player.sid).emit('game-state', game.getSpectatorStatus());
       }
       io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
     });
@@ -61,6 +74,10 @@ let init = function(io) {
           .emit('game-state', game.getStateFor(ask.asks));
       }
       io.to(socket.request.user.lobbyId).emit('game-info', { player: ask.asks, message: result });
+      for (let i in game.spectators) {
+	     let player = game.spectators[i];
+	     io.to(player.sid).emit('game-state', game.getSpectatorStatus());
+	  }
       io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
       if (res['books'].length != 0) {
         io.to(socket.request.user.lobbyId).emit('player-books', { player: userId, gotBooks: res['books'] });

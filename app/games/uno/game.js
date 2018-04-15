@@ -110,7 +110,12 @@ class Uno {
   getSpectatorStatus() {
 	  var returnData = {
 		  state: 'spectator',
-		  players: this.players
+		  players: this.players,
+		  allowed: {
+			  suit: this.playedSuit,
+			  num: this.playedNum,
+		  },
+		  lastCard: this.lastCard
 	  }
 	  return returnData;
   }
