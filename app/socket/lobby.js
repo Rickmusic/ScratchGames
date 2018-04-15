@@ -23,7 +23,7 @@ let init = function(io) {
       manager.addMember(socket.request.user);
     });
 
-    socket.on('lobbyLand', function(data) {
+    socket.on('lobbyLand', function() {
       socket.broadcast
         .to(socket.request.user.lobbyId)
         .emit('member', buildMember(socket.request.user));
@@ -52,19 +52,23 @@ let init = function(io) {
               )
                 socket.emit('lobbyReady', {});
             })
-            .catch(err => dblogger.error('SockLob - LobbyLand - Get Lobby Users: ' + err));
+            .catch(err =>
+              dblogger.error('Socket - Lobby - LobbyLand - Get Lobby Users: ' + err)
+            );
         })
-        .catch(err => dblogger.error('SockLob - LobbyLand - Get Lobby: ' + err));
+        .catch(err => dblogger.error('Socket - Lobby - LobbyLand - Get Lobby: ' + err));
     });
 
     let changeRole = function(user, role) {
       user
         .update({ role })
-        .then(() => { 
+        .then(() => {
           manager.updateMember(user);
           io.to(socket.request.user.lobbyId).emit('member', buildMember(user));
         })
-        .catch(err => dblogger.error('SockLob - Change Role - Update User: ' + err));
+        .catch(err =>
+          dblogger.error('Socket - Lobby - Change Role - Update User: ' + err)
+        );
     };
 
     socket.on('player -> spec', function(uid) {
@@ -73,10 +77,13 @@ let init = function(io) {
       }
       User.findById(uid)
         .then(user => {
-          if (!user) return dblogger.error('SockLob - Play->Spec - User Not Found');
+          if (!user)
+            return dblogger.error('Socket - Lobby - Play->Spec - User Not Found');
           changeRole(user, 'spectator');
         })
-        .catch(err => dblogger.error('SockLob - Play->Spec - Lookup User: ' + err));
+        .catch(err =>
+          dblogger.error('Socket - Lobby - Play->Spec - Lookup User: ' + err)
+        );
     });
 
     socket.on('spec -> player', function(uid) {
@@ -85,10 +92,13 @@ let init = function(io) {
       }
       User.findById(uid)
         .then(user => {
-          if (!user) return dblogger.error('SockLob - Spec->Play - User Not Found');
+          if (!user)
+            return dblogger.error('Socket - Lobby - Spec->Play - User Not Found');
           changeRole(user, 'player');
         })
-        .catch(err => dblogger.error('SockLob - Spec->Play - Lookup User: ' + err));
+        .catch(err =>
+          dblogger.error('Socket - Lobby - Spec->Play - Lookup User: ' + err)
+        );
     });
 
     socket.on('settings change', function(change) {
@@ -106,7 +116,6 @@ let init = function(io) {
 
     socket.on('leave lobby', function() {
       manager.removeMember(socket.request.user);
-      socket.request.user.update({ role: null, lobbyId: null });
       socket.emit('navigate', { loc: 'lobbylist' });
       socket.disconnect(); // Manually remove client from the lobby namespace.
     });

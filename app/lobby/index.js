@@ -6,15 +6,15 @@ let { Lobby } = db.models;
 let games = require('../games');
 let nsps = require('../socket/namespaceManager');
 
-let lobbyio;
-let listio;
+let lobbyIO;
+let listIO;
 
 let setLobbySocket = function(newio) {
-  lobbyio = newio;
+  lobbyIO = newio;
 };
 
 let setLobbylistSocket = function(newio) {
-  listio = newio;
+  listIO = newio;
 };
 
 let lobbies = {};
@@ -36,24 +36,24 @@ let buildListLobby = function(dblobby) {
     currentPlayers: Object.keys(lobbies[dblobby.id].players).length,
     spectators: Object.keys(lobbies[dblobby.id].spectators).length,
   };
-}
+};
 
-let createLobby = function(dblobby, callback) {
+let createLobby = function(dblobby) {
   lobbies[dblobby.id] = {};
   lobbies[dblobby.id].gamesettings = {};
   lobbies[dblobby.id].players = {};
   lobbies[dblobby.id].spectators = {};
-  listio.emit('update', buildListLobby(dblobby));
-  if (callback) callback();
+  listIO.emit('update', buildListLobby(dblobby));
 };
 
 let getAllLobbies = function() {
-  return new Promise ((fulfill, reject) => {
+  return new Promise((fulfill, reject) => {
     Lobby.all()
       .then(dblobbies => {
         let ret = [];
         for (let dblobby of dblobbies) {
-          if(!lobbies[dblobby.id]) {
+          if (!lobbies[dblobby.id]) {
+            //continue;
             createLobby(dblobby);
           }
           ret.push(buildListLobby(dblobby));
@@ -68,21 +68,22 @@ let getAllLobbies = function() {
 };
 
 let addMember = function(user) {
-    user.getLobby()
-      .then(dblobby => {
-        if (!lobbies[user.lobbyId]) createLobby(dblobby);
-        switch (user.role) {
-          case 'host':
-          case 'player':
-            addPlayer(user);
-            break;
-          default:
-            addSpectator(user);
-            break;
-        }
-        listio.emit('update', buildListLobby(dblobby));
-      })
-      .catch(err => dblogger.error('Lobby - Add Member - Get Lobby: ' + err));
+  user
+    .getLobby()
+    .then(dblobby => {
+      if (!lobbies[user.lobbyId]) createLobby(dblobby);
+      switch (user.role) {
+        case 'host':
+        case 'player':
+          addPlayer(user);
+          break;
+        default:
+          addSpectator(user);
+          break;
+      }
+      listIO.emit('update', buildListLobby(dblobby));
+    })
+    .catch(err => dblogger.error('Lobby - Add Member - Get Lobby: ' + err));
 };
 
 let updateMember = function(user) {
@@ -102,52 +103,64 @@ let updateMember = function(user) {
     default:
       break;
   }
-  user.getLobby()
-    .then(dblobby => listio.emit('update', buildListLobby(dblobby)))
+  user
+    .getLobby()
+    .then(dblobby => listIO.emit('update', buildListLobby(dblobby)))
     .catch(err => dblogger.error('Lobby - Update Member - Get Lobby: ' + err));
 };
 
 let removeMember = function(user) {
   if (!lobbies[user.lobbyId]) return; // Lobby was deleted
   switch (user.role) {
-   case 'host':
-    io.to(user.lobbyId).emit('leave lobby', {});
-    delete lobbies[user.lobbyId]; 
-    listio.emit('removeLobby', user.lobbyId);
-    user.getLobby()
-      .then(dblobby => dblobby.destroy())
-      .catch(err => dblogger.error('Lobby - Remove Member - Get Lobby: ' + err));
-    return;
-  case 'player':
-    removePlayer(user);
-    break;
-  default:
-    removeSpectator(user);
-    break;
+    case 'host':
+      lobbyIO.to(user.lobbyId).emit('leave lobby', {}); // Tell all lobby members to leave
+      delete lobbies[user.lobbyId]; // Remove lobbies object
+      listIO.emit('removeLobby', user.lobbyId); // Remove from lobby list
+      user
+        .update({ role: null })
+        .then(() => {})
+        .catch(err =>
+          dblogger.error('Lobby - Remove Member - Update User Role (Host): ' + err)
+        );
+      user
+        .getLobby()
+        .then(dblobby => dblobby.destroy())
+        .catch(err =>
+          dblogger.error('Lobby - Remove Member - Get Lobby (Destroy): ' + err)
+        );
+      return;
+    case 'player':
+      removePlayer(user);
+      break;
+    default:
+      removeSpectator(user);
+      break;
   }
-  user.getLobby()
-    .then(dblobby => listio.emit('update', buildListLobby(dblobby)))
-    .catch(err => dblogger.error('Lobby - Remove Member (Update) - Get Lobby: ' + err));
+  user
+    .update({ role: null, lobbyId: null })
+    .then(() => {})
+    .catch(err => dblogger.error('Lobby - Remove Member - Update User Role: ' + err));
+  user
+    .getLobby()
+    .then(dblobby => listIO.emit('update', buildListLobby(dblobby)))
+    .catch(err => dblogger.error('Lobby - Remove Member - Get Lobby (Update): ' + err));
 };
 
 function addPlayer(user) {
-  if (user.role === 'host')
-    lobbies[user.lobbyId].players[user.id] = { ready: true };
-  else
-    lobbies[user.lobbyId].players[user.id] = { ready: false };
-  lobbyio.to(user.lobbyId).emit('lobbyUnready', {});
-};
+  if (user.role === 'host') lobbies[user.lobbyId].players[user.id] = { ready: true };
+  else lobbies[user.lobbyId].players[user.id] = { ready: false };
+  lobbyIO.to(user.lobbyId).emit('lobbyUnready', {});
+}
 function removePlayer(user) {
   delete lobbies[user.lobbyId].players[user.id];
-};
+}
 
 function addSpectator(user) {
   lobbies[user.lobbyId].spectators[user.id] = {};
 }
 function removeSpectator(user) {
   delete lobbies[user.lobbyId].spectators[user.id];
-};
-
+}
 
 let checkLobbyReady = function(lobbyId) {
   for (let playerId in lobbies[lobbyId].players) {
@@ -158,12 +171,11 @@ let checkLobbyReady = function(lobbyId) {
 
 let setPlayerReady = function(user) {
   lobbies[user.lobbyId].players[user.id].ready = true;
-  lobbyio.to(user.lobbyId).emit('playerReady', user.id);
-  if (checkLobbyReady(user.lobbyId))
-    lobbyio.to(user.lobbyId).emit('lobbyReady', {});
+  lobbyIO.to(user.lobbyId).emit('playerReady', user.id);
+  if (checkLobbyReady(user.lobbyId)) lobbyIO.to(user.lobbyId).emit('lobbyReady', {});
 };
 let getPlayerReady = function(user) {
-  if (!lobbies[user.lobbyId].players[user.id]) return false;
+  if (!lobbies[user.lobbyId].players[user.id]) return false; // Hotfix for addMember race condition
   return lobbies[user.lobbyId].players[user.id].ready;
 };
 
@@ -182,7 +194,7 @@ let startGame = function(user, settings) {
       if (!nsps.exists(dblobby.game)) games[dblobby.game].init(nsps.create(dblobby.game));
       // TODO only pass game-specific settings to create
       games[dblobby.game].create(settings, dblobby.id, dblobby.hostId);
-      lobbyio.to(dblobby.id).emit('navigate', {
+      lobbyIO.to(dblobby.id).emit('navigate', {
         loc: 'game',
         args: [dblobby.game, nsps.get(dblobby.game).name],
       });
