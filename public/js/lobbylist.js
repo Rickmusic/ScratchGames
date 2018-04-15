@@ -32,6 +32,10 @@ Scratch.locations.lobbylist = function() {};
           return $(this).data('gameType') === 'Uno';
         })
         .show();
+
+        /*$('#Spectators').on('click', 'button', function() {
+
+        });*/
     });
 
     $('#createbtn').click(function() {
@@ -89,6 +93,10 @@ Scratch.locations.lobbylist = function() {};
     /* Ask for game types from server */
     global.emit('game types', {});
   };
+
+  socket.on('update', function(lob) {
+    Scratch.locations.lobbylist.addlobby(lob);
+  });
 
   socket.on('lobbylist', function(lobbies) {
     for (let lob of lobbies) {
