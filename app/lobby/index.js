@@ -38,12 +38,13 @@ let buildListLobby = function(dblobby) {
   };
 };
 
-let createLobby = function(dblobby) {
+let createLobby = function(dblobby, callback) {
   lobbies[dblobby.id] = {};
   lobbies[dblobby.id].gamesettings = {};
   lobbies[dblobby.id].players = {};
   lobbies[dblobby.id].spectators = {};
-  listIO.emit('update', buildListLobby(dblobby));
+  listIO.emit('lobbylist', [buildListLobby(dblobby)]);
+  if (callback) callback();
 };
 
 let getAllLobbies = function() {
@@ -68,22 +69,29 @@ let getAllLobbies = function() {
 };
 
 let addMember = function(user) {
-  user
-    .getLobby()
-    .then(dblobby => {
-      if (!lobbies[user.lobbyId]) createLobby(dblobby);
-      switch (user.role) {
-        case 'host':
-        case 'player':
-          addPlayer(user);
-          break;
-        default:
-          addSpectator(user);
-          break;
-      }
-      listIO.emit('update', buildListLobby(dblobby));
-    })
-    .catch(err => dblogger.error('Lobby - Add Member - Get Lobby: ' + err));
+  if (!lobbies[user.lobbyId])
+    user
+      .getLobby()
+      .then(dblobby => createLobby(dblobby, next))
+      .catch(err => dblogger.error('Lobby - Add Member - Get Lobby: ' + err));
+  else next();
+
+  function next() {
+    switch (user.role) {
+      case 'host':
+      case 'player':
+        addPlayer(user);
+        break;
+      default:
+        addSpectator(user);
+        break;
+    }
+    listIO.emit('updateCounts', {
+      id: user.lobbyId,
+      players: Object.keys(lobbies[user.lobbyId].players).length,
+      spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
+    });
+  }
 };
 
 let updateMember = function(user) {
@@ -103,10 +111,11 @@ let updateMember = function(user) {
     default:
       break;
   }
-  user
-    .getLobby()
-    .then(dblobby => listIO.emit('update', buildListLobby(dblobby)))
-    .catch(err => dblogger.error('Lobby - Update Member - Get Lobby: ' + err));
+  listIO.emit('updateCounts', {
+    id: user.lobbyId,
+    players: Object.keys(lobbies[user.lobbyId].players).length,
+    spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
+  });
 };
 
 let removeMember = function(user) {
@@ -140,10 +149,11 @@ let removeMember = function(user) {
     .update({ role: null, lobbyId: null })
     .then(() => {})
     .catch(err => dblogger.error('Lobby - Remove Member - Update User Role: ' + err));
-  user
-    .getLobby()
-    .then(dblobby => listIO.emit('update', buildListLobby(dblobby)))
-    .catch(err => dblogger.error('Lobby - Remove Member - Get Lobby (Update): ' + err));
+  listIO.emit('updateCounts', {
+    id: user.lobbyId,
+    players: Object.keys(lobbies[user.lobbyId].players).length,
+    spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
+  });
 };
 
 function addPlayer(user) {
