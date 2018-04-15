@@ -32,12 +32,24 @@ Scratch.locations.lobbylist = function() {};
           return $(this).data('gameType') === 'Uno';
         })
         .show();
-
-        /*$('#Spectators').on('click', 'button', function() {
-
-        });*/
     });
-
+    $('#addLob').on('click', 'button', function() {
+      if ($(this).hasClass('joinPlay')) {
+        global.emit(
+          'join as player',
+          $(this)
+            .closest('tr.lob')
+            .data('lid')
+        );
+      } else if ($(this).hasClass('joinSpec')) {
+        global.emit(
+          'join as spectator',
+          $(this)
+            .closest('tr.lob')
+            .data('lid')
+        );
+      }
+    });
     $('#createbtn').click(function() {
       // TODO Replace callback with local error handling callback function
       Scratch.nav.goTo('createlobby', Scratch.nav.callback);
@@ -119,7 +131,7 @@ Scratch.locations.lobbylist = function() {};
 
     let $newSpan;
     let $newBtn;
-    let $newRow = $('<tr> </tr>');
+    let $newRow = $('<tr class="lob"> </tr>');
     // Adding Lobby Name //
     let $newCol = $('<td> </td>');
     $newCol.append(lob.name);
@@ -158,13 +170,17 @@ Scratch.locations.lobbylist = function() {};
       } else {
         // Add join players //
         $newCol = $('<td> </td>');
-        $newBtn = $('<button type="button" class="btn btn-success btn-lg">Join</button>');
+        $newBtn = $(
+          '<button type="button" class="btn btn-success btn-lg joinPlay">Join</button>'
+        );
         $newCol.append($newBtn);
         $newRow.append($newCol);
       }
       // Adding join Spectators //
       $newCol = $('<td> </td>');
-      $newBtn = $('<button type="button" class="btn btn-success btn-lg">Join</button>');
+      $newBtn = $(
+        '<button type="button" class="btn btn-success btn-lg joinSpec">Join</button>'
+      );
       $newCol.append($newBtn);
       $newRow.append($newCol);
     }

@@ -70,7 +70,7 @@ let getAllLobbies = function() {
 let addMember = function(user) {
     user.getLobby()
       .then(dblobby => {
-        if (!lobbies[user.lobbyId]) createLobby(dblobby, next);
+        if (!lobbies[user.lobbyId]) createLobby(dblobby);
         switch (user.role) {
           case 'host':
           case 'player':
