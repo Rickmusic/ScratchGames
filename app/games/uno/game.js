@@ -16,6 +16,7 @@ class Uno {
     this.playedSuit = null;
     this.playedNum = null;
     this.winners = [];
+    this.onWin = null;
   }
   score() {
 	  var ret = {};

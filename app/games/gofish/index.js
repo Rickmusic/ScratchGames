@@ -59,7 +59,8 @@ let init = function(io) {
       let result = res['result'];
       if (result == "Game Over") {
 	  	var winner = game.getWinner();
-	  	return io.emit("game-over", winner)
+	  	io.emit("game-over", winner)
+      return game.onWin(game.score());
 	  }
       let resultFrom = ask.asks;
       socket.emit('game-state', game.getStateFor(ask.uid));
@@ -90,9 +91,10 @@ let init = function(io) {
   });
 };
 
-let create = function(settings, lobbyId, hostId) {
+let create = function(settings, lobbyId, hostId, winCall) {
   games[lobbyId] = new GoFish();
   games[lobbyId].leader = hostId;
+  games[lobbyId].onWin = winCall;
 };
 
 module.exports = { init, create };
