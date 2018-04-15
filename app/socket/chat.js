@@ -123,6 +123,22 @@ let init = function(io) {
         .catch(err => dblogger.error('Socket - Chat - Join Lobby - Find Users: ' + err));
     });
 
+    socket.on('update role', function(role) {
+      socket.leave(socket.request.user.lobbyId + 'player');
+      socket.leave(socket.request.user.lobbyId + 'spectator');
+      if (role === 'player' || role === 'host')
+        socket.join(socket.request.user.lobbyId + 'player');
+      else socket.join(socket.request.user.lobbyId + 'spectator');
+      socket.broadcast
+        .to(socket.request.user.lobbyId + 'player')
+        .to(socket.request.user.lobbyId + 'spectator')
+        .emit('user join lobby', {
+          id: socket.request.user.id,
+          name: socket.request.user.displayName,
+          role: role,
+        });
+    });
+
     socket.on('leave lobby', function() {
       socket.leave(socket.request.user.lobbyId + 'player');
       socket.leave(socket.request.user.lobbyId + 'spectator');
