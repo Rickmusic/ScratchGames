@@ -6,6 +6,8 @@ $(function() {
 
   socket.emit('hello', {});
 
+  /* Global Functions */
+
   Scratch.chat.joinLobby = function(lobby) {
     socket.emit('join lobby', lobby);
     let gList = document.getElementById('headingPlayersOne');
@@ -18,6 +20,11 @@ $(function() {
     lChat.style.display = 'block';
   };
 
+  Scratch.chat.updateRole = function(role) {
+    Scratch.me.role = role;
+    socket.emit('update role', role);
+  };
+
   Scratch.chat.leaveLobby = function() {
     socket.emit('leave lobby', {});
     let gList = document.getElementById('headingPlayersOne');
@@ -28,6 +35,7 @@ $(function() {
     lList.style.display = 'none';
     gChat.style.display = 'block';
     lChat.style.display = 'none';
+    $('#lobby-players ul li').remove(); // clear the lobby player list
   };
 
   /* Chat Input Forms */
@@ -121,11 +129,6 @@ $(function() {
         return $(this).data('uid') === user.id;
       })
       .remove();
-  };
-
-  Scratch.chat.updateRole = function(role) {
-    Scratch.me.role = role;
-    socket.emit('update role', role);
   };
 
   socket.on('hello', function(data) {
