@@ -173,6 +173,7 @@ function removeSpectator(user) {
 }
 
 let checkLobbyReady = function(lobbyId) {
+  //if (Object.keys(lobbies[user.lobbyId].players).length < 2) return false;
   for (let playerId in lobbies[lobbyId].players) {
     if (!lobbies[lobbyId].players[playerId].ready) return false;
   }

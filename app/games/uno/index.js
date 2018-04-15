@@ -99,7 +99,7 @@ let init = function(io) {
   });
 };
 
-let create = function(settings, lobbyId, hostId) {
+let create = function(settings, lobbyId, hostId, winCall) {
   games[lobbyId] = new Uno();
   games[lobbyId].leader = hostId;
   games[lobbyId].onWin = winCall;
