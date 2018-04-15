@@ -5,7 +5,7 @@ let Player = require('../player');
 class Uno {
   constructor() {
 	this.spectators = {};  
-	  
+	this.gameOver = false;
     this.gameStarted = false;
     this.pTurn = -1;
     this.direction = 1;
@@ -140,6 +140,7 @@ class Uno {
       }
     }
     // There are no cards in the deck, and no players with cards
+    this.gameOver = true;
     return true;
   }
   get curPlayer() {
@@ -230,8 +231,8 @@ class Uno {
     }
     this.curPlayer.takeCardOfSuit(card.num, card.suit);
     this.playedCards.push(card);
-    this.nextTurn();
-    return true;
+    return this.nextTurn();
+    //return true;
   }
   getWinner() {
 	  /*
