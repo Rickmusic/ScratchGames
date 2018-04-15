@@ -47,7 +47,9 @@ html, body {
 	line-height: 86px;
 	text-align: center;
 	transform: rotateX(180deg);
+	-moz-transform: rotateX(180deg);
 	backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
 }
 #last-played {
 	position: absolute;
@@ -58,11 +60,13 @@ html, body {
 	border: 1px dotted white;
 }
 .card-flip {
-	
+	-moz-animation: flip-card-rev 1s 1;
+	-moz-animation-fill-mode: forwards;
 	animation: flip-card-rev 1s 1;
 	animation-fill-mode: forwards;
 }
 .card-flipped {
+	-moz-transform: rotateX(0deg) !important;
 	transform: rotateX(0deg) !important;
 }
 .card-suit-S {
@@ -81,6 +85,11 @@ html, body {
 	color: black;
 	background-image: url("/Cards/Clubs.png");
 }
+.cards-in-hand>ul>li {
+	position: absolute;
+	width: 100%;
+	display: inline-block;
+}
 #card-deck {
 	position: absolute;
 	width: 60px;
@@ -98,27 +107,35 @@ html, body {
 	position: absolute;
 	left: calc(50% - 30px);
 	top: calc(50% + 10px);
+	z-index: 0;
 }
 @keyframes flip-card-rev {
 	from {
 		transform: rotateX(180deg);
+		-moz-transform: rotateX(180deg);
 	}
 	to {
 		transform: rotateX(0deg);
+		-moz-transform: rotateX(0deg);
 	}
 }
 @keyframes flip-card {
 	from {
 		transform: rotateX(0deg);
+		-moz-transform: rotateX(0deg);
 	}
 	to {
 		transform: rotateX(180deg);
+		-moz-transform: rotateX(180deg);
 	}
 }
 .card-player-me {
 	backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
 	animation: flip-card 1s 1;
+	-moz-animation: flip-card 1s 1;
 	animation-fill-mode: forwards;
+	-moz-animation-fill-mode: forwards;
 	
 }
 
