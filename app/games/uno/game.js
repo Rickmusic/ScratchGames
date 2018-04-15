@@ -4,6 +4,8 @@ let Deck = require('../deck');
 let Player = require('../player');
 class Uno {
   constructor() {
+	this.spectators = {};  
+	  
     this.gameStarted = false;
     this.pTurn = -1;
     this.direction = 1;
@@ -56,6 +58,15 @@ class Uno {
 	}
     
   }
+  spectatorJoined(player) {
+  	let pl = new Player(player);
+	if (this.spectators[player.uid] == null) {
+		this.spectators[player.uid] = pl;
+	}
+	else {
+		this.spectators[player.uid].sid = player.sid;
+	} 
+  }
   getStatus(player, uid) {
     //if (!this.gameStarted) {
       return {
@@ -95,6 +106,13 @@ class Uno {
       }
     }
     return returnData;
+  }
+  getSpectatorStatus() {
+	  var returnData = {
+		  state: 'spectator',
+		  players: this.players
+	  }
+	  return returnData;
   }
   nextTurn() {
     for (let i in this.players) {

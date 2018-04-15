@@ -85,6 +85,11 @@ html, body {
 	color: black;
 	background-image: url("/Cards/Clubs.png");
 }
+.cards-in-hand>ul>li {
+	position: absolute;
+	width: 100%;
+	display: inline-block;
+}
 #card-deck {
 	position: absolute;
 	width: 60px;

@@ -13,6 +13,7 @@
       console.log('SETUP');
       this.allowed = {};
       this.lastCard;
+      this.isSpectator = false;
     }
     get numberPlayers() {
       return Object.keys(this.loby).length;
@@ -63,6 +64,7 @@
   let buttonsActive = false;
 
   function updateUsers(withButton = false) {
+	  console.log("UPDATING123BEn");
     let otherPlayers = '';
     let angleDif = Math.PI / (uno.numberPlayers - 1);
     let curAngle = 0;
@@ -121,12 +123,35 @@
       $('#choose-player-' + us['uid']).hide();
     }
   }
-  function addUserToGame(user) {
+  function showSpectatorHand() {
+	  for (let p in uno.loby) {
+		   var player = uno.loby[p];
+		   var htm = "<tr>";
+		   var counter = 0;
+		   for (let c in player["hand"]) {
+			  
+			 	if (counter == 5) {
+				 	htm += "</tr><tr>"
+			 	}
+			   var card = player["hand"][c];
+			   htm += "<td>"+card["suit"]+card["num"]+"</td>";
+			   counter += 1;
+		   }
+		   console.log(htm);
+		   $("#player-"+player.uid+">.cards-in-hand").html("<table>"+htm+"</tr></table>");
+	    }
+  }
+  function addUserToGame(user, isSpectator) {
     uno.addUser(user);
+    console.log("add user to game");
     updateUsers();
+    if (isSpectator) {
+	    showSpectatorHand();
+    }
   }
   function userLeft(sid) {
     userLeft(sid);
+    console.log("user left");
     updateUsers();
   }
   function startGame() {
@@ -364,26 +389,41 @@
 
   socketFunctions.status = function(status) {
     console.log(status);
-    console.log("BEN HERE ABC");
-    for (let i in status['players']) {
-      let join = status['players'][i];
-      
-      if (join.uid == status.uid) {
-        uno.updateMe(join);
-      } else {
-        addUserToGame(join);
-      }
-    }
-    uno.setLeader(status['leader']);
-    if (uno.amLeader()) {
-      console.log('YOU ARE THE LEADER');
-      $('#start-game').show();
-      $('#start-game').click(function() {
-        uno.startGame();
-        $('#start-game').hide();
-        socket.emit('start-game', '');
-      });
-    }
+    if (status["state"] != "spectator") {
+	    uno.isSpectator = true;
+	    console.log("BEN HERE ABC");
+	    for (let i in status['players']) {
+	      let join = status['players'][i];
+	      
+	      if (join.uid == status.uid) {
+	        uno.updateMe(join);
+	      } else {
+	        addUserToGame(join);
+	      }
+	    }
+	    uno.setLeader(status['leader']);
+	    if (uno.amLeader()) {
+	      console.log('YOU ARE THE LEADER');
+	      $('#start-game').show();
+	      $('#start-game').click(function() {
+	        uno.startGame();
+	        $('#start-game').hide();
+	        socket.emit('start-game', '');
+	      });
+	    }
+	}
+	else {
+		console.log("12345");
+		for (let i in status['players']) {
+	      let join = status['players'][i];
+	      console.log(join);
+	      if (join.uid == status.uid) {
+	        uno.updateMe(join);
+	      } else {
+		      addUserToGame(join, true);
+	      }
+	    }
+	}
   };
 
   socketFunctions.userJoined = function(join) {
@@ -401,12 +441,22 @@
   socketFunctions.gameState = function(state) {
     console.log(state);
     uno.updateGameState(state);
-    updateGame();
+    if (state["state"] != "spectator") {
+	    uno.isSpectator = true;
+	    updateGame();
+    }
+    else {
+	    console.log("game state");
+	    updateUsers();
+	    showSpectatorHand();
+    }
   };
 
   socketFunctions.playersTurn = function(pl) {
     if (firstTurn) {
+	    console.log("players turn");
       updateUsers();
+      showSpectatorHand();
       firstTurn = false;
     }
     $('#instructions-wording').html('');
