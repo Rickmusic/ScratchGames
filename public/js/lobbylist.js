@@ -32,6 +32,10 @@ Scratch.locations.lobbylist = function() {};
           return $(this).data('gameType') === 'Uno';
         })
         .show();
+
+        /*$('#Spectators').on('click', 'button', function() {
+
+        });*/
     });
 
     $('#createbtn').click(function() {
@@ -90,8 +94,11 @@ Scratch.locations.lobbylist = function() {};
     global.emit('game types', {});
   };
 
+  socket.on('update', function(lob) {
+    Scratch.locations.lobbylist.addlobby(lob);
+  });
+
   socket.on('lobbylist', function(lobbies) {
-    console.log(lobbies);
     for (let lob of lobbies) {
       Scratch.locations.lobbylist.addlobby(lob);
     }
@@ -103,12 +110,13 @@ Scratch.locations.lobbylist = function() {};
 
   Scratch.locations.lobbylist.addlobby = function(lob) {
     // If the lobby is already there. Kill it before adding it //
-    /*$('#addLob')
+    $('#addLob')
       .children()
       .filter(function() {
         return $(this).data('lid') === lob.id;
       })
-      .remove();*/
+      .remove();
+
     let $newSpan;
     let $newBtn;
     let $newRow = $('<tr> </tr>');
