@@ -456,6 +456,11 @@ Scratch.locations = function() {};
       );
       $('iframe#game')[0].onload = null;
     };
+
+
+    $('#leave-lobby').on('click', function() {
+      Scratch.sockets.lobby.emit('leave lobby', {});
+    });
   };
 
   Scratch.games.reload = function() {
