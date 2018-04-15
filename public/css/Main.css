@@ -124,6 +124,7 @@ h2{
 .navbar-light{
   background-color: #7496B0;
     height: 5%;
+    padding-top: 0px;
 }
 
 .scroll{
@@ -154,7 +155,6 @@ table{
 }
 .fill{
     height: 95%;
-    border-bottom: black solid 2px;
 }
 
 #main{
@@ -209,6 +209,46 @@ table{
     font-size: large;
     cursor: pointer;
 }
+#GlobalLobbyWindow, #GlobalPlayerWindow, #GlobalChatWindow, #LobbyChatWindow{
+    padding-left: 5px;
+}
+
+.mainItems{
+    height: 100%;
+}
+
+/* lobyList */
+#activeLobbies, #lobbylist{
+    height: 100%;
+}
+#activeLobbiesBar{
+    border-top: black solid 2px;
+    height: 5%;
+}
+#gameTabs{
+    height: 5%;
+}
+#mainLobbyList{
+    min-height: 83%;
+    max-height: 83%;
+}
+
+/* Lobby */
+.bar{
+    height: 5%;
+}
+.playerSpectatorList{
+    height: 1.8em;
+}
+.scrollingList{
+    min-height: 80%;
+    max-height: 80%;
+}
+#gameSettingsSize{
+    height: 60%;
+}
+
+
 /* Mobile Styles */
 @media only screen and (max-width: 400px) {
     body{
