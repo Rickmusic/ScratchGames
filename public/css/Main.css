@@ -30,7 +30,7 @@ html, body {
 .chat-input{
     height: 100%;
 }
-#chatBox, #chatSend{
+.chatBox{
     width: 100%;
     margin-left: 0px;
     margin-right: 0px;
@@ -247,7 +247,11 @@ table{
 #gameSettingsSize{
     height: 60%;
 }
-
+.playerList{
+    width: 100%;
+    padding-left: 0px;
+    padding-right: 0px;
+}
 
 /* Mobile Styles */
 @media only screen and (max-width: 400px) {
@@ -296,6 +300,11 @@ table{
 	.pre-scrollable{
         max-height: 100px;
         min-height: 100px;
+    }
+
+    .smallLines{
+        border-top: black solid 2px;
+        border-bottom: black solid 2px;
     }
 
 }
@@ -369,3 +378,16 @@ table{
     }
 }
 
+/* Lobby screen width sizing */
+@media only screen and (max-width: 467px){
+    .smallLines{
+        border-top: black solid 2px;
+        border-bottom: black solid 2px;
+    }
+}
+
+@media only screen and (max-width: 386px){
+    #unoSettingLobby, #goFishSettingLobby, #dangerSettingLobby{
+        height: 15%;
+    }
+}
