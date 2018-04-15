@@ -6,12 +6,12 @@ Scratch.locations.lobbylist = function() {};
   let socket = io('/lobbylist');
 
   Scratch.locations.lobbylist.init = function() {
-    $('#All').click(function() {
+    $('#AllList').click(function() {
       $('#addLob')
         .children()
         .show();
     });
-    $('#GoFish').click(function() {
+    $('#GoFishList').click(function() {
       $('#addLob')
         .children()
         .hide();
@@ -22,7 +22,7 @@ Scratch.locations.lobbylist = function() {};
         })
         .show();
     });
-    $('#UNO').click(function() {
+    $('#UNOList').click(function() {
       $('#addLob')
         .children()
         .hide();
