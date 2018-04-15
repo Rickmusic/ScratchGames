@@ -106,8 +106,12 @@ Scratch.locations.lobbylist = function() {};
     global.emit('game types', {});
   };
 
-  socket.on('update', function(lob) {
-    Scratch.locations.lobbylist.addlobby(lob);
+  socket.on('updateCounts', function(lob) {
+    Scratch.locations.lobbylist.updateMemberCounts(lob);
+  });
+
+  socket.on('updateConfig', function(lob) {
+    Scratch.locations.lobbylist.updateLobbyConfig(lob);
   });
 
   socket.on('lobbylist', function(lobbies) {
@@ -129,67 +133,51 @@ Scratch.locations.lobbylist = function() {};
       })
       .remove();
 
-    let $newSpan;
-    let $newBtn;
-    let $newRow = $('<tr class="lob"> </tr>');
+    let $newRow = $('<tr class="lob">');
     // Adding Lobby Name //
-    let $newCol = $('<td> </td>');
-    $newCol.append(lob.name);
-    $newRow.append($newCol);
+    $newRow.append($('<td>').append(lob.name));
     // Adding Lobby Game Type //
-    $newCol = $('<td> </td>');
-    $newCol.append(lob.gameType);
-    $newRow.append($newCol);
+    $newRow.append($('<td>').html($('<span class="lob-game">').text(lob.gameType)));
     // Adding player counts //
-    $newCol = $('<td> </td>');
-    $newCol.append(lob.currentPlayers + '/' + lob.lobbyCap);
-    $newRow.append($newCol);
+    $newRow.append(
+      $('<td>').html([
+        $('<span class="lob-players">').text(lob.currentPlayers),
+        '/',
+        $('<span class="lob-cap">').text(lob.lobbyCap),
+      ])
+    );
     // Adding number of Spectators //
-    $newCol = $('<td> </td>');
-    $newCol.append(lob.spectators);
-    $newRow.append($newCol);
+    $newRow.append(
+      $('<td>').html($('<span class="lob-spectators">').text(lob.spectators))
+    );
     // Adding Private Public logic //
     if (lob.access === 'private') {
       // Locking players //
-      $newCol = $('<td> </td>');
-      $newSpan = $('<span class="glyphicon glyphicon-lock">' + '</span>');
-      $newCol.append($newSpan);
-      $newRow.append($newCol);
+      $newRow.append($('<td>').html($('<span class="glyphicon glyphicon-lock">')));
       // Locking Spectators //
-      $newCol = $('<td> </td>');
-      $newSpan = $('<span class="glyphicon glyphicon-lock">' + '</span>');
-      $newCol.append($newSpan);
-      $newRow.append($newCol);
+      $newRow.append($('<td>').html($('<span class="glyphicon glyphicon-lock">')));
     } else {
+      let $joinPlayer = $('<td class="lob-join-player">');
       if (lob.currentPlayers === lob.lobbyCap) {
         // Locking players because no more room //
-        $newCol = $('<td> </td>');
-        $newSpan = $('<span class="glyphicon glyphicon-lock">' + '</span>');
-        $newCol.append($newSpan);
-        $newRow.append($newCol);
+        $joinPlayer.html($('<span class="glyphicon glyphicon-lock">'));
       } else {
         // Add join players //
-        $newCol = $('<td> </td>');
-        $newBtn = $(
-          '<button type="button" class="btn btn-success btn-lg joinPlay">Join</button>'
+        $joinPlayer.html(
+          $('<button type="button" class="btn btn-success btn-lg joinPlay">Join</button>')
         );
-        $newCol.append($newBtn);
-        $newRow.append($newCol);
       }
+      $newRow.append($joinPlayer);
       // Adding join Spectators //
-      $newCol = $('<td> </td>');
-      $newBtn = $(
-        '<button type="button" class="btn btn-success btn-lg joinSpec">Join</button>'
+      $newRow.append(
+        $('<td>').html(
+          $('<button type="button" class="btn btn-success btn-lg joinSpec">Join</button>')
+        )
       );
-      $newCol.append($newBtn);
-      $newRow.append($newCol);
     }
     // Adding Data //
     $newRow.data('gameType', lob.gameType);
     $newRow.data('lid', lob.id);
-
-    // Adding everything to table //
-    $newRow.append($newCol);
 
     $('#addLob').append($newRow);
   };
@@ -201,5 +189,25 @@ Scratch.locations.lobbylist = function() {};
         return $(this).data('lid') === lobId;
       })
       .remove();
+  };
+
+  Scratch.locations.lobbylist.updateMemberCounts = function(lob) {
+    let $lob = $('#addLob')
+      .children()
+      .filter(function() {
+        return $(this).data('lid') === lob.id;
+      });
+    $lob.find('span.lob-players').text(lob.players);
+    $lob.find('span.lob-spectators').text(lob.spectators);
+  };
+
+  Scratch.locations.lobbylist.updateLobbyConfig = function(lob) {
+    let $lob = $('#addLob')
+      .children()
+      .filter(function() {
+        return $(this).data('lid') === lob.id;
+      });
+    $lob.find('span.lob-game').text(lob.game);
+    $lob.find('span.lob-cap').text(lob.playerCap);
   };
 })();
