@@ -61,7 +61,7 @@ let init = function(io) {
       user
         .update({ role })
         .then(() => { 
-          manager.update(user);
+          manager.updateMember(user);
           io.to(socket.request.user.lobbyId).emit('member', buildMember(user));
         })
         .catch(err => dblogger.error('SockLob - Change Role - Update User: ' + err));
@@ -111,7 +111,7 @@ let init = function(io) {
       socket.disconnect(); // Manually remove client from the lobby namespace.
     });
 
-    socket.on('kick-member', function(uid) {
+    socket.on('kick member', function(uid) {
       socket.to('user' + uid).emit('leave lobby', {});
     });
   });

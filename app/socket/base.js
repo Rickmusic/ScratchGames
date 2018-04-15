@@ -103,6 +103,36 @@ let init = function(io) {
         .catch(err => dblogger.error('SockBase - Joincode - Find Lobby: ' + err));
     });
 
+    socket.on('join as player', function(lobbyId) {
+      Lobby.findById(lobbyId)
+        .then(lobby => {
+          if (!lobby)
+            return socket.emit('', {success: false, message: 'Lobby Not Found'});
+          lobby.addPlayer(socket.request.user)
+            .then(() => {
+              socket.emit('join lobby', { lobby: lobby.id, role: 'player' });
+              socket.emit('navigate', { loc: 'lobby' });
+            })
+            .catch(err => dblogger.error('SockBase - Join Player - Add to Lobby: ' + err));
+        })
+        .catch(err => dblogger.error('SockBase - Join Player - Find Lobby: ' + err));
+    });
+
+    socket.on('join as spectator', function(lobbyId) {
+      Lobby.findById(lobbyId)
+        .then(lobby => {
+          if (!lobby)
+            return socket.emit('', {success: false, message: 'Lobby Not Found'});
+          lobby.addPlayer(socket.request.user)
+            .then(() => {
+              socket.emit('join lobby', { lobby: lobby.id, role: 'spectator' });
+              socket.emit('navigate', { loc: 'lobby' });
+            })
+            .catch(err => dblogger.error('SockBase - Join Spectator - Add to Lobby: ' + err));
+        })
+        .catch(err => dblogger.error('SockBase - Join Spectator - Find Lobby: ' + err));
+    });
+
     let lobbyreload = function() {
       socket.request.user
         .getLobby()
