@@ -103,7 +103,7 @@ let updateMember = function(user) {
       break;
   }
   user.getLobby()
-    .then(dblobby => listio.emit('update', buildListLobby(dblobby))
+    .then(dblobby => listio.emit('update', buildListLobby(dblobby)))
     .catch(err => dblogger.error('Lobby - Update Member - Get Lobby: ' + err));
 };
 
@@ -126,7 +126,7 @@ let removeMember = function(user) {
     break;
   }
   user.getLobby()
-    .then(dblobby => listio.emit('update', buildListLobby(dblobby))
+    .then(dblobby => listio.emit('update', buildListLobby(dblobby)))
     .catch(err => dblogger.error('Lobby - Remove Member (Update) - Get Lobby: ' + err));
 };
 
