@@ -69,6 +69,21 @@
         $tableCon.data('gameType', game);
         $tableCon.data('id', person.id);
         $table.append($tableCon);
+        // Pulling out my Score //
+        if (Scratch.me.id === person.id) {
+          let $scoreDiv = $('<div class"row"></div>');
+          $scoreDiv.append(
+            $(
+              '<div class="col leadName">' +
+                'Your Score' +
+                '</div>' +
+                '<div class="col leadScore">' +
+                person.score +
+                '</div>'
+            )
+          );
+          $('#' + game).append($scoreDiv);
+        }
       }
     }
   });
@@ -81,5 +96,23 @@
         return $(this).data('id') === person.id;
       });
     $local.find('div.leadScore').text(person.score);
+    if (Scratch.me.id === person.id) {
+      $('#'.person.game)
+        .children()
+        .eq(1)
+        .empty();
+      let $scoreDiv = $('<div class"row"></div>');
+      $scoreDiv.append(
+        $(
+          '<div class="col leadName">' +
+            'Your Score' +
+            '</div>' +
+            '<div class="col leadScore">' +
+            person.score +
+            '</div>'
+        )
+      );
+      $('#' + person.game).append($scoreDiv);
+    }
   });
 })();
