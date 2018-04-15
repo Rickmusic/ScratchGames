@@ -13,6 +13,21 @@ let init = function(io) {
           name: 'Test Jill',
           score: 4321,
         },
+        {
+          id: '12345',
+          name: 'Austin',
+          score: 100021,
+        },
+        {
+          id: '3412',
+          name: 'Oscar',
+          score: 232,
+        },
+        {
+          id: '11923',
+          name: 'Donald',
+          score: 3232,
+        },
       ],
       GoFish: [
         {
