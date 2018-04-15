@@ -73,7 +73,7 @@ let init = function(io) {
         io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
       } else {
 	      if (game.gameOver) {
-          game.onWin(game.score());
+          game.onWin(socket.request.user.lobbyId, game.score());
 	      }
         // Display an error message
       }

@@ -60,7 +60,7 @@ let init = function(io) {
       if (result == "Game Over") {
 	  	var winner = game.getWinner();
 	  	io.emit("game-over", winner)
-      return game.onWin(game.score());
+      return game.onWin(socket.request.user.lobbyId ,game.score());
 	  }
       let resultFrom = ask.asks;
       socket.emit('game-state', game.getStateFor(ask.uid));
