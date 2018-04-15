@@ -163,6 +163,7 @@ let setPlayerReady = function(user) {
     io.to(user.lobbyId).emit('lobbyReady', {});
 };
 let getPlayerReady = function(user) {
+  if (!lobbies[user.lobbyId].players[user.id]) return false;
   return lobbies[user.lobbyId].players[user.id].ready;
 };
 
