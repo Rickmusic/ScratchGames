@@ -191,7 +191,7 @@ router.get('/logout', function(req, res) {
   logger.verbose('Logout ' + req.user.displayName);
   res.clearCookie('remember_me');
   req.logout();
-  res.redirect('/');
+  res.redirect('/login');
 });
 
 // Redirects if not logged in

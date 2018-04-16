@@ -7,6 +7,10 @@ let { Message, User } = db.models;
 let init = function(io) {
   io.on('connection', function(socket) {
     socket.on('hello', function() {
+      socket.request.user.update({ status: 'online' })
+        .then(() => {})
+        .catch(err => dblogger.error('Socket - Chat - Hello - Update: ' + err));
+      socket.emit('user online', { id: socket.request.user.id, name: socket.request.user.displayName });
       socket.join(socket.request.user.id);
       let response = {};
       response.you = {
@@ -35,6 +39,13 @@ let init = function(io) {
           socket.emit('hello', response);
         })
         .catch(err => dblogger.error('Socket - Chat - Hello - Find Users: ' + err));
+    });
+
+    socket.on('disconnect', function() {
+      socket.request.user.update({ status: 'offline' })
+        .then(() => {})
+        .catch(err => dblogger.error('Socket - Chat - Hello - Update: ' + err))
+      socket.emit('user offline', { id: socket.request.user.id });
     });
 
     let buildMessage = function(data, to) {
