@@ -4,11 +4,14 @@ let Deck = require('../deck');
 let Player = require('../player');
 class GoFish {
   constructor() {
+	  this.spectators = {}; 
+	  
     this.gameStarted = false;
     this.pTurn = -1;
     this.players = {};
     this.leader = null;
     this.deck = new Deck();
+    this.onWin = null;
   }
   get numberPlayers() {
     return Object.keys(this.players).length;
@@ -19,6 +22,13 @@ class GoFish {
     }
 
     return 5;
+  }
+  score() {
+	  var ret = {};
+	  for (var p in this.players) {
+		  ret[p] = this.players[p].books.length;
+	  }
+	  return ret;
   }
   startGame() {
     this.gameStarted = true;
@@ -43,6 +53,15 @@ class GoFish {
 	else {
 		this.players[player.uid].sid = player.sid;
 	}
+  }
+  spectatorJoined(player) {
+  	let pl = new Player(player);
+	if (this.spectators[player.uid] == null) {
+		this.spectators[player.uid] = pl;
+	}
+	else {
+		this.spectators[player.uid].sid = player.sid;
+	} 
   }
   getStatus(player) {
     //if (!this.gameStarted) {
@@ -72,6 +91,13 @@ class GoFish {
       }
     }
     return returnData;
+  }
+  getSpectatorStatus() {
+	  var returnData = {
+		  state: 'spectator',
+		  players: this.players,
+	  }
+	  return returnData;
   }
   nextTurn() {
     for (var i in this.players) {

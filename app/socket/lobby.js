@@ -115,6 +115,9 @@ let init = function(io) {
     });
 
     socket.on('leave lobby', function() {
+      socket.broadcast
+        .to(socket.request.user.lobbyId)
+        .emit('playerLeft', socket.request.user.id);
       manager.removeMember(socket.request.user);
       socket.emit('navigate', { loc: 'lobbylist' });
       socket.disconnect(); // Manually remove client from the lobby namespace.
