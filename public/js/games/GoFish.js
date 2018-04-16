@@ -245,7 +245,7 @@
         for (let x = 0; x < goFish.loby[i]['hand']; x++) {
           console.log('left: ' + xLoc + '%, top: ' + yLoc + '%');
           let card = $('.card-deck-card:nth-child(' + counter + ')');
-          card.delay(counter * 500).animate(
+          card.delay(counter * 30).animate(
             {
               left: xLoc + '%',
               top: yLoc + '%',
@@ -263,10 +263,10 @@
         card.attr('suit', goFish.me['hand'][x]['suit']);
         card.attr('num', goFish.me['hand'][x]['num']);
         let xLoc = x * 60;
-        card.delay(counter * 500).animate(
+        card/*.delay(counter * 500)*/.animate(
           {
             left: xLoc + 'px',
-            top: '80%',
+            top: '70%',
           },
           1500,
           function() {
@@ -385,7 +385,12 @@
 	    goFish.setLeader(status['leader']);
 	    if (goFish.amLeader() && !status.started) {
 	      console.log('YOU ARE THE LEADER');
-	      $('#start-game').show();
+	      if (firstTurn) {
+		      $('#start-game').show();
+	      }
+	      else {
+		       $('#start-game').hide();
+	      }
 	      $('#start-game').click(function() {
 	        goFish.startGame();
 	        $('#start-game').hide();

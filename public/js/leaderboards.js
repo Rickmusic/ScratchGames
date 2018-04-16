@@ -97,12 +97,12 @@
       });
     $local.find('div.leadScore').text(person.score);
     if (Scratch.me.id === person.id) {
-      $('#'.person.game)
+      $('#' + person.game)
         .children()
         .eq(1)
         .empty();
       let $scoreDiv = $('<div class"row"></div>');
-      $scoreDiv.append(
+      $scoreDiv.set(
         $(
           '<div class="col leadName">' +
             'Your Score' +

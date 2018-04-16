@@ -32,6 +32,7 @@ sequelize
 /* Import All Of The Tables */
 let Auth = sequelize.import('auth', require('./models/auth'));
 let Lobby = sequelize.import('lobby', require('./models/lobby'));
+let Leaderboard = sequelize.import('leaderboard', require('./models/leaderboard'));
 let Message = sequelize.import('message', require('./models/message'));
 let Token = sequelize.import('token', require('./models/token'));
 let User = sequelize.import('user', require('./models/user'));
@@ -44,15 +45,11 @@ let UserAuth = User.hasOne(Auth, { foreignKey: 'userId' });
 let TokenUser = Token.belongsTo(User, { foreignKey: 'userId' });
 let LobbyUser = Lobby.hasMany(User, { as: 'Users', foreignKey: 'lobbyId' });
 let UserLobby = User.belongsTo(Lobby, { foreignKey: 'lobbyId' });
-let MessageFrom = Message.belongsTo(User, {
-  as: 'Sender',
-  foreignKey: 'senderId',
-});
+let UserLeaderboard = User.hasMany(Leaderboard, { as: 'Ranks', foreignKey: 'userId' });
+let LeaderboardUser = Leaderboard.belongsTo(User, { foreignKey: 'userId' });
+let MessageFrom = Message.belongsTo(User, { as: 'Sender', foreignKey: 'senderId' });
 let MassageLobby = Message.belongsTo(Lobby, { foreignKey: 'lobbyId' });
-let MessageTo = Message.belongsTo(User, {
-  as: 'Recipient',
-  foreignKey: 'recipientId',
-});
+let MessageTo = Message.belongsTo(User, { as: 'Recipient', foreignKey: 'recipientId' });
 
 /* The following relationships are not foreignKey constrained on the DB */
 let LobbyHost = Lobby.belongsTo(User, { as: 'Host', foreignKey: 'hostId' });
@@ -62,6 +59,7 @@ module.exports = {
   models: {
     Auth,
     Lobby,
+    Leaderboard,
     Message,
     Token,
     User,
@@ -72,6 +70,8 @@ module.exports = {
     LobbyUser,
     UserLobby,
     LobbyHost,
+    UserLeaderboard,
+    LeaderboardUser,
     MessageFrom,
     MassageLobby,
     MessageTo,

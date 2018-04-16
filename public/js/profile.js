@@ -35,16 +35,14 @@ Scratch.locations.profile = function() {};
   };
 
   socket.on('return', function(data) {
-    let success = true;
-    let message = 'Error Occured';
     $('#serverMessage').empty();
-    if (success === true) {
+    if (data.success === true) {
       $('#password').trigger('reset');
       $('#displayName').trigger('reset');
       $('#email').trigger('reset');
       $('#serveMessage').text('Success');
     } else {
-      $('#serverMessage').text('Something went wrong: ' + message);
+      $('#serverMessage').text('Something went wrong: ' + data.message);
     }
   });
 })();

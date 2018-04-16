@@ -49,13 +49,8 @@
 
             <form id="displayName">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Display Name</label>
-                    <input type="text" class="form-control " placeholder="New Display Name">
-                </div>
-
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Confirm Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    <label for="displayName">Display Name</label>
+                    <input type="text" class="form-control " name="displayName" placeholder="New Display Name">
                 </div>
                 <button type="submit" class="btn btn-success btn-lg">Submit</button>
             </form>
@@ -69,11 +64,11 @@
 
                 <div class="form-group">
                     <label >Old Email address</label>
-                    <input type="email" class="form-control"  placeholder="name@example.com">
+                    <input type="email" class="form-control" name="oldEmail" placeholder="name@example.com">
                 </div>
                 <div class="form-group">
                     <label>New Email address</label>
-                    <input type="email" class="form-control"  placeholder="name@example.com">
+                    <input type="email" class="form-control" name="newEmail" placeholder="name@example.com">
                 </div>
                 <button type="submit" class="btn btn-success btn-lg">Submit</button>
             </form>
@@ -84,12 +79,12 @@
             <form id="password">
                 <div class="form-group">
                     <label >Old Password</label>
-                    <input type="password" class="form-control" placeholder="Password">
+                    <input type="password" name="oldPassword" class="form-control" placeholder="Password">
                 </div>
 
                 <div class="form-group">
                     <label >New Password</label>
-                    <input type="password" class="form-control" placeholder="Password">
+                    <input type="password" name="newPassword" class="form-control" placeholder="Password">
                 </div>
                 <button type="submit" class="btn btn-success btn-lg">Submit</button>
             </form>

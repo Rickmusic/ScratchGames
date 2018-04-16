@@ -3,6 +3,7 @@
 let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { Lobby } = db.models;
+let leaderboard = require('../leaderboard');
 let games = require('../games');
 let nsps = require('../socket/namespaceManager');
 
@@ -220,16 +221,22 @@ let endGame = function(lobbyId) {
 };
 
 let endRound = {
-  Uno: function endRound(lobbyId, score) {
-    // TODO update Leaderboard
+  Uno: function endRound(lobbyId, scores) {
+    leaderboard.addScores
+      .Uno(scores)
+      .then(() => {})
+      .catch(err => console.log('Lobby - End Round (Uno) - Update Leaderboard: ' + err));
     if (lobbies[lobbyId].gamestatus.rounds <= 1) return endGame(lobbyId);
     lobbies[lobbyId].gamestatus.rounds -= 1;
     Lobby.findById(lobbyId)
       .then(dblobby => startRound(dblobby))
       .catch(err => dblogger.error('Lobby - End Round (Uno) - Find Lobby: ' + err));
   },
-  GoFish: function endRound(lobbyId, score) {
-    // TODO update Leaderboard
+  GoFish: function endRound(lobbyId, scores) {
+    leaderboard.addScores
+      .GoFish(scores)
+      .then(() => {})
+      .catch(err => console.log('Lobby - End Round (Uno) - Update Leaderboard: ' + err));
     if (lobbies[lobbyId].gamestatus.rounds <= 1) return endGame(lobbyId);
     lobbies[lobbyId].gamestatus.rounds -= 1;
     Lobby.findById(lobbyId)
