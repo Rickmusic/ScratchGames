@@ -8,7 +8,7 @@ let lobbymanager = require('../lobby');
 
 const GameTypes = [
   { id: 'uno', display: 'UNO', maxPlayer: 4, minPlayer: 2 },
-  { id: 'gofish', display: 'Go Fish', maxPlayer: 3, minPlayer: 2 },
+  { id: 'gofish', display: 'Go Fish', maxPlayer: 4, minPlayer: 2 },
 ];
 
 let init = function(io) {
@@ -28,6 +28,8 @@ let init = function(io) {
     socket.on('game types', function() {
       socket.emit('game types', { GameTypes });
     });
+
+    /* Lobby Function */
 
     socket.on('create lobby', function(form) {
       // TODO Verify Settings and send feedback
@@ -182,6 +184,37 @@ let init = function(io) {
     socket.on('lobby reload', lobbyreload);
     socket.on('game reload', lobbyreload);
   });
+
+  /* Profile Functions */
+
+  socket.on('displayName', function(form) 
+    socket.request.user.update({ displayName: form.displayName })
+      .then(() => socket.emit('return', { success: true }))
+      .catch(err => dblogger.error('Socket - Base - Display Name: ' + err));
+  });
+
+  socket.on('email', function(form) {
+    socket.emit('return', { success: true });
+    // TODO form.newEmail, form.oldEmail 
+  });
+
+  socket.on('password', function(form)
+    socket.request.user.getAuth()
+      .then(auth => {
+        auth.validatePassword(form.oldPassword)
+          .then(isMatch => {
+            if (!isMatch) return socket.emit('return', { success: false, message: 'Incorrect Password' });
+            auth.updatePassword(form.newPassword)
+              .then(() => {
+                socket.emit('return', { success: true });
+              })
+              .catch(err => dblogger.error('Socket - Base - Password - Update: ' + err));
+          })
+          .catch(err => dblogger.error('Socket - Base - Password - Validate: ' + err));
+      })
+      .catch(err => dblogger.error('Socket - Base - Password - Get Auth: ' + err));
+  });
+
 };
 
 module.exports = init;
