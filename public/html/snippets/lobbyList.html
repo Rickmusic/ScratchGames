@@ -1,43 +1,36 @@
-<div>
-    <div class="sideTitle">Active Lobbies</div>
-    <nav class="navbar navbar-expand-sm navbar-dark">
+<div id="activeLobbies">
+    <div class="sideTitle" id="activeLobbiesBar">Active Lobbies</div>
+    <nav class="navbar navbar-expand-sm navbar-dark" id="gameTabs">
         <div class="collapse navbar-collapse">
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link availableGames" href="#">All</a>
+                    <li class="nav-item navPad">
+                        <div id="AllList" class="nav-link availableGames">All</div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link availableGames" href="#">Go Fish</a>
+                    <li class="nav-item navPad">
+                        <div id="GoFishList" class="nav-link availableGames">Go Fish</div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link availableGames" href="#">UNO</a>
+                    <li class="nav-item navPad">
+                        <div id="UNOList" class="nav-link availableGames">UNO</div>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div id="table" class="table table-bordered">
-        <table id="lobbylist" class="center">
+    <div id="mainLobbyList" class="table table-bordered pre-scrollable">
+        <table id="lobbylist" class="table center" style="table-layout: fixed;">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Game Type</th>
-                    <th># of Players</th>
-                    <th># of Spectators</th>
-                    <th>Join Players</th>
-                    <th>Spectate</th>
+                    <th>Players</th>
+                    <th>Viewers</th>
+                    <th>Play</th>
+                    <th>View</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>Austin is great</td>
-                    <td>Go Fish</td>
-                    <td>2/4</td>
-                    <td>23</td>
-                    <td><span class="glyphicon glyphicon-lock"></span></td>
-                    <td><button type="button" class="btn btn-success btn-lg ">Join</button></span></td>
-                </tr>
+            <tbody id="addLob">
+                <!-- // Loaded in Dynamically // -->
             </tbody>
         </table>
     </div>

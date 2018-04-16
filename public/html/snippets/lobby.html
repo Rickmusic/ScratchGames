@@ -1,10 +1,10 @@
 <div class="container">
-    <div class="row" style="border-top: black solid 2px; border-bottom: black solid 2px">
+    <div class="row bar" style="border-top: black solid 2px; border-bottom: black solid 2px">
         <div id ="lobbyName" class="col center">
             <h2>Lobby Name:</h2>
         </div>
     </div>
-    <div class="row" style="border-top: black solid 2px; border-bottom: black solid 2px">
+    <div class="row bar" style="border-bottom: black solid 2px">
         <div id="gameType" class="col center">
             <h2>Game Type: </h2>
         </div>
@@ -15,28 +15,34 @@
             <h2>Joincode:</h2>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="height: 20%">
         <div class="col voidPad" style="border-right: black solid 2px">
-            <div class="page-header sideTitle">
+            <div class="page-header sideTitle playerSpectatorList">
                 <h2>Players</h2>
             </div>
-            <div id="Players" class="container">
+            <div class="pre-scrollable scrollingList">
+                <div id="Players" class="container">
+                    <!-- Added by Javascript code -->
+                </div>
             </div>
         </div>
         <div class="col voidPad">
-            <div class="page-header sideTitle">
+            <div class="page-header sideTitle playerSpectatorList">
                 <h2>Spectators</h2>
             </div>
-            <div id="Spectators" class="container">
+            <div class="pre-scrollable scrollingList">
+                <div id="Spectators" class="container">
+                    <!-- Added from Javascript code -->
+                </div>
             </div>
         </div>
     </div>
-    <div class="row h-50">
+    <div class="row" id="gameSettingsSize">
         <div id="gameSettings" class="col center voidPad" style="border-right: black solid 2px;">
             <!-- Loaded Dynamically depending on the game -->
         </div>
         <div class="col center voidPad">
-            <div class="page-header sideTitle danger">
+            <div class="page-header sideTitle danger playerSpectatorList" id="dangerSettingLobby">
                 <h2>Danger Zone</h2>
             </div>
             <div class="container">
@@ -59,7 +65,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <!--<div class="form-group row">
                         <label class="col-6 col-form-label" for="numSpec">Number of allowed Spectators:</label>
                         <div class="col-6">
                             <select name="numSpec" class="form-control" id="numSpec">
@@ -74,7 +80,7 @@
                                 <option value="8">8</option>
                             </select>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="center">
                         <p id="message" style="color: red;"><p>
                         <button disabled id="confirm" type="submit" value="Create" class="btn btn-success btn-lg">Confirm</button>
@@ -84,7 +90,7 @@
             </div>
         </div>
     </div>
-    <div class="row h-25">
+    <div class="row bar">
         <div class="col center pad">
             <button id="startBtn" type="button" class="btn btn-warning btn-lg btn-block">Start Game</button>
         </div>

@@ -65,48 +65,36 @@
         </div>
 
         <div class = 'centerItems container-fluid'>
-            <div class="row fill">
+            <div class="row fill" id="mainScreen">
                 <div class="col-2 section onlinePlayers" id="left">
                     <div class="page-header sideTitle">
                         <h2>Players</h2>
                     </div>
+                    <div id="headingPlayersOne">
+                        <h5 class="page-header sideTitle">
+                                Global
+                        </h5>
 
-                    <div id="accordion-players">
-                        <div class="card">
-                            <div class="card-header" id="headingPlayersOne">
-                                <h4 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapsePlayersOne" aria-expanded="true" aria-controls="collapsePlayersOne">
-                                        Global
-                                    </button>
-                                </h4>
-                            </div>
-
-                            <div id="collapsePlayersOne" class="collapse show" aria-labelledby="headingPlayersOne" data-parent="#accordion-players">
-                                <div id="global-players" class="card-body">
-                                    <div class="pre-scrollable" id="GlobalPlayerWindow">
-                                        <ul><!-- Dynamically Populated by chat.js --></ul>
-                                    </div>
-                                </div>
+                        <div id="global-players">
+                            <div class="pre-scrollable" id="GlobalPlayerWindow">
+                                <ul><!-- Dynamically Populated by chat.js --></ul>
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-header" id="headingPlayersTwo">
-                                <h4 class="mb-0">
-                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapsePlayersTwo" aria-expanded="false" aria-controls="collapsePlayersTwo">
-                                        Lobby
-                                    </button>
-                                </h4>
-                            </div>
-                            <div id="collapsePlayersTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion-players">
-                                <div id="lobby-players" class="card-body">
-                                    <div class="pre-scrollable" id="GlobalLobbyWindow">
-                                        <ul><!-- Dynamically Populated by chat.js --></ul>
-                                    </div>
-                                </div>
+                    </div>
+
+                    <div id="headingPlayersTwo">
+                        <h5 class="page-header sideTitle">
+                                Lobby
+                        </h5>
+
+                        <div id="lobby-players">
+                            <div class="pre-scrollable" id="GlobalLobbyWindow">
+                                <ul><!-- Dynamically Populated by chat.js --></ul>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="col-8 section mainItems">
                     <nav class="navbar navbar-expand-sm navbar-light">
                         <div class="collapse navbar-collapse" id="navbarText">
@@ -131,55 +119,57 @@
 
                 </div>
 
-                <div id="chat" class="col-2 right section onlineChat">
+                <div class="col-2 right section onlineChat" id="chat">
                     <div class="page-header sideTitle">
                         <h2>Chat</h2>
                     </div>
 
-                    <div id="accordion-chat">
-                        <div class="card">
-                            <div class="card-header" id="headingOne">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Global Chat
-                                    </button>
-                                </h5>
+                    <div id="headingOne">
+                        <h5 class="page-header sideTitle">
+                                Global Chat
+                        </h5>
+                        <div id="global-chat">
+                            <div class="pre-scrollable" id="GlobalChatWindow">
+                                <ul></ul>
                             </div>
-
-                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion-chat">
-                                <div id="global-chat" class="card-body">
-                                    <div class="pre-scrollable" id="GlobalChatWindow">
-                                        <ul></ul>
+                            <div class="chatInput">
+                                <form class="chat-input" action="">
+                                    <div class="container">
+                                        <div class="row justify-content-md-center">
+                                            <div class="col-8 chatPadding" style="border-top:0px">
+                                                <input class="chatBox" type="text" name="message" autocomplete="off" placeholder="Your message here"/>
+                                            </div>
+                                            <div class="col-4 chatPadding" style="padding:0px">
+                                                <input class="chatBox" type="submit" value="Send"/>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="chatInput">
-                                        <form class="chat-input" action="">
-                                            <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
-                                            <input type="submit" value="Send"/>
-                                        </form>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-header" id="headingTwo">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        Lobby Chat
-                                    </button>
-                                </h5>
+                    </div>
+
+                    <div id="headingTwo">
+                        <h5 class="page-header sideTitle">
+                                Lobby Chat
+                        </h5>
+                        <div id="lobby-chat">
+                            <div class="pre-scrollable" id="LobbyChatWindow">
+                                <ul></ul>
                             </div>
-                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion-chat">
-                                <div id="lobby-chat" class="card-body">
-                                    <div class="pre-scrollable" id="LobbyChatWindow">
-                                        <ul></ul>
+                            <div class="chatInput">
+                                <form class="chat-input" action="">
+                                    <div class="container">
+                                        <div class="row justify-content-md-center">
+                                            <div class="col-8 chatPadding" style="border-top:0px">
+                                                <input class="chatBox" type="text" name="message" autocomplete="off" placeholder="Your message here"/>
+                                            </div>
+                                            <div class="col-4 chatPadding" style="padding:0px">
+                                                <input class="chatBox" type="submit" value="Send"/>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="chatInput">
-                                        <form class="chat-input" action="">
-                                            <input type="text" name="message" autocomplete="off" placeholder="Your message here"/>
-                                            <input type="submit" value="Send"/>
-                                        </form>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>

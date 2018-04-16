@@ -6,7 +6,7 @@ let { Message, User } = db.models;
 
 let init = function(io) {
   io.on('connection', function(socket) {
-    socket.on('hello', function(data) {
+    socket.on('hello', function() {
       socket.join(socket.request.user.id);
       let response = {};
       response.you = {
@@ -34,7 +34,7 @@ let init = function(io) {
           }
           socket.emit('hello', response);
         })
-        .catch(err => dblogger.error('At Get Online Users: ' + err));
+        .catch(err => dblogger.error('Socket - Chat - Hello - Find Users: ' + err));
     });
 
     let buildMessage = function(data, to) {
@@ -54,7 +54,9 @@ let init = function(io) {
         transport: 'global',
         message: data.message,
         senderId: socket.request.user.id,
-      }).catch(err => dblogger.error('At Create Global Message: ' + err));
+      }).catch(err =>
+        dblogger.error('Socket - Chat - Global Message - Create Message: ' + err)
+      );
       io.emit('global message', buildMessage(data));
     });
 
@@ -66,7 +68,9 @@ let init = function(io) {
         senderId: socket.request.user.id,
         senderRole: socket.request.user.role,
         lobbyId: socket.request.user.lobbyId,
-      }).catch(err => dblogger.error('At Create Lobby Message: ' + err));
+      }).catch(err =>
+        dblogger.error('Socket - Chat - Lobby Message - Create Message: ' + err)
+      );
       if (socket.request.user.role === 'player' || socket.request.user.role === 'host') {
         io
           .to(socket.request.user.lobbyId + 'player')
@@ -87,11 +91,15 @@ let init = function(io) {
             message: data.message,
             senderId: socket.request.user.id,
             recipientId: to.id,
-          }).catch(err => dblogger.error('At Create Private Message: ' + err));
+          }).catch(err =>
+            dblogger.error('Socket - Chat - Private Message - Create Message: ' + err)
+          );
           io.to(to.id).emit('private message', buildMessage(data, to));
           socket.emit('private message', buildMessage(data, to));
         })
-        .catch(err => dblogger.error('At Private Message Lookup User: ' + err));
+        .catch(err =>
+          dblogger.error('Socket - Chat - Private Message - Lookup User: ' + err)
+        );
     });
 
     socket.on('join lobby', function(data) {
@@ -99,18 +107,45 @@ let init = function(io) {
       if (data.role === 'player' || data.role === 'host')
         socket.join(socket.request.user.lobbyId + 'player');
       else socket.join(socket.request.user.lobbyId + 'spectator');
+      socket.broadcast
+        .to(socket.request.user.lobbyId + 'player')
+        .to(socket.request.user.lobbyId + 'spectator')
+        .emit('user join lobby', {
+          id: socket.request.user.id,
+          name: socket.request.user.displayName,
+          role: data.role,
+        });
       User.findAll({
         attributes: ['id', ['displayName', 'name'], 'role'],
         where: { status: 'online', lobbyId: data.lobby },
       })
         .then(users => socket.emit('lobby users', { users }))
-        .catch(err => dblogger.error('At Get Lobby Users: ' + err));
+        .catch(err => dblogger.error('Socket - Chat - Join Lobby - Find Users: ' + err));
     });
 
-    socket.on('leave lobby', function(data) {
-      socket.leave(data.lobby + 'player');
-      socket.leave(data.lobby + 'spectator');
-      socket.request.user.lobbyId = null;
+    socket.on('update role', function(role) {
+      socket.leave(socket.request.user.lobbyId + 'player');
+      socket.leave(socket.request.user.lobbyId + 'spectator');
+      if (role === 'player' || role === 'host')
+        socket.join(socket.request.user.lobbyId + 'player');
+      else socket.join(socket.request.user.lobbyId + 'spectator');
+      socket.broadcast
+        .to(socket.request.user.lobbyId + 'player')
+        .to(socket.request.user.lobbyId + 'spectator')
+        .emit('user join lobby', {
+          id: socket.request.user.id,
+          name: socket.request.user.displayName,
+          role: role,
+        });
+    });
+
+    socket.on('leave lobby', function() {
+      socket.leave(socket.request.user.lobbyId + 'player');
+      socket.leave(socket.request.user.lobbyId + 'spectator');
+      socket.broadcast
+        .to(socket.request.user.lobbyId + 'player')
+        .to(socket.request.user.lobbyId + 'spectator')
+        .emit('user leave lobby', { id: socket.request.user.id });
     });
   });
 };

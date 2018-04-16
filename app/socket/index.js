@@ -6,6 +6,8 @@ let events = function(io) {
   require('./base')(io);
   require('./chat')(io.of('/chat'));
   require('./lobby')(io.of('/lobby'));
+  require('./lobbylist')(io.of('/lobbylist'));
+  require('./leaderboard')(io.of('/leaderboard'));
 };
 
 let init = function(app) {

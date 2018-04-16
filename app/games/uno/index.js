@@ -73,7 +73,7 @@ let init = function(io) {
         io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
       } else {
 	      if (game.gameOver) {
-		      // @Kayleigh - here!
+          game.onWin(socket.request.user.lobbyId, game.score());
 	      }
         // Display an error message
       }
@@ -99,9 +99,10 @@ let init = function(io) {
   });
 };
 
-let create = function(settings, lobbyId, hostId) {
+let create = function(settings, lobbyId, hostId, winCall) {
   games[lobbyId] = new Uno();
   games[lobbyId].leader = hostId;
+  games[lobbyId].onWin = winCall;
 };
 
 module.exports = { init, create };

@@ -11,6 +11,7 @@ class GoFish {
     this.players = {};
     this.leader = null;
     this.deck = new Deck();
+    this.onWin = null;
   }
   get numberPlayers() {
     return Object.keys(this.players).length;
