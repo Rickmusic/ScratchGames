@@ -162,7 +162,7 @@ Scratch.locations.lobbylist = function() {};
       $newRow.append($('<td>').html($('<span class="glyphicon glyphicon-lock">')));
     } else {
       let $joinPlayer = $('<td class="lob-join-player">');
-      if (lob.currentPlayers === lob.lobbyCap) {
+      if (lob.currentPlayers >= lob.lobbyCap) {
         // Locking players because no more room //
         $joinPlayer.html($('<span class="glyphicon glyphicon-lock">'));
       } else {
