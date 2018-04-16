@@ -11,6 +11,11 @@ html, body {
   overflow-y: hidden;
 }
 
+td, th {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
 /* Chat Interface */
 
 #chat .name {
@@ -225,11 +230,11 @@ table{
     height: 5%;
 }
 #gameTabs{
-    height: 5%;
+    height: 8%;
 }
 #mainLobbyList{
-    min-height: 83%;
-    max-height: 83%;
+    min-height: 80%;
+    max-height: 80%;
 }
 
 /* Lobby */
@@ -253,7 +258,7 @@ table{
 }
 
 /* Mobile Styles */
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 411px) {
     body{
         margin: 0;
         padding: 0;
@@ -261,7 +266,9 @@ table{
         overflow-y: auto;
     }
 
-
+    #mainLobbyList{
+        max-height: 400px;
+    }
     .mainItems{
         display: table-header-group;
     }
@@ -305,7 +312,23 @@ table{
         border-top: black solid 2px;
         border-bottom: black solid 2px;
     }
-
+    .navbar-expand-sm .navbar-nav {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+    }
+    .availableGames{
+        padding-right: 5px !important;
+        padding-left: 5px !important;
+    }
+    .navPad{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+    iframe{
+        height: 500px;
+    }
 }
 
 /* Tablet Styles */
@@ -314,6 +337,9 @@ table{
         overflow-y: auto;
     }
 
+    #mainLobbyList{
+        max-height: 400px;
+    }
     .mainItems{
         display: table-header-group;
     }
@@ -357,6 +383,19 @@ table{
         margin: 0px 0px;
     }
 
+    .navbar-expand-sm .navbar-nav {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+    }
+    .availableGames{
+        padding-right: 5px !important;
+        padding-left: 5px !important;
+    }
+    iframe{
+        height: 500px;
+    }
 }
 
 /* Desktop Styles */
@@ -398,5 +437,11 @@ table{
 @media only screen and (max-width: 386px){
     #unoSettingLobby, #goFishSettingLobby, #dangerSettingLobby{
         height: 15%;
+    }
+}
+
+@media only screen and (max-width: 437px){
+    td, th {
+        font-size: 90%
     }
 }
