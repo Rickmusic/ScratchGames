@@ -10,7 +10,6 @@
       this.leader = null;
       this.me = {};
       this.gameStarted = false;
-      console.log('SETUP');
       this.isSpectator = false;
       this.playerBooks = {};
     }
@@ -22,8 +21,6 @@
         let player = state[i];
         if (player['uid'] == this.me['uid']) {
           this.me = player;
-          console.log('NEW CARDS');
-          console.log(this.me);
         } 
         else {
           this.loby[player['uid']] = player;
@@ -83,7 +80,6 @@
         yLoc +
         "%'>" +
         us['name'];
-      console.log('CURUSER');
       curUser +=
         "<button id='choose-player-" +
         us['uid'] +
@@ -116,8 +112,6 @@
   function showUserButtons() {
     for (let i in goFish.loby) {
       let us = goFish.loby[i];
-      console.log('SHOWING');
-      console.log(us);
       $('#choose-player-' + us['uid']).show();
     }
   }
@@ -143,13 +137,11 @@
     chosenPlayer = chosenPlayerId;
     $('#choose-player-' + chosenPlayer).hide();
     myTurnPartTwo();
-    console.log('ABC');
   }
 
   function activateButtons() {
     for (let i in goFish.loby) {
       let us = goFish.loby[i];
-      console.log(us['uid']);
       $('#choose-player-' + us['uid']).off(clickedUser);
       $('#choose-player-' + us['uid']).click(clickedUser);
     }
@@ -164,7 +156,6 @@
   }
   var suits = {"C": "e900", "D": "e901", "H": "e902", "S": "e903"};
   function showSpectatorHand() {
-	  console.log("SHOWING HAND");
 	  for (let p in goFish.loby) {
 		   var player = goFish.loby[p];
 		   var htm = "<tr>";
@@ -179,7 +170,6 @@
 			   htm += "<td>&#x"+suits[card["suit"]]+";"+card["num"]+"</td>";
 			   counter += 1;
 		   }
-		   console.log(htm);
 		   $("#player-"+player.uid+">.cards-in-hand").html("<table>"+htm+"</tr></table>");
 	    }
   }
@@ -190,7 +180,7 @@
   }
 
   function startGame() {
-    console.log(socket);
+
   }
 
   function askFor() {
@@ -208,10 +198,8 @@
     $('#instructions-wording').html(
       'Select a card to ask ' + goFish.loby[chosenPlayer].name + ' for from your hand'
     );
-    console.log(goFish.me.hand);
     for (let i in goFish.me.hand) {
       let card = goFish.me.hand[i];
-      console.log(card);
       $('#' + card['num'] + '-of-' + card['suit']).click(function() {
         if (selectedCard != null) {
           $('#' + selectedCard).css({ width: '60px', height: '86px' });
@@ -233,17 +221,13 @@
 
   function updateGame() {
     if (!cardsDealt) {
-      console.log('DEALING CARDS');
-      console.log(goFish.numberPlayers - 1);
       let angleDif = Math.PI / (goFish.numberPlayers - 1);
       let curAngle = 0;
       let counter = 0;
       for (let i in goFish.loby) {
         let xLoc = 50 - (Math.cos(curAngle) * 40 + 10) + 5;
         let yLoc = 50 - (Math.sin(curAngle) * 40 + 10) + 5;
-        console.log(Math.cos(curAngle));
         for (let x = 0; x < goFish.loby[i]['hand']; x++) {
-          console.log('left: ' + xLoc + '%, top: ' + yLoc + '%');
           let card = $('.card-deck-card:nth-child(' + counter + ')');
           card.delay(counter * 30).animate(
             {
@@ -257,7 +241,6 @@
         }
         curAngle += angleDif;
       }
-      console.log(goFish.me);
       for (let x = 0; x < goFish.me['hand'].length; x++) {
         let card = $('.card-deck-card:nth-child(' + counter + ')');
         card.attr('suit', goFish.me['hand'][x]['suit']);
@@ -273,8 +256,6 @@
             $(this).addClass('card-player-me');
             //card-flip
             let crd = $(this).attr('card');
-            console.log('CARD = ');
-            console.log(crd);
             $('#' + $(this).attr('num') + '-of-' + $(this).attr('suit')).addClass(
               'card-flip'
             );
@@ -336,7 +317,6 @@
   socketFunctions = function() {};
 
   socketFunctions.init = function(nsp) {
-    console.log('Go Fish Socket Init', nsp);
     socket = io(nsp);
     socket.on('hello', () => socket.emit('hello', {}));
     socketFunctions.hook();
@@ -370,7 +350,6 @@
   };
 
   socketFunctions.status = function(status) {
-    console.log(status);
     if (status["state"] != "spectator") {
 	    goFish.pl = status["turn"];
 	    for (let i in status['players']) {
@@ -384,7 +363,6 @@
 	    }
 	    goFish.setLeader(status['leader']);
 	    if (goFish.amLeader() && !status.started) {
-	      console.log('YOU ARE THE LEADER');
 	      if (firstTurn) {
 		      $('#start-game').show();
 	      }
@@ -399,16 +377,13 @@
 	    }
 	    if (goFish.pl == goFish.me['uid']) {
 	      $('#instructions-turn').html('It is your turn');
-	      console.log(goFish.loby);
 	      myTurn();
 	    } 
 	}
 	else {
 		goFish.isSpectator = true;
-		console.log("12345");
 		for (let i in status['players']) {
 	      let join = status['players'][i];
-	      console.log(join);
 	      if (join.uid == status.uid) {
 	        goFish.updateMe(join);
 	      } else {
@@ -434,7 +409,6 @@
   socketFunctions.gameState = function(state) {
 	  if (state["state"] != "spectator") {
 		  goFish.isSpectator = false;
-	    console.log(state);
 	    goFish.updateGameState(state);
 	    updateGame();
 	  }
@@ -458,9 +432,7 @@
     }
     $('#instructions-wording').html('');
     if (pl == goFish.me['uid']) {
-      console.log('MY TURN');
       $('#instructions-turn').html('It is your turn');
-      console.log(goFish.loby);
       myTurn();
     } 
     else {
@@ -517,7 +489,6 @@
   socketFunctions.gameOver = function(books) {
 	  // Winners is a array
 	  // TODO: How do we want to display this?
-	  console.log(books);
   };
 
   /* Recieve Calls From Rest of App */

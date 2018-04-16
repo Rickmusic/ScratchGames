@@ -10,7 +10,6 @@
       this.leader = null;
       this.me = {};
       this.gameStarted = false;
-      console.log('SETUP');
       this.allowed = {};
       this.lastCard;
       this.isSpectator = false;
@@ -24,8 +23,6 @@
         let player = state['players'][i];
         if (player['uid'] == this.me['uid']) {
           this.me = player;
-          console.log('NEW CARDS');
-          console.log(this.me);
         } else {
           this.loby[player['uid']] = player;
         }
@@ -65,7 +62,6 @@
   let buttonsActive = false;
 
   function updateUsers(withButton = false) {
-	  console.log("UPDATING123BEn");
     let otherPlayers = '';
     let angleDif = Math.PI / (uno.numberPlayers - 1);
     let curAngle = 0;
@@ -92,7 +88,6 @@
         yLoc +
         "%'>" +
         us['name'];
-      console.log('CURUSER');
       curUser +=
         "<button id='choose-player-" +
         us['uid'] +
@@ -140,13 +135,11 @@
 			   htm += "<td>&#x"+suits[card["suit"]]+";"+card["num"]+"</td>";
 			   counter += 1;
 		   }
-		   console.log(htm);
 		   $("#player-"+player.uid+">.cards-in-hand").html("<table>"+htm+"</tr></table>");
 	    }
   }
   function addUserToGame(user, isSpectator) {
     uno.addUser(user);
-    console.log("add user to game");
     updateUsers();
     if (isSpectator) {
 	    showSpectatorHand();
@@ -154,11 +147,10 @@
   }
   function userLeft(sid) {
     userLeft(sid);
-    console.log("user left");
     updateUsers();
   }
   function startGame() {
-    console.log(socket);
+
   }
 
   let selectedCard;
@@ -169,7 +161,6 @@
     $('#select-suit').hide();
     $('#ask-button').hide();
     $('#select-swap-or-skip').hide();
-    console.log(selectedCard);
     socket.emit('placed-card', {
       uid: uno.me.uid,
       card: selectedCard,
@@ -198,7 +189,6 @@
     let canPlay = false;
     for (let i in uno.me.hand) {
       let card = uno.me.hand[i];
-      console.log(card);
 
       if (uno.isAllowed(card)) {
         canPlay = true;
@@ -251,18 +241,13 @@
   function updateGame() {
 	  $('#start-game').hide();
     if (!cardsDealt) {
-      console.log('DEALING CARDS');
-      console.log(uno.numberPlayers - 1);
       let angleDif = Math.PI / (uno.numberPlayers - 1);
       let curAngle = 0;
       var counter = 10;
       for (let i in uno.loby) {
         let xLoc = 50 - (Math.cos(curAngle) * 40 + 10) + 5;
         let yLoc = 50 - (Math.sin(curAngle) * 40 + 10) + 5;
-        console.log(Math.cos(curAngle));
-        console.log(uno.loby[i]);
         for (let x = 0; x < uno.loby[i]['hand']; x++) {
-          console.log('left: ' + xLoc + '%, top: ' + yLoc + '%');
           let card = $('.card-deck-card:nth-child(' + counter + ')');
           card.delay(counter * 30).animate(
             {
@@ -276,7 +261,6 @@
         }
         curAngle += angleDif;
       }
-      console.log(uno.me);
       for (let x = 0; x < uno.me['hand'].length; x++) {
 	    var card = {length: 0};
 	    while (card.length == 0) {
@@ -296,8 +280,6 @@
             $(this).addClass('card-player-me');
             //card-flip
             let crd = $(this).attr('card');
-            console.log('CARD = ');
-            console.log(crd);
             $('#' + $(this).attr('num') + '-of-' + $(this).attr('suit')).addClass(
               'card-flip'
             );
@@ -310,8 +292,6 @@
     $('#last-played').removeClass('card-suit-H');
     $('#last-played').removeClass('card-suit-S');
     $('#last-played').removeClass('card-suit-C');
-    console.log("LASTCARD");
-    console.log(uno.lastCard);
     $('#last-played').addClass('card-suit-' + uno.lastCard['suit']);
     $('#last-played').html(uno.lastCard['num']);
 
@@ -346,7 +326,6 @@
     if (!cardsDealt) {
       cardsDealt = true;
     }
-    console.log('MY hand');
     for (let i in uno.me['hand']) {
       let card = uno.me['hand'][i];
       let cid = '#' + card['num'] + '-of-' + card['suit'];
@@ -363,7 +342,6 @@
   socketFunctions = function() {};
   
   socketFunctions.init = function(nsp) {
-    console.log('Uno Socket Init', nsp);
     socket = io(nsp);
     socket.on('hello', () => socket.emit('hello', {}));
     socketFunctions.hook();
@@ -395,10 +373,8 @@
   };
 
   socketFunctions.status = function(status) {
-    console.log(status);
     if (status["state"] != "spectator") {
 	    uno.isSpectator = false;
-	    console.log("BEN HERE ABC");
 	    for (let i in status['players']) {
 	      let join = status['players'][i];
 	      
@@ -410,7 +386,6 @@
 	    }
 	    uno.setLeader(status['leader']);
 	    if (uno.amLeader()) {
-	      console.log('YOU ARE THE LEADER');
 	      if (firstTurn) {
 		      $('#start-game').show();
 	      }
@@ -427,10 +402,8 @@
 	}
 	else {
 		uno.isSpectator = true;
-		console.log("12345");
 		for (let i in status['players']) {
 	      let join = status['players'][i];
-	      console.log(join);
 	      if (join.uid == status.uid) {
 	        uno.updateMe(join);
 	      } else {
@@ -453,15 +426,13 @@
   };
 
   socketFunctions.gameState = function(state) {
-	  
-    console.log(state);
+
     uno.updateGameState(state);
     if (state["state"] != "spectator") {
 	    uno.isSpectator = false;
 	    updateGame();
     }
     else {
-	    console.log("game state");
 	    uno.isSpectator = true;
 	    uno.loby = state["players"];
 	    updateUsers();
@@ -470,8 +441,6 @@
 	    $('#last-played').removeClass('card-suit-H');
 	    $('#last-played').removeClass('card-suit-S');
 	    $('#last-played').removeClass('card-suit-C');
-	    console.log("LASTCARD");
-	    console.log(uno.lastCard);
 	    $('#last-played').addClass('card-suit-' + uno.lastCard['suit']);
 	    $('#last-played').html(uno.lastCard['num']);
     }
@@ -480,7 +449,6 @@
   socketFunctions.playersTurn = function(pl) {
 	  
     if (firstTurn) {
-	    console.log("players turn");
       updateUsers();
       if (uno.isSpectator) {
 	      showSpectatorHand();
@@ -490,7 +458,6 @@
     }
     $('#instructions-wording').html('');
     if (pl == uno.me['uid']) {
-      console.log('MY TURN');
       $('#instructions-turn').html('It is your turn');
       myTurn();
     } else {
