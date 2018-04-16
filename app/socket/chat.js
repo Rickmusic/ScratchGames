@@ -146,7 +146,6 @@ let init = function(io) {
         .to(socket.request.user.lobbyId + 'player')
         .to(socket.request.user.lobbyId + 'spectator')
         .emit('user leave lobby', { id: socket.request.user.id });
-      socket.request.user.lobbyId = null;
     });
   });
 };

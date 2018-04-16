@@ -13,11 +13,13 @@
       console.log('SETUP');
       this.allowed = {};
       this.lastCard;
+      this.isSpectator = false;
     }
     get numberPlayers() {
       return Object.keys(this.loby).length;
     }
     updateGameState(state) {
+	    
       for (let i in state['players']) {
         let player = state['players'][i];
         if (player['uid'] == this.me['uid']) {
@@ -63,6 +65,7 @@
   let buttonsActive = false;
 
   function updateUsers(withButton = false) {
+	  console.log("UPDATING123BEn");
     let otherPlayers = '';
     let angleDif = Math.PI / (uno.numberPlayers - 1);
     let curAngle = 0;
@@ -121,12 +124,37 @@
       $('#choose-player-' + us['uid']).hide();
     }
   }
-  function addUserToGame(user) {
+  function showSpectatorHand() {
+	  
+	  for (let p in uno.loby) {
+		   var player = uno.loby[p];
+		   var htm = "<tr>";
+		   var counter = 0;
+		   for (let c in player["hand"]) {
+			  
+			 	if (counter == 5) {
+				 	htm += "</tr><tr>";
+				 	counter = 0;
+			 	}
+			   var card = player["hand"][c];
+			   htm += "<td>&#x"+suits[card["suit"]]+";"+card["num"]+"</td>";
+			   counter += 1;
+		   }
+		   console.log(htm);
+		   $("#player-"+player.uid+">.cards-in-hand").html("<table>"+htm+"</tr></table>");
+	    }
+  }
+  function addUserToGame(user, isSpectator) {
     uno.addUser(user);
+    console.log("add user to game");
     updateUsers();
+    if (isSpectator) {
+	    showSpectatorHand();
+    }
   }
   function userLeft(sid) {
     userLeft(sid);
+    console.log("user left");
     updateUsers();
   }
   function startGame() {
@@ -136,6 +164,7 @@
   let selectedCard;
   let selectedSuit;
   let selectedChoice;
+  var suits = {"C": "e900", "D": "e901", "H": "e902", "S": "e903"};
   function askFor() {
     $('#select-suit').hide();
     $('#ask-button').hide();
@@ -153,14 +182,14 @@
   function suitChoice() {
     $('#select-suit').show();
     $('#instructions-wording').html(
-      'Play the ' + selectedCard['num'] + ' of ' + selectedCard['suit'] + '?'
+      'Play the ' + selectedCard['num'] + ' of &#x' + suits[selectedCard['suit']] + ';?'
     );
     $('#ask-button').hide();
   }
   function swapOrSkip() {
     $('#select-swap-or-skip').show();
     $('#instructions-wording').html(
-      'Play the ' + selectedCard['num'] + ' of ' + selectedCard['suit'] + '?'
+      'Play the ' + selectedCard['num'] + ' of &#x' + suits[selectedCard['suit']] + ';?'
     );
     $('#ask-button').hide();
   }
@@ -206,9 +235,9 @@
           $('#instructions-wording').html(
             'Play the ' +
               selectedCard['num'] +
-              ' of ' +
-              selectedCard['suit'] +
-              '?'
+              ' of &#x' +
+              suits[selectedCard['suit']] +
+              ';?'
           );
           $('#ask-button').show();
         });
@@ -279,6 +308,7 @@
     $('#last-played').removeClass('card-suit-H');
     $('#last-played').removeClass('card-suit-S');
     $('#last-played').removeClass('card-suit-C');
+    console.log("LASTCARD");
     console.log(uno.lastCard);
     $('#last-played').addClass('card-suit-' + uno.lastCard['suit']);
     $('#last-played').html(uno.lastCard['num']);
@@ -364,26 +394,42 @@
 
   socketFunctions.status = function(status) {
     console.log(status);
-    console.log("BEN HERE ABC");
-    for (let i in status['players']) {
-      let join = status['players'][i];
-      
-      if (join.uid == status.uid) {
-        uno.updateMe(join);
-      } else {
-        addUserToGame(join);
-      }
-    }
-    uno.setLeader(status['leader']);
-    if (uno.amLeader()) {
-      console.log('YOU ARE THE LEADER');
-      $('#start-game').show();
-      $('#start-game').click(function() {
-        uno.startGame();
-        $('#start-game').hide();
-        socket.emit('start-game', '');
-      });
-    }
+    if (status["state"] != "spectator") {
+	    uno.isSpectator = false;
+	    console.log("BEN HERE ABC");
+	    for (let i in status['players']) {
+	      let join = status['players'][i];
+	      
+	      if (join.uid == status.uid) {
+	        uno.updateMe(join);
+	      } else {
+	        addUserToGame(join);
+	      }
+	    }
+	    uno.setLeader(status['leader']);
+	    if (uno.amLeader()) {
+	      console.log('YOU ARE THE LEADER');
+	      $('#start-game').show();
+	      $('#start-game').click(function() {
+	        uno.startGame();
+	        $('#start-game').hide();
+	        socket.emit('start-game', '');
+	      });
+	    }
+	}
+	else {
+		uno.isSpectator = true;
+		console.log("12345");
+		for (let i in status['players']) {
+	      let join = status['players'][i];
+	      console.log(join);
+	      if (join.uid == status.uid) {
+	        uno.updateMe(join);
+	      } else {
+		      addUserToGame(join, true);
+	      }
+	    }
+	}
   };
 
   socketFunctions.userJoined = function(join) {
@@ -401,12 +447,35 @@
   socketFunctions.gameState = function(state) {
     console.log(state);
     uno.updateGameState(state);
-    updateGame();
+    if (state["state"] != "spectator") {
+	    uno.isSpectator = false;
+	    updateGame();
+    }
+    else {
+	    console.log("game state");
+	    uno.isSpectator = true;
+	    uno.loby = state["players"];
+	    updateUsers();
+	    showSpectatorHand();
+	    $('#last-played').removeClass('card-suit-D');
+	    $('#last-played').removeClass('card-suit-H');
+	    $('#last-played').removeClass('card-suit-S');
+	    $('#last-played').removeClass('card-suit-C');
+	    console.log("LASTCARD");
+	    console.log(uno.lastCard);
+	    $('#last-played').addClass('card-suit-' + uno.lastCard['suit']);
+	    $('#last-played').html(uno.lastCard['num']);
+    }
   };
 
   socketFunctions.playersTurn = function(pl) {
     if (firstTurn) {
+	    console.log("players turn");
       updateUsers();
+      if (uno.isSpectator) {
+	      showSpectatorHand();
+      }
+      
       firstTurn = false;
     }
     $('#instructions-wording').html('');

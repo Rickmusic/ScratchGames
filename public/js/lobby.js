@@ -12,7 +12,7 @@ Scratch.locations.lobby = function() {};
         socket.emit('playerReady', null);
         $('#startBtn').prop('disabled', true);
       } else if (Scratch.me.role === 'host') {
-        socket.emit('start game', {});
+        socket.emit('start game', $('form#gameSet').serializeJSON());
       }
     });
     $('#Players').on('click', 'button', function() {

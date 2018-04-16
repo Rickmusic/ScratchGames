@@ -39,7 +39,7 @@ router.get(/.*.js$/, function(req, res, next) {
   });
 });
 
-router.get(/.*.(gif|jpg|jpeg|png|ico|svg)$/, function(req, res, next) {
+router.get(/.*.(gif|jpg|jpeg|png|ico|svg|ttf|woff|eot)$/, function(req, res, next) {
   res.sendFile(path.join('img', req.originalUrl), rootdir, function(err) {
     if (err) next(err);
   });
