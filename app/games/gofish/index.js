@@ -41,16 +41,18 @@ let init = function(io) {
 
     socket.on('start-game', function(abc) {
       let game = games[socket.request.user.lobbyId];
-      game.startGame();
-      for (let i in game.players) {
-        let player = game.players[i];
-        io.to(player.sid).emit('game-state', game.getStateFor(player.uid));
-      }
-      for (let i in game.spectators) {
-        let player = game.spectators[i];
-        io.to(player.sid).emit('game-state', game.getSpectatorStatus());
-      }
-      io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
+      if (!game.gameStarted) {
+	      game.startGame();
+	      for (let i in game.players) {
+	        let player = game.players[i];
+	        io.to(player.sid).emit('game-state', game.getStateFor(player.uid));
+	      }
+	      for (let i in game.spectators) {
+	        let player = game.spectators[i];
+	        io.to(player.sid).emit('game-state', game.getSpectatorStatus());
+	      }
+	      io.to(socket.request.user.lobbyId).emit('players-turn', game.pTurn);
+	   }
     });
 
     socket.on('ask-for', function(ask) {
