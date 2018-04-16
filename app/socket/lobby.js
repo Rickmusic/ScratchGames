@@ -4,6 +4,7 @@ let db = require('../db');
 let dblogger = require('winston').loggers.get('db');
 let { User } = db.models;
 let manager = require('../lobby');
+let lmanager = require('../leaderboard');
 
 let buildMember = function(user) {
   return {
@@ -21,6 +22,13 @@ let init = function(io) {
       socket.join('user' + socket.request.user.id);
       socket.join(socket.request.user.lobbyId);
       manager.addMember(socket.request.user);
+    });
+
+    socket.on('test', function(score) {
+      let a = {};
+      a[socket.request.user.id] = score;
+      lmanager.addScores.Uno(a);
+      lmanager.addScores.GoFish(a);
     });
 
     socket.on('lobbyLand', function() {
