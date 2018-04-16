@@ -255,15 +255,16 @@
       console.log(uno.numberPlayers - 1);
       let angleDif = Math.PI / (uno.numberPlayers - 1);
       let curAngle = 0;
-      let counter = 0;
+      var counter = 10;
       for (let i in uno.loby) {
         let xLoc = 50 - (Math.cos(curAngle) * 40 + 10) + 5;
         let yLoc = 50 - (Math.sin(curAngle) * 40 + 10) + 5;
         console.log(Math.cos(curAngle));
+        console.log(uno.loby[i]);
         for (let x = 0; x < uno.loby[i]['hand']; x++) {
           console.log('left: ' + xLoc + '%, top: ' + yLoc + '%');
           let card = $('.card-deck-card:nth-child(' + counter + ')');
-          card.delay(counter * 500).animate(
+          card.delay(counter * 30).animate(
             {
               left: xLoc + '%',
               top: yLoc + '%',
@@ -285,7 +286,7 @@
         card.attr('suit', uno.me['hand'][x]['suit']);
         card.attr('num', uno.me['hand'][x]['num']);
         let xLoc = x * 60;
-        card.delay(counter * 500).animate(
+        card.delay(counter * 0).animate(
           {
             left: xLoc + 'px',
             top: '70%',
