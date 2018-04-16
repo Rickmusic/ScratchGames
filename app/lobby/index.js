@@ -159,6 +159,10 @@ let removeMember = function(user) {
     .update({ role: null, lobbyId: null })
     .then(() => {})
     .catch(err => dblogger.error('Lobby - Remove Member - Update User Role: ' + err));
+  user
+    .getLobby()
+    .then(dblobby => startRound(dblobby))
+    .catch(err => dbllogger.error('Lobby - Remove Member - Start New Round: ' + err));
 };
 
 function addPlayer(user) {
