@@ -46,6 +46,7 @@ let TokenUser = Token.belongsTo(User, { foreignKey: 'userId' });
 let LobbyUser = Lobby.hasMany(User, { as: 'Users', foreignKey: 'lobbyId' });
 let UserLobby = User.belongsTo(Lobby, { foreignKey: 'lobbyId' });
 let UserLeaderboard = User.hasMany(Leaderboard, { as: 'Ranks', foreignKey: 'userId' });
+let LeaderboardUser = Leaderboard.belongsTo(User, { foreignKey: 'userId' });
 let MessageFrom = Message.belongsTo(User, { as: 'Sender', foreignKey: 'senderId' });
 let MassageLobby = Message.belongsTo(Lobby, { foreignKey: 'lobbyId' });
 let MessageTo = Message.belongsTo(User, { as: 'Recipient', foreignKey: 'recipientId' });
@@ -70,6 +71,7 @@ module.exports = {
     UserLobby,
     LobbyHost,
     UserLeaderboard,
+    LeaderboardUser,
     MessageFrom,
     MassageLobby,
     MessageTo,

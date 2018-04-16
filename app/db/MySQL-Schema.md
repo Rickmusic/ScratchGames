@@ -35,12 +35,13 @@ CREATE TABLE `leaderboards` (
     `id` CHAR(36) BINARY ,
     `game` ENUM('Uno', 'GoFish') NOT NULL DEFAULT 'UNO',
     `score` INTEGER,
+    `played` INTEGER,
     `createdAt` DATETIME NOT NULL,
     `updatedAt` DATETIME NOT NULL,
     `userId` CHAR(36) BINARY,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB;'
+) ENGINE=InnoDB;
 ```
 
 ```SQL

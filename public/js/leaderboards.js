@@ -97,7 +97,7 @@
       });
     $local.find('div.leadScore').text(person.score);
     if (Scratch.me.id === person.id) {
-      $('#'.person.game)
+      $('#' + person.game)
         .children()
         .eq(1)
         .empty();

@@ -15,9 +15,8 @@ let init = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 'UNO',
       },
-      score: {
-        type: DataTypes.INTEGER,
-      },
+      score: { type: DataTypes.INTEGER },
+      played: { type: DataTypes.INTEGER },
     },
     { tableName: 'leaderboards' }
   );
