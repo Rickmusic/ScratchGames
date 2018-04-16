@@ -47,10 +47,10 @@
        <!--This is what shows in the APPEARANCE tab-->
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-            <form>
+            <form id="displayName">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">New Username</label>
-                    <input type="text" class="form-control " placeholder="New Username">
+                    <label for="exampleInputPassword1">Display Name</label>
+                    <input type="text" class="form-control " placeholder="New Display Name">
                 </div>
 
                 <div class="form-group">
@@ -65,7 +65,7 @@
         <!--This is what shows in the SECURITY tab-->
 
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            <form>
+            <form id="email">
 
                 <div class="form-group">
                     <label >Old Email address</label>
@@ -81,7 +81,7 @@
         </div>
         <!--This can be deleted if not used-->
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-            <form>
+            <form id="password">
                 <div class="form-group">
                     <label >Old Password</label>
                     <input type="password" class="form-control" placeholder="Password">
@@ -95,6 +95,9 @@
             </form>
 
         </div>
+    </div>
+    <div id="serverMessage">
+        <!-- Loaded in as required -->
     </div>
 </div>
 <div class="modal-footer">
