@@ -35,9 +35,10 @@ html, body {
 }
 #game-table {
 	background-color: black;
-	background-image: url("/PokerTable.png");
+	/*background-image: url("/PokerTable.png");*/
 	background-position: center;
 	background-size: cover;
+	background:transparent;
 	
 	width: 100%;
 	height: 100%;

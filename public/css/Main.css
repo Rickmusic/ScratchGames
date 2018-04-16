@@ -164,6 +164,16 @@ table{
 #main{
     height: 95%;
 }
+#gameScreen{
+    background-color: black;
+    background-image: url("/PokerTable.png");
+    background-position: center;
+    background-size: cover;
+
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
 .container{
     height: 100%;
     max-width: none;
@@ -255,6 +265,15 @@ table{
     width: 100%;
     padding-left: 0px;
     padding-right: 0px;
+}
+/* game screen */
+#leave-lobby{
+    background-color: red;
+    border-color: red;
+    padding-color: red;
+    position:absolute;
+    top:0;
+    left:0;
 }
 
 /* Mobile Styles */
