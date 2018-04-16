@@ -287,7 +287,7 @@
         card.delay(counter * 500).animate(
           {
             left: xLoc + 'px',
-            top: '80%',
+            top: '70%',
           },
           1500,
           function() {

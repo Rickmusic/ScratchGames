@@ -27,6 +27,10 @@ html, body {
 	width: 20%;
 	height: 10%;
 	top: 45%;
+	background-color: white;
+}
+#game-table button {
+	background-color: white;
 }
 #game-table {
 	background-color: black;
@@ -49,10 +53,10 @@ html, body {
 	
 }
 #other-players {
-	height: 80%;
+	height: 70%;
 }
 #my-cards {
-	height: 20%;
+	height: 30%;
 	display: inline-block;
 	width: 100%;
 }
@@ -107,6 +111,7 @@ html, body {
 }
 .cards-in-hand {
 	font-family: 'suits';
+	z-index: 3000000;
 }
 .cards-in-hand>ul>li {
 	font-family: 'suits';
@@ -188,7 +193,9 @@ html, body {
 	bottom: 20%;
 	
 }
-
+#ask-button {
+	background-color: white;
+}
 
 #select-suit {
 	position: fixed;
@@ -197,6 +204,16 @@ html, body {
 	width: 40%;
 	height: 40%;
 	top: 30%;
+	z-index: 30000;
+}
+#select-suit>button {
+	width: 100%;
+}
+#select-diamonds {
+	color: red;
+}
+#select-hearts {
+	color: red;
 }
 #select-swap-or-skip {
 	position: fixed;
@@ -210,3 +227,15 @@ html, body {
 	background-color: #d0d0d0 !important;
 	box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
 } 
+@media only screen and (max-width: 960px) {
+	#instructions-wording {
+		top: -30px !important;
+	}
+	.cards-in-hand {
+		font-size: 12px;
+	}
+	.player-spot {
+		font-size: 12px;
+	}
+	
+}
