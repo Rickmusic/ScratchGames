@@ -19,6 +19,7 @@ html, body {
 }
 .choose-player-button {
 	z-index: 99999999;
+	
 }
 
 #start-game {
@@ -134,6 +135,7 @@ html, body {
 	background-size: cover;
 	background-image: url("/Cards/Back.png");
 	position: absolute;
+	
 	left: calc(50% - 30px);
 	top: calc(50% + 10px);
 	z-index: 0;
@@ -222,6 +224,10 @@ html, body {
 	width: 40%;
 	height: 40%;
 	top: 30%;
+	z-index: 30000;
+}
+#select-swap-or-skip>button {
+	width: 100%;
 }
 .disabled-card {
 	background-color: #d0d0d0 !important;
@@ -231,6 +237,7 @@ html, body {
 	#instructions>br {
 		height: 0px;
 		visibility: hidden;
+		
 	}
 	#instructions-wording {
 		top: -30px !important;

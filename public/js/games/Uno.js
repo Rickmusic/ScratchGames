@@ -249,6 +249,7 @@
     }
   }
   function updateGame() {
+	  $('#start-game').hide();
     if (!cardsDealt) {
       console.log('DEALING CARDS');
       console.log(uno.numberPlayers - 1);
@@ -409,7 +410,13 @@
 	    uno.setLeader(status['leader']);
 	    if (uno.amLeader()) {
 	      console.log('YOU ARE THE LEADER');
-	      $('#start-game').show();
+	      if (firstTurn) {
+		      $('#start-game').show();
+	      }
+	      else {
+		       $('#start-game').hide();
+	      }
+	     
 	      $('#start-game').click(function() {
 	        uno.startGame();
 	        $('#start-game').hide();
@@ -445,6 +452,7 @@
   };
 
   socketFunctions.gameState = function(state) {
+	  
     console.log(state);
     uno.updateGameState(state);
     if (state["state"] != "spectator") {
@@ -469,6 +477,7 @@
   };
 
   socketFunctions.playersTurn = function(pl) {
+	  
     if (firstTurn) {
 	    console.log("players turn");
       updateUsers();
