@@ -10,7 +10,6 @@
       this.leader = null;
       this.me = {};
       this.gameStarted = false;
-      console.log('SETUP');
       this.isSpectator = false;
       this.playerBooks = {};
     }
@@ -22,8 +21,6 @@
         let player = state[i];
         if (player['uid'] == this.me['uid']) {
           this.me = player;
-          console.log('NEW CARDS');
-          console.log(this.me);
         } 
         else {
           this.loby[player['uid']] = player;
@@ -83,7 +80,6 @@
         yLoc +
         "%'>" +
         us['name'];
-      console.log('CURUSER');
       curUser +=
         "<button id='choose-player-" +
         us['uid'] +

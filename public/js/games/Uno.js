@@ -248,7 +248,6 @@
         let xLoc = 50 - (Math.cos(curAngle) * 40 + 10) + 5;
         let yLoc = 50 - (Math.sin(curAngle) * 40 + 10) + 5;
         for (let x = 0; x < uno.loby[i]['hand']; x++) {
-          console.log('left: ' + xLoc + '%, top: ' + yLoc + '%');
           let card = $('.card-deck-card:nth-child(' + counter + ')');
           card.delay(counter * 30).animate(
             {
