@@ -102,7 +102,7 @@
         .eq(1)
         .empty();
       let $scoreDiv = $('<div class"row"></div>');
-      $scoreDiv.append(
+      $scoreDiv.set(
         $(
           '<div class="col leadName">' +
             'Your Score' +
