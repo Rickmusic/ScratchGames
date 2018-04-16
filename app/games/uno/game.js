@@ -128,17 +128,28 @@ class Uno {
 	  return returnData;
   }
   nextTurn() {
+	var counter = 0;
     for (let i in this.players) {
-      this.pTurn = this.nextPlayerTurn();
+	    if (counter > 0) {
+		    this.pTurn = this.nextPlayerTurn();
+	    }
+      
+     
       console.log(this.pTurn);
-      if (
-        this.curPlayer.hand.length > 0
-      ) {
-        return false;
+      if (this.curPlayer.hand.length > 0) {
+	      console.log("ADDING USER");
+        counter += 1;
+        
       }
-      if (this.winners.indexOf(this.pTurn) < 0) {
+      else if (this.winners.indexOf(this.pTurn) < 0) {
 	      this.winners.push(this.pTurn);
       }
+      
+      
+    }
+    if (counter > 1) {
+	    console.log("COUNTER 0 GAME OVER");
+	    return false;
     }
     // There are no cards in the deck, and no players with cards
     this.gameOver = true;

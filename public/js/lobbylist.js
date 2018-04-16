@@ -59,6 +59,8 @@ Scratch.locations.lobbylist = function() {};
   Scratch.locations.lobbylist.create = function() {};
 
   Scratch.locations.lobbylist.create.init = function() {
+    $('#message').empty();
+    $('#createLobby').trigger('reset');
     $('#createLobby').submit(function(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -67,10 +69,8 @@ Scratch.locations.lobbylist = function() {};
         .serializeJSON();
       // TODO Form valid and filled out ? //
       global.emit('create lobby', data);
-      // TODO We should wait for server to create the lobby in case validation failed,
-      //      or some other feedback needs to be given.
-      this.reset(); // Clear form input (or maybe we shouldn't incase there is an error)
-      // Currently server calls nav upon success. Can be changed if we want to manage UI here.
+      $('#message').empty();
+      $('#message').text('Server Thinking');
     });
 
     $('#createLobby select[name="gametype"]').change(function() {
@@ -124,6 +124,10 @@ Scratch.locations.lobbylist = function() {};
     Scratch.locations.lobbylist.killLobby(lid);
   });
 
+  global.on('createLobby', function(message) {
+    $('#message').empty();
+    $('#message').text('Something went wrong ' + message);
+  });
   Scratch.locations.lobbylist.addlobby = function(lob) {
     // If the lobby is already there. Kill it before adding it //
     $('#addLob')
@@ -158,7 +162,7 @@ Scratch.locations.lobbylist = function() {};
       $newRow.append($('<td>').html($('<span class="glyphicon glyphicon-lock">')));
     } else {
       let $joinPlayer = $('<td class="lob-join-player">');
-      if (lob.currentPlayers === lob.lobbyCap) {
+      if (lob.currentPlayers >= lob.lobbyCap) {
         // Locking players because no more room //
         $joinPlayer.html($('<span class="glyphicon glyphicon-lock">'));
       } else {

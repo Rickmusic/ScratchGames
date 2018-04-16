@@ -23,6 +23,7 @@ Scratch.locations.lobby = function() {};
             .closest('div.row')
             .data('uid')
         );
+
       if ($(this).hasClass('switch-role')) return socket.emit('player -> spec', null);
       if ($(this).hasClass('leave-lobby')) return Scratch.lobby.leave();
       if ($(this).hasClass('kick-member'))
@@ -69,8 +70,7 @@ Scratch.locations.lobby = function() {};
     let lobbyName = everything.name; // String //
     let joincode = everything.joincode; // Int //
     let members = everything.users; // List of objects with name(String), role(String), id(String), ready(Bool) //
-    //let maxPlayers = everything.maxPlayers; // in progress
-    //let maxSpec = everything.maxSpectators; // in progress
+    let maxPlayers = everything.maxPlayers; // in progress
 
     Scratch.locations.lobby.loadTop(gameType, lobbyName, joincode, access);
     for (let mem of members) {
@@ -92,16 +92,16 @@ Scratch.locations.lobby = function() {};
   Scratch.locations.lobby.loadTop = function(gameType, lobbyName, joincode, access) {
     $('#access')
       .children()
-      .append(' ' + access);
+      .text('Access: ' + access);
     $('#gameType')
       .children()
-      .append(' ' + gameType);
+      .text('Game Type: ' + gameType);
     $('#lobbyName')
       .children()
-      .append(' ' + lobbyName);
+      .text('Lobby Name: ' + lobbyName);
     $('#joincode')
       .children()
-      .append(' ' + joincode);
+      .text('Joincode:  ' + joincode);
   };
   // Loads Game specific Settings HTML //
   Scratch.locations.lobby.loadGameSettings = function(gameType) {
@@ -141,6 +141,7 @@ Scratch.locations.lobby = function() {};
         return $(this).data('uid') === uid;
       })
       .remove();
+      $('#userNeedsHelp').text('Player Left');
   });
 
   socket.on('playerReady', function(uid) {
@@ -150,21 +151,27 @@ Scratch.locations.lobby = function() {};
       })
       .find('span')
       .attr('class', 'glyphicon glyphicon-ok');
+      $('#userNeedsHelp').text('Somebody is ready to play');
   });
+
   socket.on('lobbyReady', function() {
+      $('#userNeedsHelp').text('Lobby is ready to play');
     if (Scratch.me.role === 'host') {
       $('#startBtn').prop('disabled', false);
     } else {
       //Do nothing
     }
   });
+
   socket.on('lobbyUnready', function() {
+      $('#userNeedsHelp').text('Lobby unready');
     if (Scratch.me.role === 'host') {
       $('#startBtn').prop('disabled', true);
     } else {
       //Do nothing
     }
   });
+
   //Adds single member to player lists
   Scratch.locations.lobby.member = function(mem) {
     $('#Players div.row, #Spectators div.row')

@@ -266,7 +266,7 @@
         card.delay(counter * 500).animate(
           {
             left: xLoc + 'px',
-            top: '80%',
+            top: '70%',
           },
           1500,
           function() {
@@ -385,7 +385,12 @@
 	    goFish.setLeader(status['leader']);
 	    if (goFish.amLeader() && !status.started) {
 	      console.log('YOU ARE THE LEADER');
-	      $('#start-game').show();
+	      if (firstTurn) {
+		      $('#start-game').show();
+	      }
+	      else {
+		       $('#start-game').hide();
+	      }
 	      $('#start-game').click(function() {
 	        goFish.startGame();
 	        $('#start-game').hide();
