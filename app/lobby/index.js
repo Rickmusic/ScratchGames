@@ -21,9 +21,11 @@ let lobbies = {};
 /* 
  * Contains <lobbyid>: {<settings>} 
  *   where <settings> contains
- *     gamesettings - {} Tracked Game Specific Settings
+ *     gameform = {} Game Specific Settings Form
  *     players = (uid: {bool}} players + ready status
  *     spectators = { uid: {}} spectators
+ *     gamestatus = {} while playing games
+ *     gamesettings - {} Lobby Game Specific Settings
  */
 
 let buildListLobby = function(dblobby) {
@@ -38,12 +40,15 @@ let buildListLobby = function(dblobby) {
   };
 };
 
-let createLobby = function(dblobby) {
+let createLobby = function(dblobby, callback) {
   lobbies[dblobby.id] = {};
-  lobbies[dblobby.id].gamesettings = {};
+  lobbies[dblobby.id].gameform = {};
   lobbies[dblobby.id].players = {};
   lobbies[dblobby.id].spectators = {};
-  listIO.emit('update', buildListLobby(dblobby));
+  lobbies[dblobby.id].gamesettings = {};
+  lobbies[dblobby.id].gamestatus = {};
+  listIO.emit('lobbylist', [buildListLobby(dblobby)]);
+  if (callback) callback();
 };
 
 let getAllLobbies = function() {
@@ -68,22 +73,29 @@ let getAllLobbies = function() {
 };
 
 let addMember = function(user) {
-  user
-    .getLobby()
-    .then(dblobby => {
-      if (!lobbies[user.lobbyId]) createLobby(dblobby);
-      switch (user.role) {
-        case 'host':
-        case 'player':
-          addPlayer(user);
-          break;
-        default:
-          addSpectator(user);
-          break;
-      }
-      listIO.emit('update', buildListLobby(dblobby));
-    })
-    .catch(err => dblogger.error('Lobby - Add Member - Get Lobby: ' + err));
+  if (!lobbies[user.lobbyId])
+    user
+      .getLobby()
+      .then(dblobby => createLobby(dblobby, next))
+      .catch(err => dblogger.error('Lobby - Add Member - Get Lobby: ' + err));
+  else next();
+
+  function next() {
+    switch (user.role) {
+      case 'host':
+      case 'player':
+        addPlayer(user);
+        break;
+      default:
+        addSpectator(user);
+        break;
+    }
+    listIO.emit('updateCounts', {
+      id: user.lobbyId,
+      players: Object.keys(lobbies[user.lobbyId].players).length,
+      spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
+    });
+  }
 };
 
 let updateMember = function(user) {
@@ -103,10 +115,11 @@ let updateMember = function(user) {
     default:
       break;
   }
-  user
-    .getLobby()
-    .then(dblobby => listIO.emit('update', buildListLobby(dblobby)))
-    .catch(err => dblogger.error('Lobby - Update Member - Get Lobby: ' + err));
+  listIO.emit('updateCounts', {
+    id: user.lobbyId,
+    players: Object.keys(lobbies[user.lobbyId].players).length,
+    spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
+  });
 };
 
 let removeMember = function(user) {
@@ -136,14 +149,15 @@ let removeMember = function(user) {
       removeSpectator(user);
       break;
   }
+  listIO.emit('updateCounts', {
+    id: user.lobbyId,
+    players: Object.keys(lobbies[user.lobbyId].players).length,
+    spectators: Object.keys(lobbies[user.lobbyId].spectators).length,
+  });
   user
     .update({ role: null, lobbyId: null })
     .then(() => {})
     .catch(err => dblogger.error('Lobby - Remove Member - Update User Role: ' + err));
-  user
-    .getLobby()
-    .then(dblobby => listIO.emit('update', buildListLobby(dblobby)))
-    .catch(err => dblogger.error('Lobby - Remove Member - Get Lobby (Update): ' + err));
 };
 
 function addPlayer(user) {
@@ -163,6 +177,7 @@ function removeSpectator(user) {
 }
 
 let checkLobbyReady = function(lobbyId) {
+  //if (Object.keys(lobbies[user.lobbyId].players).length < 2) return false;
   for (let playerId in lobbies[lobbyId].players) {
     if (!lobbies[lobbyId].players[playerId].ready) return false;
   }
@@ -180,24 +195,101 @@ let getPlayerReady = function(user) {
 };
 
 let getGameSettings = function(lobbyId) {
-  return lobbies[lobbyId].gamesettings;
+  return lobbies[lobbyId].gameform;
 };
 let updateGameSettings = function(lobbyId, newSettings) {
-  lobbies[lobbyId].gamesettings = newSettings;
+  lobbies[lobbyId].gameform = newSettings;
+};
+
+/* Game Progress Function */
+
+let endGame = function(lobbyId) {
+  Lobby.findById(lobbyId)
+    .then(dblobby => {
+      for (let playerId in lobbies[lobbyId].players) {
+        lobbies[lobbyId].players[playerId].ready = playerId === dblobby.hostId;
+      }
+      dblobby
+        .update({ inGame: false })
+        .then(() => {
+          lobbyIO.to(lobbyId).emit('navigate', { loc: 'lobby' });
+        })
+        .catch(err => dblogger.error('Lobby - End Game - Update Lobby: ' + err));
+    })
+    .catch(err => dblogger.error('Lobby - End Game - Find Lobby: ' + err));
+};
+
+let endRound = {
+  Uno: function endRound(lobbyId, score) {
+    // TODO update Leaderboard
+    if (lobbies[lobbyId].gamestatus.rounds <= 1) return endGame(lobbyId);
+    lobbies[lobbyId].gamestatus.rounds -= 1;
+    Lobby.findById(lobbyId)
+      .then(dblobby => startRound(dblobby))
+      .catch(err => dblogger.error('Lobby - End Round (Uno) - Find Lobby: ' + err));
+  },
+  GoFish: function endRound(lobbyId, score) {
+    // TODO update Leaderboard
+    if (lobbies[lobbyId].gamestatus.rounds <= 1) return endGame(lobbyId);
+    lobbies[lobbyId].gamestatus.rounds -= 1;
+    Lobby.findById(lobbyId)
+      .then(dblobby => startRound(dblobby))
+      .catch(err => dblogger.error('Lobby - End Round (GoFish) - Find Lobby: ' + err));
+  },
+};
+
+let startRound = function(dblobby) {
+  games[dblobby.game].create(
+    lobbies[dblobby.id].gamesettings,
+    dblobby.id,
+    dblobby.hostId,
+    endRound[dblobby.game]
+  );
+  lobbyIO.to(dblobby.id).emit('new round', dblobby.game, nsps.get(dblobby.game).name);
+};
+
+let startFirstRound = function(dblobby) {
+  if (!nsps.exists(dblobby.game)) games[dblobby.game].init(nsps.create(dblobby.game));
+  games[dblobby.game].create(
+    lobbies[dblobby.id].gamesettings,
+    dblobby.id,
+    dblobby.hostId,
+    endRound[dblobby.game]
+  );
+  lobbyIO.to(dblobby.id).emit('navigate', {
+    loc: 'game',
+    args: [dblobby.game, nsps.get(dblobby.game).name],
+  });
 };
 
 let startGame = function(user, settings) {
+  lobbies[user.lobbyId].gameform = settings;
   user
     .getLobby()
     .then(dblobby => {
-      // TODO store settings into lobby
-      if (!nsps.exists(dblobby.game)) games[dblobby.game].init(nsps.create(dblobby.game));
-      // TODO only pass game-specific settings to create
-      games[dblobby.game].create(settings, dblobby.id, dblobby.hostId);
-      lobbyIO.to(dblobby.id).emit('navigate', {
-        loc: 'game',
-        args: [dblobby.game, nsps.get(dblobby.game).name],
-      });
+      switch (dblobby.game) {
+        case 'Uno':
+          lobbies[user.lobbyId].gamesettings = {
+            numMatch: lobbies[user.lobbyId].gameform.numMatch,
+            numDecks: lobbies[user.lobbyId].gameform.numDecks,
+          };
+          lobbies[user.lobbyId].gamestatus = {
+            rounds: parseInt(lobbies[user.lobbyId].gameform.rounds),
+          };
+          break;
+        case 'GoFish':
+          lobbies[user.lobbyId].gamesettings = {
+            numMatch: lobbies[user.lobbyId].gameform.numMatch,
+            numDecks: lobbies[user.lobbyId].gameform.numDecks,
+          };
+          lobbies[user.lobbyId].gamestatus = {
+            rounds: parseInt(lobbies[user.lobbyId].gameform.rounds),
+          };
+          break;
+        default:
+          break;
+      }
+      startFirstRound(dblobby);
       dblobby
         .update({ inGame: true })
         .then(() => {})
