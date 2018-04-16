@@ -4,6 +4,8 @@ let Deck = require('../deck');
 let Player = require('../player');
 class Uno {
   constructor() {
+	this.spectators = {};  
+	this.gameOver = false;
     this.gameStarted = false;
     this.pTurn = -1;
     this.direction = 1;
@@ -13,6 +15,15 @@ class Uno {
     this.playedCards = [];
     this.playedSuit = null;
     this.playedNum = null;
+    this.winners = [];
+    this.onWin = null;
+  }
+  score() {
+	  var ret = {};
+	  for (var p in this.players) {
+		  ret[p] = this.players[p].hand.length;
+	  }
+	  return ret;
   }
   get numberPlayers() {
     return Object.keys(this.players).length;
@@ -55,6 +66,15 @@ class Uno {
 	}
     
   }
+  spectatorJoined(player) {
+  	let pl = new Player(player);
+	if (this.spectators[player.uid] == null) {
+		this.spectators[player.uid] = pl;
+	}
+	else {
+		this.spectators[player.uid].sid = player.sid;
+	} 
+  }
   getStatus(player, uid) {
     //if (!this.gameStarted) {
       return {
@@ -95,6 +115,18 @@ class Uno {
     }
     return returnData;
   }
+  getSpectatorStatus() {
+	  var returnData = {
+		  state: 'spectator',
+		  players: this.players,
+		  allowed: {
+			  suit: this.playedSuit,
+			  num: this.playedNum,
+		  },
+		  lastCard: this.lastCard
+	  }
+	  return returnData;
+  }
   nextTurn() {
     for (let i in this.players) {
       this.pTurn = this.nextPlayerTurn();
@@ -104,8 +136,12 @@ class Uno {
       ) {
         return false;
       }
+      if (this.winners.indexOf(this.pTurn) < 0) {
+	      this.winners.push(this.pTurn);
+      }
     }
     // There are no cards in the deck, and no players with cards
+    this.gameOver = true;
     return true;
   }
   get curPlayer() {
@@ -196,10 +232,11 @@ class Uno {
     }
     this.curPlayer.takeCardOfSuit(card.num, card.suit);
     this.playedCards.push(card);
-    this.nextTurn();
-    return true;
+    return !this.nextTurn();
+    //return true;
   }
   getWinner() {
+	  /*
     let maxBooks = 0;
     let winners = [];
     for (let i in this.players) {
@@ -209,7 +246,8 @@ class Uno {
         this.winners = [this.players[i].uid];
       }
     }
-    return winners;
+    return winners;*/
+    return this.winners;
   }
 }
 module.exports = Uno;

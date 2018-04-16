@@ -424,6 +424,9 @@ Scratch.locations = function() {};
     /* Sync role updates to chat */
     socket.on('change role', role => Scratch.chat.updateRole(role));
 
+    /* Pass on new round call to Game */
+    socket.on('new round', (game, nsp) => Scratch.games.newRound(game, nsp));
+
     /* allow lobby socket to call navigation */
     socket.on('navigate', nav => Scratch.nav.socketNavigate(nav, Scratch.nav.callback));
   };
@@ -445,6 +448,14 @@ Scratch.locations = function() {};
      * navigation (reload, browser back/forward) as opposed to server nav.
      */
     if (game === undefined) return Scratch.games.reload();
+    Scratch.games.newRound(game, nsp);
+
+    $('#leave-lobby').on('click', function() {
+      Scratch.sockets.lobby.emit('leave lobby', {});
+    });
+  };
+
+  Scratch.games.newRound = function(game, nsp) {
     if ($('iframe#game').attr('src') !== '') Scratch.games.leave();
     $('iframe#game').hide();
     $('iframe#game').attr('src', '/games/' + game + '.html');
